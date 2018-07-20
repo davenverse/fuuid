@@ -8,6 +8,7 @@ import java.util.UUID
 final class FUUID private (private val uuid: UUID){
   def equals(that: FUUID): Boolean = 
     this.uuid equals that.uuid
+  override def hashCode: Int = uuid.hashCode
   override def toString: String = uuid.toString
 
 }
