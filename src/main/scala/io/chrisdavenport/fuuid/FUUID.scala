@@ -6,8 +6,15 @@ import cats.effect.Sync
 import java.util.UUID
 
 final class FUUID private (private val uuid: UUID){
-  def equals(that: FUUID): Boolean = 
-    this.uuid equals that.uuid
+
+  // Returns 0 when equal
+  def eqv(that: FUUID): Boolean = this.uuid.compareTo(that.uuid) == 0
+
+  // Please god don't use this
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case that: FUUID => eqv(that)
+    case _ => false
+  }
   override def hashCode: Int = uuid.hashCode
   override def toString: String = uuid.toString
 
@@ -15,7 +22,7 @@ final class FUUID private (private val uuid: UUID){
 
 object FUUID {
   implicit val showFUUID: Show[FUUID] = Show.show[FUUID](_.toString)
-  implicit val eqFUUID: Eq[FUUID] = Eq.instance[FUUID]{case (f1, f2) => f1.equals(f2)}
+  implicit val eqFUUID: Eq[FUUID] = Eq.instance[FUUID]{case (f1, f2) => f1.eqv(f2)}
   implicit val orderFUUID: Order[FUUID] = Order.from{ case (f1, f2) => 
     f1.uuid.compareTo(f2.uuid)
   }
