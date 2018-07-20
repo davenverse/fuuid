@@ -34,7 +34,7 @@ import cats.implicits._
 // Uses cats Eq
 val equalToItself : IO[Boolean] = for {
   fuuid <- FUUID.randomFUUID[IO]
-} yield fuuid === fuiid
+} yield fuuid === fuuid
 
 equalToItself.unsafeRunSync
 // true
