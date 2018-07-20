@@ -1,5 +1,6 @@
 package io.chrisdavenport.fuuid
 
+import java.util.UUID
 import cats.effect.IO
 import org.specs2._
 
@@ -23,7 +24,7 @@ object FUUIDSpec extends mutable.Specification with ScalaCheck {
     "have same hashcode as uuid" in {
       val baseString = "00000000-075b-cd15-0000-0000075bcd15"
       // Easy in for testing
-      val uuid = java.util.UUID.fromString(baseString)
+      val uuid = UUID.fromString(baseString)
       val fuuid = FUUID.fromUUID(uuid)
       fuuid.hashCode must_=== uuid.hashCode
     }
@@ -33,7 +34,7 @@ object FUUIDSpec extends mutable.Specification with ScalaCheck {
     "be equal for the same FUUID" in {
       val baseString = "00000000-075b-cd15-0000-0000075bcd15"
       // Easy in for testing
-      val uuid = java.util.UUID.fromString(baseString)
+      val uuid = UUID.fromString(baseString)
       val fuuid = FUUID.fromUUID(uuid)
       fuuid.equals(fuuid) must_=== true
     }
@@ -43,7 +44,7 @@ object FUUIDSpec extends mutable.Specification with ScalaCheck {
     "be equal for the same FUUID" in {
       val baseString = "00000000-075b-cd15-0000-0000075bcd15"
       // Easy in for testing
-      val uuid = java.util.UUID.fromString(baseString)
+      val uuid = UUID.fromString(baseString)
       val fuuid = FUUID.fromUUID(uuid)
       fuuid.eqv(fuuid) must_=== true
     }
