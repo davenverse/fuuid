@@ -17,7 +17,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid" % "<version>"
 ## Examples
 
 ```scala
-import io.chrisdavenport.fuiid.FUUID
+import io.chrisdavenport.fuuid.FUUID
 import cats.effect.IO
 
 // We place it in IO because this requires a Sync constraint
