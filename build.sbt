@@ -1,25 +1,12 @@
 lazy val core = project.in(file("."))
-    .settings(commonSettings)
+    .settings(commonSettings, releaseSettings)
     .settings(
       name := "fuuid"
     )
 
 val catsV = "1.1.0"
-val kittensV = "1.1.0"
 val catsEffectV = "0.10.1"
-val mouseV = "0.17"
-val shapelessV = "2.3.2"
-val fs2V = "0.10.5"
-val http4sV = "0.18.14"
-val circeV = "0.9.3"
-val doobieV = "0.5.3"
-val pureConfigV = "0.9.1"
-val refinedV = "0.9.1"
-
-val specs2V = "4.2.0"
-val disciplineV = "0.8"
-val scShapelessV = "1.1.6"
-
+val specs2V = "4.3.2"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport"
