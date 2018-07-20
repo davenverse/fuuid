@@ -22,9 +22,12 @@ final class FUUID private (private val uuid: UUID){
 
 object FUUID {
   implicit val showFUUID: Show[FUUID] = Show.show[FUUID](_.toString)
-  implicit val eqFUUID: Eq[FUUID] = Eq.instance[FUUID]{case (f1, f2) => f1.eqv(f2)}
   implicit val orderFUUID: Order[FUUID] = Order.from{ case (f1, f2) => 
     f1.uuid.compareTo(f2.uuid)
+  }
+  implicit val hashFUUID: Hash[FUUID] = new Hash[FUUID]{
+    def eqv(x: FUUID, y: FUUID): Boolean = x.eqv(y)
+    def hash(x: FUUID): Int = x.hashCode
   }
 
   def fromString(s: String): Either[IllegalArgumentException, FUUID] = 
