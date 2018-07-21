@@ -1,8 +1,18 @@
-lazy val core = project.in(file("."))
+lazy val fuuid = project.in(file("."))
+  .settings(commonSettings, releaseSettings, skipOnPublishSettings)
+  .aggregate(core, docs)
+
+lazy val core = project.in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
     .settings(
       name := "fuuid"
     )
+
+lazy val docs = project.in(file("modules/docs"))
+  .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
+  .enablePlugins(MicrositesPlugin)
+  .enablePlugins(TutPlugin)
+  .dependsOn(core)
 
 val catsV = "1.1.0"
 val catsEffectV = "0.10.1"
@@ -100,6 +110,40 @@ lazy val releaseSettings = {
     }
   )
 }
+
+lazy val micrositeSettings = Seq(
+  micrositeName := "fuuid",
+  micrositeDescription := "Functional UUID's",
+  micrositeAuthor := "Christopher Davenport",
+  micrositeGithubOwner := "ChristopherDavenport",
+  micrositeGithubRepo := "fuuid",
+  micrositeBaseUrl := "/fuuid",
+  micrositeDocumentationUrl := "https://christopherdavenport.github.io/fuuid",
+  micrositeFooterText := None,
+  micrositeHighlightTheme := "atom-one-light",
+  micrositePalette := Map(
+    "brand-primary" -> "#3e5b95",
+    "brand-secondary" -> "#294066",
+    "brand-tertiary" -> "#2d5799",
+    "gray-dark" -> "#49494B",
+    "gray" -> "#7B7B7E",
+    "gray-light" -> "#E5E5E6",
+    "gray-lighter" -> "#F4F3F4",
+    "white-color" -> "#FFFFFF"
+  ),
+  fork in tut := true,
+  scalacOptions in Tut --= Seq(
+    "-Xfatal-warnings",
+    "-Ywarn-unused-import",
+    "-Ywarn-numeric-widen",
+    "-Ywarn-dead-code",
+    "-Ywarn-unused:imports",
+    "-Xlint:-missing-interpolator,_"
+  ),
+  libraryDependencies += "com.47deg" %% "github4s" % "0.18.6",
+  micrositePushSiteWith := GitHub4s,
+  micrositeGithubToken := sys.env.get("GITHUB_TOKEN")
+)
 
 lazy val mimaSettings = {
   import sbtrelease.Version
