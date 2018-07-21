@@ -18,7 +18,7 @@ final class FUUID private (private val uuid: UUID){
     case _ => false
   }
   override def hashCode: Int = uuid.hashCode
-  override def toString: String = FastUUID.toString(uuid.toString)
+  override def toString: String = FastUUID.toString(uuid)
 
 }
 
