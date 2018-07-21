@@ -21,12 +21,13 @@ final class FUUID private (private val uuid: UUID){
 }
 
 object FUUID {
-  implicit val showFUUID: Show[FUUID] = Show.show[FUUID](_.toString)
-  implicit val relationalFUUID: Hash[FUUID] with Order[FUUID] = new Hash[FUUID] with Order[FUUID]{
-    override def eqv(x: FUUID, y: FUUID): Boolean = x.eqv(y)
-    override def hash(x: FUUID): Int = x.hashCode
-    override def compare(x: FUUID, y: FUUID): Int = x.uuid.compareTo(y.uuid)
-  }
+  implicit val instancesFUUID: Hash[FUUID] with Order[FUUID] with Show[FUUID] = 
+    new Hash[FUUID] with Order[FUUID] with Show[FUUID]{
+      override def show(t: FUUID): String = t.show
+      override def eqv(x: FUUID, y: FUUID): Boolean = x.eqv(y)
+      override def hash(x: FUUID): Int = x.hashCode
+      override def compare(x: FUUID, y: FUUID): Int = x.uuid.compareTo(y.uuid)
+    }
 
   def fromString(s: String): Either[IllegalArgumentException, FUUID] = 
     Either.catchOnly[IllegalArgumentException](new FUUID(UUID.fromString(s)))
