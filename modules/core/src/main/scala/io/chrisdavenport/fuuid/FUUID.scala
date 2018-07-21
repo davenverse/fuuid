@@ -32,6 +32,9 @@ object FUUID {
   def fromString(s: String): Either[IllegalArgumentException, FUUID] = 
     Either.catchOnly[IllegalArgumentException](new FUUID(UUID.fromString(s)))
 
+  def fromStringF[F[_]](s: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] = 
+    fromString(s).fold(AE.raiseError, AE.pure)
+
   def fromUUID(uuid: UUID): FUUID = new FUUID(uuid)
 
   def randomFUUID[F[_]: Sync]: F[FUUID] = Sync[F].delay(
