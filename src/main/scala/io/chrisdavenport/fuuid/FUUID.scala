@@ -8,18 +8,28 @@ import java.util.UUID
 import com.eatthepath.uuid.FastUUID
 
 final class FUUID private (private val uuid: UUID){
-  def equals(that: FUUID): Boolean = 
-    this.uuid equals that.uuid
-  override def toString: String = uuid.toString
+
+  // Returns 0 when equal
+  def eqv(that: FUUID): Boolean = this.uuid.compareTo(that.uuid) == 0
+
+  // Please god don't use this
+  override def equals(obj: scala.Any): Boolean = obj match {
+    case that: FUUID => eqv(that)
+    case _ => false
+  }
+  override def hashCode: Int = uuid.hashCode
+  override def toString: String = FastUUID.toString(uuid.toString)
 
 }
 
 object FUUID {
-  implicit val showFUUID: Show[FUUID] = Show.show[FUUID](x => FastUUID.toString(x.uuid))
-  implicit val eqFUUID: Eq[FUUID] = Eq.instance[FUUID]{case (f1, f2) => f1.equals(f2)}
-  implicit val orderFUUID: Order[FUUID] = Order.from{ case (f1, f2) => 
-    f1.uuid.compareTo(f2.uuid)
-  }
+  implicit val instancesFUUID: Hash[FUUID] with Order[FUUID] with Show[FUUID] = 
+    new Hash[FUUID] with Order[FUUID] with Show[FUUID]{
+      override def show(t: FUUID): String = t.show
+      override def eqv(x: FUUID, y: FUUID): Boolean = x.eqv(y)
+      override def hash(x: FUUID): Int = x.hashCode
+      override def compare(x: FUUID, y: FUUID): Int = x.uuid.compareTo(y.uuid)
+    }
 
   def fromString(s: String): Either[IllegalArgumentException, FUUID] = 
     Either.catchOnly[IllegalArgumentException](new FUUID(FastUUID.parseUUID(s)))
