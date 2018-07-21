@@ -22,8 +22,8 @@ class FUUIDTests extends CatsSuite {
     Arbitrary.arbitrary[FUUID].map(f1 => {f: FUUID => f1})
   )
 
-  checkAll("Hash[FUUID]", HashTests[FUUID].hash)
-  checkAll("Order[FUUID]", OrderTests[FUUID].order)
+  checkAll("FUUID", HashTests[FUUID].hash)
+  checkAll("FUUID", OrderTests[FUUID].order)
 
 
 }
