@@ -20,11 +20,11 @@ install:
 script:
   - sbt ++$TRAVIS_SCALA_VERSION test
   # - sbt ++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues
-  # - sbt ++$TRAVIS_SCALA_VERSION microsite/makeMicrosite
+  - sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite
 
 after_success:
-- test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && sbt ++$TRAVIS_SCALA_VERSION publish
-# - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && test $TRAVIS_SCALA_VERSION == "2.12.6" && sbt microsite/publishMicrosite
+  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && sbt ++$TRAVIS_SCALA_VERSION publish
+  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && test $TRAVIS_SCALA_VERSION == "2.12.6" && sbt docs/publishMicrosite
 
 cache:
   directories:
