@@ -1,6 +1,6 @@
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(core)
+  .aggregate(core, docs)
 
 lazy val core = project.in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
