@@ -1,8 +1,15 @@
-lazy val core = project.in(file("."))
+lazy val fuuid = project.in(file("."))
+  .settings(commonSettings, releaseSettings, skipOnPublishSettings)
+  .aggregate(core)
+
+lazy val core = project.in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
     .settings(
       name := "fuuid"
     )
+
+lazy val docs = project.in(file("modules/docs"))
+  .
 
 val catsV = "1.1.0"
 val catsEffectV = "0.10.1"
