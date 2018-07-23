@@ -7,10 +7,12 @@ import java.util.UUID
 
 final class FUUID private (private val uuid: UUID){
 
-  // Returns 0 when equal
-  def eqv(that: FUUID): Boolean = this.uuid.compareTo(that.uuid) == 0
+  // -1 less than, 0 equal to, 1 greater than
+  def compare(that: FUUID): Int = this.uuid.compareTo(that.uuid)
 
-  // Please god don't use this
+  // Returns 0 when equal
+  def eqv(that: FUUID): Boolean = compare(that) == 0
+
   override def equals(obj: scala.Any): Boolean = obj match {
     case that: FUUID => eqv(that)
     case _ => false
@@ -26,7 +28,7 @@ object FUUID {
       override def show(t: FUUID): String = t.show
       override def eqv(x: FUUID, y: FUUID): Boolean = x.eqv(y)
       override def hash(x: FUUID): Int = x.hashCode
-      override def compare(x: FUUID, y: FUUID): Int = x.uuid.compareTo(y.uuid)
+      override def compare(x: FUUID, y: FUUID): Int = x.compare(y)
     }
 
   def fromString(s: String): Either[IllegalArgumentException, FUUID] = 
