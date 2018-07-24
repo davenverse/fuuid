@@ -13,13 +13,18 @@ lazy val http4s = project.in(file("modules/http4s"))
   .settings(
     name := "fuuid-http4s",
     libraryDependencies ++= Seq(
-      "org.http4s" %% "http4s-dsl" % "0.18.5"
+      "org.http4s" %% "http4s-dsl" % http4sV % Test
     )
   )
   .dependsOn(`core`)
 
 lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.http4s" %% "http4s-dsl" % http4sV
+    )
+  )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
   .dependsOn(core, http4s)
@@ -27,6 +32,7 @@ lazy val docs = project.in(file("modules/docs"))
 val catsV = "1.1.0"
 val catsEffectV = "0.10.1"
 val specs2V = "4.3.2"
+val http4sV = "0.18.5"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport"
