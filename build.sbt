@@ -1,12 +1,22 @@
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(core, docs)
+  .aggregate(core, `doobie-postgres`, docs)
 
 lazy val core = project.in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
     .settings(
       name := "fuuid"
     )
+
+lazy val `doobie-postgres` = project.in(file("modules/doobie-postgres"))
+  .settings(commonSettings, releaseSettings)
+  .settings(
+    name := "fuuid-doobie-postgres",
+    libraryDependencies ++= Seq(
+      "org.tpolecat" %% "doobie-postgres"  % "0.5.3"
+    )
+  )
+  .dependsOn(core)
 
 lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
