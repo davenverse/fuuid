@@ -14,7 +14,7 @@ lazy val docs = project.in(file("modules/docs"))
   .enablePlugins(TutPlugin)
   .dependsOn(core)
 
-val catsV = "1.1.0"
+val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
 val specs2V = "4.3.2"
 
