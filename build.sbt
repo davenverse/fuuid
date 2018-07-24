@@ -13,7 +13,7 @@ lazy val http4s = project.in(file("modules/http4s"))
   .settings(
     name := "fuuid-http4s",
     libraryDependencies ++= Seq(
-      "org.http4s" %% "http4s-dsl" % "0.18.4"
+      "org.http4s" %% "http4s-dsl" % "0.18.5"
     )
   )
   .dependsOn(`core`)
