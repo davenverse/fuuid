@@ -8,6 +8,16 @@ lazy val core = project.in(file("modules/core"))
       name := "fuuid"
     )
 
+lazy val http4s = project.in(file("modules/http4s"))
+  .settings(commonSettings, releaseSettings)
+  .settings(
+    name := "fuuid-http4s",
+    libraryDependencies ++= Seq(
+      "org.http4s" %% "http4s-dsl" % "0.18.4"
+    )
+  )
+  .dependsOn(`core`)
+
 lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .enablePlugins(MicrositesPlugin)
