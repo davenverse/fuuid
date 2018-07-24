@@ -22,7 +22,7 @@ lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(core)
+  .dependsOn(core, http4s)
 
 val catsV = "1.1.0"
 val catsEffectV = "0.10.1"

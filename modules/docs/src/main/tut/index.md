@@ -52,3 +52,28 @@ val laterGreaterThanEarlier : IO[Boolean] = for {
 
 laterGreaterThanEarlier.unsafeRunSync
 ```
+
+## Http4s integration
+
+To use fuuid to define http4s paths, add to your `build.sbt`:
+
+```scala
+libraryDependencies += "io.chrisdavenport" %% "fuuid-http4s" % "<version>"
+```
+
+An example using this integration:
+
+```tut:book
+import io.chrisdavenport.fuuid.FUUID
+import io.chrisdavenport.fuuid.http4s.FUUIDVar
+import org.http4s._, org.http4s.dsl.io._
+
+def getEntityByUuid(id: FUUID): IO[String] = ???
+
+val service: HttpService[IO] = 
+  HttpService[IO] {
+    case GET -> Root / "uuid" / FUUIDVar(id) =>
+      Ok(getEntityByUuid(id))
+  }
+
+```
