@@ -35,7 +35,8 @@ val specs2V = "4.3.2"
 val http4sV = "0.18.5"
 
 lazy val contributors = Seq(
-  "ChristopherDavenport" -> "Christopher Davenport"
+  "ChristopherDavenport" -> "Christopher Davenport",
+  "JesusMtnez" -> "Jesús Martínez-B. H."
 )
 
 // check for library updates whenever the project is [re]load
