@@ -16,7 +16,7 @@ lazy val http4s = project.in(file("modules/http4s"))
       "org.http4s" %% "http4s-dsl" % http4sV % Test
     )
   )
-  .dependsOn(`core`)
+  .dependsOn(`core` % "compile->compile;test->test")
 
 lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)

@@ -1,31 +1,31 @@
 package io.chrisdavenport.fuuid.http4s
 
-import cats.effect.IO
-import io.chrisdavenport.fuuid.FUUID
+import io.chrisdavenport.fuuid.{FUUID, FUUIDArbitraries}
 import org.http4s.dsl.io._
+import org.scalacheck._
+import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 
-class FUUIDVarSpec extends Specification {
+class FUUIDVarSpec extends Specification with ScalaCheck with FUUIDArbitraries {
 
   "FUUID Extractor in Path" should {
 
-    "work properly given a valid UUID" in {
-      val validUuid = FUUID.randomFUUID[IO].unsafeRunSync()
+    "work properly given a valid UUID" in prop { validFuuid: FUUID =>
 
-      (Path(s"/v1/${validUuid.toString}") match {
-        case Root / "v1" / FUUIDVar(uuid @ _) => uuid.eqv(validUuid)
+      (Path(s"/v1/${validFuuid.toString}") match {
+        case Root / "v1" / FUUIDVar(uuid @ _) => uuid.eqv(validFuuid)
         case _ => false
       }) must beTrue
 
     }
 
-    "fail given an invalid UUID" in {
+    "fail given an invalid UUID" in prop { invalidUuid: String =>
 
-      (Path("/v1/invalidUuid") match {
+      (Path(s"/v1/$invalidUuid") match {
         case Root / "v1" / FUUIDVar(uuid @ _) => true
         case _ => false
       }) must beFalse
 
-    }
+    }.setArbitrary(Arbitrary(Gen.alphaStr))
   }
 }
