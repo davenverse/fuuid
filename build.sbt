@@ -1,6 +1,6 @@
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(core, circe, docs)
+  .aggregate(core, http4s, circe, docs)
 
 lazy val core = project.in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
@@ -15,24 +15,41 @@ lazy val circe = project.in(file("modules/circe"))
     libraryDependencies ++= Seq(
       "io.circe" %% "circe-core" % circeV,
       "io.circe" %% "circe-generic" % circeV,
-      "io.circe" %% "circe-parser" % circeV,
+      "io.circe" %% "circe-parser" % circeV
+    )
+  )
+  .dependsOn(`core` % "compile->compile;test->test")
+
+lazy val http4s = project.in(file("modules/http4s"))
+  .settings(commonSettings, releaseSettings)
+  .settings(
+    name := "fuuid-http4s",
+    libraryDependencies ++= Seq(
+      "org.http4s" %% "http4s-dsl" % http4sV % Test
     )
   )
   .dependsOn(`core` % "compile->compile;test->test")
 
 lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.http4s" %% "http4s-dsl" % http4sV
+    )
+  )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(core)
+  .dependsOn(core, http4s)
 
 val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
 val specs2V = "4.3.2"
 val circeV = "0.9.3"
+val http4sV = "0.18.15"
 
 lazy val contributors = Seq(
-  "ChristopherDavenport" -> "Christopher Davenport"
+  "ChristopherDavenport" -> "Christopher Davenport",
+  "JesusMtnez" -> "Jesús Martínez-B. H."
 )
 
 // check for library updates whenever the project is [re]load

@@ -25,7 +25,7 @@ final class FUUID private (private val uuid: UUID){
 object FUUID {
   implicit val instancesFUUID: Hash[FUUID] with Order[FUUID] with Show[FUUID] = 
     new Hash[FUUID] with Order[FUUID] with Show[FUUID]{
-      override def show(t: FUUID): String = t.show
+      override def show(t: FUUID): String = t.uuid.show
       override def eqv(x: FUUID, y: FUUID): Boolean = x.eqv(y)
       override def hash(x: FUUID): Int = x.hashCode
       override def compare(x: FUUID, y: FUUID): Int = x.compare(y)
