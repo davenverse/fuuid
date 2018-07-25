@@ -1,5 +1,6 @@
 package io.chrisdavenport.fuuid.http4s
 
+import cats.syntax.show._
 import io.chrisdavenport.fuuid.{FUUID, FUUIDArbitraries}
 import org.http4s.dsl.io._
 import org.scalacheck._
@@ -12,7 +13,7 @@ class FUUIDVarSpec extends Specification with ScalaCheck with FUUIDArbitraries {
 
     "work properly given a valid UUID" in prop { validFuuid: FUUID =>
 
-      (Path(s"/v1/${validFuuid.toString}") match {
+      (Path(s"/v1/${validFuuid.show}") match {
         case Root / "v1" / FUUIDVar(uuid @ _) => uuid.eqv(validFuuid)
         case _ => false
       }) must beTrue
