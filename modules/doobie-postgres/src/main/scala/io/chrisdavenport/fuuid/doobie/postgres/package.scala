@@ -8,5 +8,5 @@ package object postgres {
 
   // FUUID
   implicit val FuuidType: Meta[FUUID] = 
-    UuidType.xmap[FUUID](FUUID.fromUUID, fuuid => FUUID.Unsafe.withUUID(fuuid)(identity))
+    UuidType.xmap[FUUID](FUUID.fromUUID, fuuid => FUUID.toUUID(fuuid))
 }

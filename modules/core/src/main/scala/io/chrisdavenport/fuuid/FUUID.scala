@@ -41,6 +41,9 @@ object FUUID {
 
   def fromUUID(uuid: UUID): FUUID = new FUUID(uuid)
 
+  // Here for interop
+  def toUUID(fuuid: FUUID): UUID = fuuid.uuid
+
   def randomFUUID[F[_]: Sync]: F[FUUID] = Sync[F].delay(
     new FUUID(UUID.randomUUID)
   )
