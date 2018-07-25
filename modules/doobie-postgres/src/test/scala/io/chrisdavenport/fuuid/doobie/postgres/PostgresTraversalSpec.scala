@@ -43,6 +43,14 @@ class PostgresTraversalSpec extends mutable.Specification
 
       action.unsafeRunSync must_=== fuuid
     }
+    "fail on a non-present value" in prop { fuuid: FUUID => 
+      queryBy(fuuid)
+        .unique
+        .transact(transactor)
+        .attempt
+        .map(_.isLeft)
+        .unsafeRunSync must_=== true
+    }
   } 
   
 }
