@@ -5,7 +5,7 @@ import cats.implicits._
 import cats.effect.Sync
 import java.util.UUID
 
-final class FUUID private (private val uuid: UUID){
+final class FUUID private (private[fuuid] val uuid: UUID){
 
   // Direct show method so people do not use toString
   def show: String = uuid.show
