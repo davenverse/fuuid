@@ -5,7 +5,7 @@ import cats.implicits._
 import cats.effect.Sync
 import java.util.UUID
 
-final class FUUID private (private[fuuid] val uuid: UUID){
+final class FUUID private (private val uuid: UUID){
 
   // Direct show method so people do not use toString
   def show: String = uuid.show
@@ -44,5 +44,13 @@ object FUUID {
   def randomFUUID[F[_]: Sync]: F[FUUID] = Sync[F].delay(
     new FUUID(UUID.randomUUID)
   )
+
+  // A Home For functions with don't trust
+  // Hopefully making it very clear that this code needs
+  // to be dealth with carefully.
+  // Please do not import directly but prefer `FUUID.Unsafe.xxx`
+  object Unsafe {
+    def withUUID[A](fuuid: FUUID)(f: UUID => A): A = f(fuuid.uuid)
+  }
 
 }
