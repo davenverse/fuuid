@@ -1,6 +1,5 @@
 package io.chrisdavenport.fuuid.http4s
 
-import cats.syntax.show._
 import io.chrisdavenport.fuuid.{FUUID, FUUIDArbitraries}
 import org.http4s.dsl.io._
 import org.scalacheck._
