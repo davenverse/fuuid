@@ -53,7 +53,29 @@ val laterGreaterThanEarlier : IO[Boolean] = for {
 laterGreaterThanEarlier.unsafeRunSync
 ```
 
-## Http4s integration
+## Circe Integration
+
+To use fuuid directly in you circe Json handling, add to your `build.sbt`:
+
+```scala
+libraryDependencies += "io.chrisdavenport" %% "fuuid-circe" % "<version>"
+```
+
+An example using this integration:
+
+```tut:book
+import io.chrisdavenport.fuuid.circe._
+import io.circe.syntax._
+
+// Running UnsafeRunSync For Tut Purposes - Do Not Do this in your code please.
+val circeFUUID = FUUID.randomFUUID[IO].unsafeRunSync
+
+val circeFUUIDJson = circeFUUID.asJson
+
+val reparsing = circeFUUIDJson.as[FUUID]
+```
+
+## Http4s Integration
 
 To use fuuid to define http4s paths, add to your `build.sbt`:
 
