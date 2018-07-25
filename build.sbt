@@ -13,7 +13,8 @@ lazy val `doobie-postgres` = project.in(file("modules/doobie-postgres"))
   .settings(
     name := "fuuid-doobie-postgres",
     libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-postgres"  % "0.5.3"
+      "org.tpolecat" %% "doobie-postgres"  % "0.5.3",
+      "org.tpolecat" %% "doobie-specs2"    % "0.5.3" % Test
     )
   )
   .dependsOn(core)
