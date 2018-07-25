@@ -7,6 +7,8 @@ import java.util.UUID
 
 final class FUUID private (private val uuid: UUID){
 
+  // Direct show method so people do not use toString
+  def show: String = uuid.show
   // -1 less than, 0 equal to, 1 greater than
   def compare(that: FUUID): Int = this.uuid.compareTo(that.uuid)
 

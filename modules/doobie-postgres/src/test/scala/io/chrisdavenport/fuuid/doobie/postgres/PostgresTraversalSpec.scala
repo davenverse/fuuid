@@ -7,9 +7,10 @@ import doobie.implicits._
 import cats.implicits._
 import cats.effect.IO
 
-import _root_.io.chrisdavenport.fuuid.FUUID
+import _root_.io.chrisdavenport.fuuid._
 
-class PostgresTraversalSpec extends mutable.Specification with BeforeAll with ScalaCheck {
+class PostgresTraversalSpec extends mutable.Specification 
+  with BeforeAll with ScalaCheck with FUUIDArbitraries {
   val transactor = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
     "jdbc:postgresql:world",
