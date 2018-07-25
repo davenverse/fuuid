@@ -13,9 +13,7 @@ lazy val circe = project.in(file("modules/circe"))
   .settings(
     name := "fuuid-circe",
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-core" % circeV,
-      "io.circe" %% "circe-generic" % circeV,
-      "io.circe" %% "circe-parser" % circeV
+      "io.circe" %% "circe-core" % circeV
     )
   )
   .dependsOn(`core` % "compile->compile;test->test")
