@@ -1,12 +1,22 @@
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(core, http4s, docs)
+  .aggregate(core, http4s, circe, docs)
 
 lazy val core = project.in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
     .settings(
       name := "fuuid"
     )
+
+lazy val circe = project.in(file("modules/circe"))
+  .settings(commonSettings, releaseSettings)
+  .settings(
+    name := "fuuid-circe",
+    libraryDependencies ++= Seq(
+      "io.circe" %% "circe-core" % circeV
+    )
+  )
+  .dependsOn(`core` % "compile->compile;test->test")
 
 lazy val http4s = project.in(file("modules/http4s"))
   .settings(commonSettings, releaseSettings)
@@ -32,6 +42,7 @@ lazy val docs = project.in(file("modules/docs"))
 val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
 val specs2V = "4.3.2"
+val circeV = "0.9.3"
 val http4sV = "0.18.15"
 
 lazy val contributors = Seq(
