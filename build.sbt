@@ -32,7 +32,7 @@ lazy val docs = project.in(file("modules/docs"))
 val catsV = "1.1.0"
 val catsEffectV = "0.10.1"
 val specs2V = "4.3.2"
-val http4sV = "0.18.5"
+val http4sV = "0.18.15"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
