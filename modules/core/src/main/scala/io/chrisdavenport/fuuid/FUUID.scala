@@ -41,8 +41,7 @@ object FUUID {
 
   def fromUUID(uuid: UUID): FUUID = new FUUID(uuid)
 
-  // Here for interop
-  def toUUID(fuuid: FUUID): UUID = fuuid.uuid
+  
 
   def randomFUUID[F[_]: Sync]: F[FUUID] = Sync[F].delay(
     new FUUID(UUID.randomUUID)
@@ -50,9 +49,11 @@ object FUUID {
 
   // A Home For functions with don't trust
   // Hopefully making it very clear that this code needs
-  // to be dealth with carefully.
+  // to be dealt with carefully.
+  // Is necessary for some interop
   // Please do not import directly but prefer `FUUID.Unsafe.xxx`
   object Unsafe {
+    def toUUID(fuuid: FUUID): UUID = fuuid.uuid
     def withUUID[A](fuuid: FUUID)(f: UUID => A): A = f(fuuid.uuid)
   }
 
