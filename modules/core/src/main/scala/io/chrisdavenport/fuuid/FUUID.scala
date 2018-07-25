@@ -7,6 +7,8 @@ import java.util.UUID
 
 final class FUUID private (private val uuid: UUID){
 
+  // Direct show method so people do not use toString
+  def show: String = uuid.show
   // -1 less than, 0 equal to, 1 greater than
   def compare(that: FUUID): Int = this.uuid.compareTo(that.uuid)
 
@@ -25,7 +27,7 @@ final class FUUID private (private val uuid: UUID){
 object FUUID {
   implicit val instancesFUUID: Hash[FUUID] with Order[FUUID] with Show[FUUID] = 
     new Hash[FUUID] with Order[FUUID] with Show[FUUID]{
-      override def show(t: FUUID): String = t.uuid.show
+      override def show(t: FUUID): String = t.show
       override def eqv(x: FUUID, y: FUUID): Boolean = x.eqv(y)
       override def hash(x: FUUID): Int = x.hashCode
       override def compare(x: FUUID, y: FUUID): Int = x.compare(y)

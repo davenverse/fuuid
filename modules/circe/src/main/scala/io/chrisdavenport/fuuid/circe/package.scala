@@ -1,6 +1,5 @@
 package io.chrisdavenport.fuuid
 
-import cats.syntax.show._
 import io.circe.syntax._
 import io.circe.{Decoder, Encoder}
 
