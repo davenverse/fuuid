@@ -8,6 +8,10 @@ scala:
 jdk:
   - oraclejdk8
 
+
+addons:
+  postgresql: "9.4"
+
 before_install:
   - export PATH=${PATH}:./vendor/bundle
 
@@ -16,6 +20,7 @@ install:
   - gem update --system
   - gem install sass
   - gem install jekyll -v 3.2.1
+  - psql -c 'create database world;' -U postgres
 
 script:
   - sbt ++$TRAVIS_SCALA_VERSION test
