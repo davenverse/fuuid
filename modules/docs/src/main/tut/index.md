@@ -64,7 +64,6 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid-http4s" % "<version>"
 An example using this integration:
 
 ```tut:book
-import io.chrisdavenport.fuuid.FUUID
 import io.chrisdavenport.fuuid.http4s.FUUIDVar
 import org.http4s._, org.http4s.dsl.io._
 
@@ -73,7 +72,9 @@ def getEntityByUuid(id: FUUID): IO[String] = ???
 val service: HttpService[IO] = 
   HttpService[IO] {
     case GET -> Root / "uuid" / FUUIDVar(id) =>
-      Ok(getEntityByUuid(id))
+      for {
+        entity <- getEntityByUuid(id)
+        response <- Ok(entity)
+      } yield response
   }
-
 ```
