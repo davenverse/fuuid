@@ -26,7 +26,7 @@ dependencies to support additional interactions.</p>
 </span>
 <span class="c1">// We place it in IO because this requires a Sync constraint
 </span><span class="k">val</span> <span class="n">create</span><span class="k">:</span> <span class="kt">IO</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$300114446
+<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$711964169
 </span>
 <span class="k">val</span> <span class="n">fromString</span> <span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">IllegalArgumentException</span>, <span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">fromString</span><span class="o">(</span><span class="s">"d6faceab-4193-4508-86ca-e1561d38fea6"</span><span class="o">)</span>
 <span class="c1">// fromString: Either[IllegalArgumentException,io.chrisdavenport.fuuid.FUUID] = Right(d6faceab-4193-4508-86ca-e1561d38fea6)
@@ -52,7 +52,7 @@ dependencies to support additional interactions.</p>
   <span class="n">fuuid1</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
   <span class="n">fuuid2</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
 <span class="o">}</span> <span class="k">yield</span> <span class="n">fuuid2</span> <span class="o">&gt;</span> <span class="n">fuuid1</span>
-<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$914095110
+<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$1732663072
 </span>
 <span class="n">laterGreaterThanEarlier</span><span class="o">.</span><span class="n">unsafeRunSync</span>
 <span class="c1">// res5: Boolean = true
@@ -79,7 +79,7 @@ dependencies to support additional interactions.</p>
 <span class="k">def</span> <span class="n">getEntityByUuid</span><span class="o">(</span><span class="n">id</span><span class="k">:</span> <span class="kt">FUUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">IO</span><span class="o">[</span><span class="kt">String</span><span class="o">]</span> <span class="k">=</span> <span class="o">???</span>
 <span class="c1">// getEntityByUuid: (id: io.chrisdavenport.fuuid.FUUID)cats.effect.IO[String]
 </span>
-<span class="k">val</span> <span class="n">service</span><span class="k">:</span> <span class="kt">HttpService</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span> <span class="k">=</span> 
+<span class="k">val</span> <span class="n">service</span><span class="k">:</span> <span class="kt">HttpService</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span> <span class="k">=</span>
   <span class="nc">HttpService</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span> <span class="o">{</span>
     <span class="k">case</span> <span class="nc">GET</span> <span class="o">-&gt;</span> <span class="nc">Root</span> <span class="o">/</span> <span class="s">"uuid"</span> <span class="o">/</span> <span class="nc">FUUIDVar</span><span class="o">(</span><span class="n">id</span><span class="o">)</span> <span class="k">=&gt;</span>
       <span class="k">for</span> <span class="o">{</span>
@@ -87,7 +87,45 @@ dependencies to support additional interactions.</p>
         <span class="n">response</span> <span class="k">&lt;-</span> <span class="nc">Ok</span><span class="o">(</span><span class="n">entity</span><span class="o">)</span>
       <span class="o">}</span> <span class="k">yield</span> <span class="n">response</span>
   <span class="o">}</span>
-<span class="c1">// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$5009/447801173@4176aa3c)
+<span class="c1">// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$5013/537326860@73638cf7)
+</span></code></pre>
+</div>
+
+<h2 id="doobie-postgres-integration">Doobie Postgres Integration</h2>
+
+<p>To use fuuid to store UUID’s in Postgres, add to your <code class="highlighter-rouge">build.sbt</code>:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"io.chrisdavenport"</span> <span class="o">%%</span> <span class="s">"fuuid-doobie-postgres"</span> <span class="o">%</span> <span class="s">"&lt;version&gt;"</span>
+</code></pre>
+</div>
+
+<p>An example of a query and an insert using this integration.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.chrisdavenport.fuuid.doobie.postgres._</span>
+<span class="c1">// import io.chrisdavenport.fuuid.doobie.postgres._
+</span>
+<span class="k">import</span> <span class="nn">doobie._</span><span class="o">,</span> <span class="n">doobie</span><span class="o">.</span><span class="n">implicits</span><span class="o">.</span><span class="k">_</span>
+<span class="c1">// import doobie._
+// import doobie.implicits._
+</span>
+<span class="c1">// This is the table we'll use for the insert and update below
+</span><span class="k">def</span> <span class="n">createdTable</span><span class="k">:</span> <span class="kt">Update0</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="n">sql</span><span class="s">"""
+    CREATE TABLE tablewithUUIDid (
+      id   UUID NOT NULL
+    )"""</span><span class="o">.</span><span class="n">update</span>
+<span class="o">}</span>
+<span class="c1">// createdTable: doobie.Update0
+</span>
+<span class="k">def</span> <span class="n">queryBy</span><span class="o">(</span><span class="n">fuuid</span><span class="k">:</span> <span class="kt">FUUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">Query0</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="n">sql</span><span class="s">"""SELECT id from tablewithUUIDid where id = ${fuuid}"""</span><span class="o">.</span><span class="n">query</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span>
+  <span class="o">}</span>
+<span class="c1">// queryBy: (fuuid: io.chrisdavenport.fuuid.FUUID)doobie.Query0[io.chrisdavenport.fuuid.FUUID]
+</span>
+<span class="k">def</span> <span class="n">insertId</span><span class="o">(</span><span class="n">fuuid</span><span class="k">:</span> <span class="kt">FUUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">Update0</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="n">sql</span><span class="s">"""INSERT into tablewithUUIDid (id) VALUES ($fuuid)"""</span><span class="o">.</span><span class="n">update</span>
+<span class="o">}</span>
+<span class="c1">// insertId: (fuuid: io.chrisdavenport.fuuid.FUUID)doobie.Update0
 </span></code></pre>
 </div>
 </div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>fuuid is designed and developed by <a href="" target="_blank">Christopher Davenport</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/ChristopherDavenport/fuuid"><span class="fa fa-github"></span>View on GitHub</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/fuuid/highlight/highlight.pack.js"></script><script>hljs.configure({
