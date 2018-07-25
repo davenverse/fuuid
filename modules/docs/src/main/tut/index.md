@@ -69,7 +69,7 @@ import org.http4s._, org.http4s.dsl.io._
 
 def getEntityByUuid(id: FUUID): IO[String] = ???
 
-val service: HttpService[IO] = 
+val service: HttpService[IO] =
   HttpService[IO] {
     case GET -> Root / "uuid" / FUUIDVar(id) =>
       for {
@@ -77,4 +77,35 @@ val service: HttpService[IO] =
         response <- Ok(entity)
       } yield response
   }
+```
+
+## Doobie Postgres Integration
+
+To use fuuid to store UUID's in Postgres, add to your `build.sbt`:
+
+```scala
+libraryDependencies += "io.chrisdavenport" %% "fuuid-doobie-postgres" % "<version>"
+```
+
+An example of a query and an insert using this integration.
+
+```tut:book
+import io.chrisdavenport.fuuid.doobie.postgres._
+import doobie._, doobie.implicits._
+
+// This is the table we'll use for the insert and update below
+def createdTable: Update0 = {
+  sql"""
+    CREATE TABLE tablewithUUIDid (
+      id   UUID NOT NULL
+    )""".update
+}
+
+def queryBy(fuuid: FUUID): Query0[FUUID] = {
+    sql"""SELECT id from tablewithUUIDid where id = ${fuuid}""".query[FUUID]
+  }
+
+def insertId(fuuid: FUUID): Update0 = {
+  sql"""INSERT into tablewithUUIDid (id) VALUES ($fuuid)""".update
+}
 ```
