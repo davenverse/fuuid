@@ -49,7 +49,7 @@ lazy val docs = project.in(file("modules/docs"))
   )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(core, http4s)
+  .dependsOn(core, http4s, `doobie-postgres`)
 
 val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
