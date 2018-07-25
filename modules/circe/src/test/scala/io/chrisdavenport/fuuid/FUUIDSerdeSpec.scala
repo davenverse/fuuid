@@ -1,17 +1,15 @@
 package io.chrisdavenport.fuuid
 
-import java.util.UUID
-
 import io.chrisdavenport.fuuid.circe._
 import io.circe.syntax._
 import org.scalatest.EitherValues._
-import org.scalatest.{FlatSpec, Matchers}
+import org.specs2.ScalaCheck
+import org.specs2.mutable.Specification
 
-class FUUIDSerdeSpec extends FlatSpec with Matchers {
-  val uuid = UUID.fromString("0679edff-ed3e-469d-b835-feb06f39b553")
-  val fuuid = FUUID.fromUUID(uuid)
-
-  it should "successfully serialize and deserialize" in {
-    fuuid.asJson.as[FUUID].right.value shouldEqual fuuid
+class FUUIDSerdeSpec extends Specification with ScalaCheck with FUUIDArbitraries {
+  "circe serialization and deserialization" should {
+    "correct serialize and deserialize" in prop { validFUUID: FUUID =>
+      validFUUID.asJson.as[FUUID].right.value shouldEqual validFUUID
+    }
   }
 }
