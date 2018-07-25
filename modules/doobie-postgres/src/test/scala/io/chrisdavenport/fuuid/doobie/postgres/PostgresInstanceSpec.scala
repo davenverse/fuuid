@@ -19,13 +19,18 @@ class PostgresInstanceSpec extends mutable.Specification with IOChecker with Bef
 
   def beforeAll(): Unit = {
     sql"""
-    CREATE TABLE person (
+    CREATE TABLE PostgresInstanceSpec (
       id   UUID NOT NULL
     )
     """.update.run.transact(transactor).void.unsafeRunSync()
   }
 
-  check(sql"SELECT id from person".query[FUUID])
-  check(sql"INSERT into person (id) VALUES ${FUUID.randomFUUID[IO].unsafeRunSync}".update)
+  def insertId(fuuid: FUUID): Update0 = {
+    sql"""INSERT into PostgresInstanceSpec (id) VALUES ($fuuid)""".update
+  }
+  val fuuid = FUUID.randomFUUID[IO].unsafeRunSync
+
+  check(sql"SELECT id from PostgresInstanceSpec".query[FUUID])
+  check(insertId(fuuid))
   
 }
