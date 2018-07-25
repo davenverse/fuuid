@@ -26,7 +26,7 @@ dependencies to support additional interactions.</p>
 </span>
 <span class="c1">// We place it in IO because this requires a Sync constraint
 </span><span class="k">val</span> <span class="n">create</span><span class="k">:</span> <span class="kt">IO</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$673763040
+<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$1389439565
 </span>
 <span class="k">val</span> <span class="n">fromString</span> <span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">IllegalArgumentException</span>, <span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">fromString</span><span class="o">(</span><span class="s">"d6faceab-4193-4508-86ca-e1561d38fea6"</span><span class="o">)</span>
 <span class="c1">// fromString: Either[IllegalArgumentException,io.chrisdavenport.fuuid.FUUID] = Right(d6faceab-4193-4508-86ca-e1561d38fea6)
@@ -52,10 +52,10 @@ dependencies to support additional interactions.</p>
   <span class="n">fuuid1</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
   <span class="n">fuuid2</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
 <span class="o">}</span> <span class="k">yield</span> <span class="n">fuuid2</span> <span class="o">&gt;</span> <span class="n">fuuid1</span>
-<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$1959981108
+<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$969076822
 </span>
 <span class="n">laterGreaterThanEarlier</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res5: Boolean = true
+<span class="c1">// res5: Boolean = false
 </span></code></pre>
 </div>
 
@@ -87,7 +87,7 @@ dependencies to support additional interactions.</p>
         <span class="n">response</span> <span class="k">&lt;-</span> <span class="nc">Ok</span><span class="o">(</span><span class="n">entity</span><span class="o">)</span>
       <span class="o">}</span> <span class="k">yield</span> <span class="n">response</span>
   <span class="o">}</span>
-<span class="c1">// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$4991/103059002@56edf2e7)
+<span class="c1">// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$5009/924309465@447cf360)
 </span></code></pre>
 </div>
 </div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>fuuid is designed and developed by <a href="" target="_blank">Christopher Davenport</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/ChristopherDavenport/fuuid"><span class="fa fa-github"></span>View on GitHub</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/fuuid/highlight/highlight.pack.js"></script><script>hljs.configure({
