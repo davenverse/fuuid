@@ -38,7 +38,7 @@ class H2TraversalSpec extends Specification
     sql"""INSERT into testH2Table (id) VALUES ($fuuid)""".update
   }
 
-  "Doobie Meta" should {
+  "Doobie H2 Meta" should {
 
     "traverse input and then extraction" in prop { fuuid: FUUID =>
 

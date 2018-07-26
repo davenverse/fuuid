@@ -34,8 +34,8 @@ class PostgresTraversalSpec extends mutable.Specification
     sql"""INSERT into PostgresTraversalSpec (id) VALUES ($fuuid)""".update
   }
 
-  "Doobie Meta" should {
-    "traverse input and then extraction" in prop { fuuid: FUUID => 
+  "Doobie Postgres Meta" should {
+    "traverse input and then extraction" in prop { fuuid: FUUID =>
 
       val action = for {
         _ <- insertId(fuuid).run.transact(transactor)
