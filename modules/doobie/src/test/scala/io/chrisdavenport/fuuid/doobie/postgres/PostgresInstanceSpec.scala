@@ -33,5 +33,5 @@ class PostgresInstanceSpec extends mutable.Specification with IOChecker with Bef
 
   check(sql"SELECT id from PostgresInstanceSpec".query[FUUID])
   check(insertId(fuuid))
-  
+
 }

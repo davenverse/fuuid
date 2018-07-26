@@ -10,7 +10,7 @@ import io.chrisdavenport.fuuid._
 import org.specs2._
 import org.specs2.specification.BeforeAll
 
-class PostgresTraversalSpec extends mutable.Specification 
+class PostgresTraversalSpec extends mutable.Specification
   with BeforeAll with ScalaCheck with FUUIDArbitraries {
   val transactor = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
@@ -44,7 +44,7 @@ class PostgresTraversalSpec extends mutable.Specification
 
       action.unsafeRunSync must_=== fuuid
     }
-    "fail on a non-present value" in prop { fuuid: FUUID => 
+    "fail on a non-present value" in prop { fuuid: FUUID =>
       queryBy(fuuid)
         .unique
         .transact(transactor)
@@ -52,6 +52,6 @@ class PostgresTraversalSpec extends mutable.Specification
         .map(_.isLeft)
         .unsafeRunSync must_=== true
     }
-  } 
-  
+  }
+
 }

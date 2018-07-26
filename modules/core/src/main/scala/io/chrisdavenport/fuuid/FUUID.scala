@@ -25,7 +25,7 @@ final class FUUID private (private val uuid: UUID){
 }
 
 object FUUID {
-  implicit val instancesFUUID: Hash[FUUID] with Order[FUUID] with Show[FUUID] = 
+  implicit val instancesFUUID: Hash[FUUID] with Order[FUUID] with Show[FUUID] =
     new Hash[FUUID] with Order[FUUID] with Show[FUUID]{
       override def show(t: FUUID): String = t.show
       override def eqv(x: FUUID, y: FUUID): Boolean = x.eqv(y)
@@ -33,10 +33,10 @@ object FUUID {
       override def compare(x: FUUID, y: FUUID): Int = x.compare(y)
     }
 
-  def fromString(s: String): Either[IllegalArgumentException, FUUID] = 
+  def fromString(s: String): Either[IllegalArgumentException, FUUID] =
     Either.catchOnly[IllegalArgumentException](new FUUID(UUID.fromString(s)))
 
-  def fromStringF[F[_]](s: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] = 
+  def fromStringF[F[_]](s: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =
     fromString(s).fold(AE.raiseError, AE.pure)
 
   def fromUUID(uuid: UUID): FUUID = new FUUID(uuid)
@@ -51,7 +51,7 @@ object FUUID {
     * to be dealt with carefully.
     *
     * Likely necessary for some interop
-    * 
+    *
     * Please do not import directly but prefer `FUUID.Unsafe.xxx`
     **/
   object Unsafe {
