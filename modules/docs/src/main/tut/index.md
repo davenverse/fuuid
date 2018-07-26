@@ -123,8 +123,8 @@ import io.chrisdavenport.fuuid.doobie.implicits._
 An example of a query and an insert using this integration in Postgres.
 
 ```tut:book
-import doobie.postgres.implicits._
 // This importe will provide `Meta[UUID]` support for postgres
+import doobie.postgres.implicits._
 
 // This is the table we'll use for the insert and update below
 def createdTable: Update0 = {
@@ -148,8 +148,8 @@ def insertId(fuuid: FUUID): Update0 = {
 An example of a query and an insert using this integration in H2:
 
 ```tut:book
-import doobie.h2.implicits._
 // This importe will provide `Meta[UUID]` support for h2
+import doobie.h2.implicits._
 
 // This is the table we'll use for the insert and update below
 def createdTable: Update0 = {
