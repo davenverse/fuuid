@@ -8,6 +8,18 @@ lazy val core = project.in(file("modules/core"))
       name := "fuuid"
     )
 
+lazy val `doobie` = project.in(file("modules/doobie"))
+  .settings(commonSettings, releaseSettings)
+  .settings(
+    name := "fuuid-doobie",
+    libraryDependencies ++= Seq(
+      "org.tpolecat" %% "doobie-core"     % doobieV,
+      "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
+      "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
+      "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
+    )
+  )
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val `doobie-postgres` = project.in(file("modules/doobie-postgres"))
   .settings(commonSettings, releaseSettings)
