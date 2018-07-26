@@ -27,7 +27,7 @@ class PostgresTraversalSpec extends mutable.Specification
   }
 
   def queryBy(fuuid: FUUID): Query0[FUUID] = {
-    sql"""SELECT id from PostgresTraversalSpec where idd = ${fuuid}""".query[FUUID]
+    sql"""SELECT id from PostgresTraversalSpec where id = ${fuuid}""".query[FUUID]
   }
 
   def insertId(fuuid: FUUID): Update0 = {
