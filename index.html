@@ -26,7 +26,7 @@ dependencies to support additional interactions.</p>
 </span>
 <span class="c1">// We place it in IO because this requires a Sync constraint
 </span><span class="k">val</span> <span class="n">create</span><span class="k">:</span> <span class="kt">IO</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$1445058348
+<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$2126064451
 </span>
 <span class="k">val</span> <span class="n">fromString</span> <span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">IllegalArgumentException</span>, <span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">fromString</span><span class="o">(</span><span class="s">"d6faceab-4193-4508-86ca-e1561d38fea6"</span><span class="o">)</span>
 <span class="c1">// fromString: Either[IllegalArgumentException,io.chrisdavenport.fuuid.FUUID] = Right(d6faceab-4193-4508-86ca-e1561d38fea6)
@@ -52,10 +52,10 @@ dependencies to support additional interactions.</p>
   <span class="n">fuuid1</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
   <span class="n">fuuid2</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
 <span class="o">}</span> <span class="k">yield</span> <span class="n">fuuid2</span> <span class="o">&gt;</span> <span class="n">fuuid1</span>
-<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$1832927983
+<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$1140580800
 </span>
 <span class="n">laterGreaterThanEarlier</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res5: Boolean = false
+<span class="c1">// res5: Boolean = true
 </span></code></pre>
 </div>
 
@@ -77,13 +77,13 @@ dependencies to support additional interactions.</p>
 </span>
 <span class="c1">// Running UnsafeRunSync For Tut Purposes - Do Not Do this in your code please.
 </span><span class="k">val</span> <span class="n">circeFUUID</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">].</span><span class="n">unsafeRunSync</span>
-<span class="c1">// circeFUUID: io.chrisdavenport.fuuid.FUUID = baec58bc-d2e1-4d6e-8533-1023de37d721
+<span class="c1">// circeFUUID: io.chrisdavenport.fuuid.FUUID = e436b844-2143-4a09-8c82-fa7f9787c3bf
 </span>
 <span class="k">val</span> <span class="n">circeFUUIDJson</span> <span class="k">=</span> <span class="n">circeFUUID</span><span class="o">.</span><span class="n">asJson</span>
-<span class="c1">// circeFUUIDJson: io.circe.Json = "baec58bc-d2e1-4d6e-8533-1023de37d721"
+<span class="c1">// circeFUUIDJson: io.circe.Json = "e436b844-2143-4a09-8c82-fa7f9787c3bf"
 </span>
 <span class="k">val</span> <span class="n">reparsing</span> <span class="k">=</span> <span class="n">circeFUUIDJson</span><span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span>
-<span class="c1">// reparsing: io.circe.Decoder.Result[io.chrisdavenport.fuuid.FUUID] = Right(baec58bc-d2e1-4d6e-8533-1023de37d721)
+<span class="c1">// reparsing: io.circe.Decoder.Result[io.chrisdavenport.fuuid.FUUID] = Right(e436b844-2143-4a09-8c82-fa7f9787c3bf)
 </span></code></pre>
 </div>
 
@@ -115,26 +115,68 @@ dependencies to support additional interactions.</p>
         <span class="n">response</span> <span class="k">&lt;-</span> <span class="nc">Ok</span><span class="o">(</span><span class="n">entity</span><span class="o">)</span>
       <span class="o">}</span> <span class="k">yield</span> <span class="n">response</span>
   <span class="o">}</span>
-<span class="c1">// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$5041/753261681@3facceb3)
+<span class="c1">// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$5029/472003839@59d08241)
 </span></code></pre>
 </div>
 
-<h2 id="doobie-postgres-integration">Doobie Postgres Integration</h2>
+<h2 id="doobie-integration">Doobie Integration</h2>
 
-<p>To use fuuid to store UUID’s in Postgres, add to your <code class="highlighter-rouge">build.sbt</code>:</p>
+<p>To use fuuid to store UUID’s using doobie, add to your <code class="highlighter-rouge">build.sbt</code>:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"io.chrisdavenport"</span> <span class="o">%%</span> <span class="s">"fuuid-doobie-postgres"</span> <span class="o">%</span> <span class="s">"&lt;version&gt;"</span>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="n">libraryDependencies</span> <span class="o">+=</span> <span class="s">"io.chrisdavenport"</span> <span class="o">%%</span> <span class="s">"fuuid-doobie"</span> <span class="o">%</span> <span class="s">"&lt;version&gt;"</span>
 </code></pre>
 </div>
 
-<p>An example of a query and an insert using this integration.</p>
+<p>This dependency will provide a <code class="highlighter-rouge">Meta[FUUID]</code> which depends on <code class="highlighter-rouge">Meta[UUID]</code> to provide support for <code class="highlighter-rouge">FUUID</code>.
+You will need to provide the instance of <code class="highlighter-rouge">Meta[UUID]</code> in scope. Firstly, we import:</p>
 
-<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">io.chrisdavenport.fuuid.doobie.postgres._</span>
-<span class="c1">// import io.chrisdavenport.fuuid.doobie.postgres._
-</span>
-<span class="k">import</span> <span class="nn">doobie._</span><span class="o">,</span> <span class="n">doobie</span><span class="o">.</span><span class="n">implicits</span><span class="o">.</span><span class="k">_</span>
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">doobie._</span>
 <span class="c1">// import doobie._
-// import doobie.implicits._
+</span>
+<span class="k">import</span> <span class="nn">doobie.implicits._</span>
+<span class="c1">// import doobie.implicits._
+</span>
+<span class="k">import</span> <span class="nn">io.chrisdavenport.fuuid.doobie.implicits._</span>
+<span class="c1">// import io.chrisdavenport.fuuid.doobie.implicits._
+</span></code></pre>
+</div>
+
+<h3 id="postgres-example">Postgres Example</h3>
+
+<p>An example of a query and an insert using this integration in Postgres.</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// This importe will provide `Meta[UUID]` support for postgres
+</span><span class="k">import</span> <span class="nn">doobie.postgres.implicits._</span>
+<span class="c1">// import doobie.postgres.implicits._
+</span>
+<span class="c1">// This is the table we'll use for the insert and update below
+</span><span class="k">def</span> <span class="n">createdTable</span><span class="k">:</span> <span class="kt">Update0</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="n">sql</span><span class="s">"""
+    CREATE TABLE tablewithUUIDid (
+      id   UUID NOT NULL
+    )"""</span><span class="o">.</span><span class="n">update</span>
+<span class="o">}</span>
+<span class="c1">// createdTable: doobie.Update0
+</span>
+<span class="k">def</span> <span class="n">queryBy</span><span class="o">(</span><span class="n">fuuid</span><span class="k">:</span> <span class="kt">FUUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">Query0</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
+    <span class="n">sql</span><span class="s">"""SELECT id from tablewithUUIDid where id = ${fuuid}"""</span><span class="o">.</span><span class="n">query</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span>
+  <span class="o">}</span>
+<span class="c1">// queryBy: (fuuid: io.chrisdavenport.fuuid.FUUID)doobie.Query0[io.chrisdavenport.fuuid.FUUID]
+</span>
+<span class="k">def</span> <span class="n">insertId</span><span class="o">(</span><span class="n">fuuid</span><span class="k">:</span> <span class="kt">FUUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">Update0</span> <span class="o">=</span> <span class="o">{</span>
+  <span class="n">sql</span><span class="s">"""INSERT into tablewithUUIDid (id) VALUES ($fuuid)"""</span><span class="o">.</span><span class="n">update</span>
+<span class="o">}</span>
+<span class="c1">// insertId: (fuuid: io.chrisdavenport.fuuid.FUUID)doobie.Update0
+</span></code></pre>
+</div>
+
+<h3 id="h2-example">H2 Example</h3>
+
+<p>An example of a query and an insert using this integration in H2:</p>
+
+<div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// This importe will provide `Meta[UUID]` support for h2
+</span><span class="k">import</span> <span class="nn">doobie.h2.implicits._</span>
+<span class="c1">// import doobie.h2.implicits._
 </span>
 <span class="c1">// This is the table we'll use for the insert and update below
 </span><span class="k">def</span> <span class="n">createdTable</span><span class="k">:</span> <span class="kt">Update0</span> <span class="o">=</span> <span class="o">{</span>
