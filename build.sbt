@@ -1,6 +1,6 @@
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(core, `doobie`, http4s, circe, docs)
+  .aggregate(core, doobie, http4s, circe, docs)
 
 lazy val core = project.in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
@@ -8,7 +8,7 @@ lazy val core = project.in(file("modules/core"))
       name := "fuuid"
     )
 
-lazy val `doobie` = project.in(file("modules/doobie"))
+lazy val doobie = project.in(file("modules/doobie"))
   .settings(commonSettings, releaseSettings)
   .settings(
     name := "fuuid-doobie",
@@ -29,7 +29,7 @@ lazy val circe = project.in(file("modules/circe"))
       "io.circe" %% "circe-core" % circeV
     )
   )
-  .dependsOn(`core` % "compile->compile;test->test")
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val http4s = project.in(file("modules/http4s"))
   .settings(commonSettings, releaseSettings)
@@ -39,7 +39,7 @@ lazy val http4s = project.in(file("modules/http4s"))
       "org.http4s" %% "http4s-dsl" % http4sV % Test
     )
   )
-  .dependsOn(`core` % "compile->compile;test->test")
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
@@ -52,7 +52,7 @@ lazy val docs = project.in(file("modules/docs"))
   )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(core, http4s, `doobie`, circe)
+  .dependsOn(core, http4s, doobie, circe)
 
 val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
