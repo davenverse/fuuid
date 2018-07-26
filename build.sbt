@@ -1,6 +1,6 @@
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(core, `doobie-postgres`, http4s, circe, docs)
+  .aggregate(core, `doobie-postgres`, `doobie-h2`, http4s, circe, docs)
 
 lazy val core = project.in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
@@ -8,14 +8,24 @@ lazy val core = project.in(file("modules/core"))
       name := "fuuid"
     )
 
+lazy val `doobie-h2` = project.in(file("modules/doobie-h2"))
+  .settings(commonSettings, releaseSettings)
+  .settings(
+    name := "fuuid-doobie-h2",
+    libraryDependencies ++= Seq(
+      "org.tpolecat" %% "doobie-h2"     % doobieV,
+      "org.tpolecat" %% "doobie-specs2" % doobieV % Test
+    )
+  )
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val `doobie-postgres` = project.in(file("modules/doobie-postgres"))
   .settings(commonSettings, releaseSettings)
   .settings(
     name := "fuuid-doobie-postgres",
     libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-postgres"  % "0.5.3",
-      "org.tpolecat" %% "doobie-specs2"    % "0.5.3" % Test
+      "org.tpolecat" %% "doobie-postgres"  % doobieV,
+      "org.tpolecat" %% "doobie-specs2"    % doobieV % Test
     )
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -49,13 +59,14 @@ lazy val docs = project.in(file("modules/docs"))
   )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(core, http4s, `doobie-postgres`, circe)
+  .dependsOn(core, http4s, `doobie-postgres`, `doobie-h2`, circe)
 
 val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
 val specs2V = "4.3.2"
 val circeV = "0.9.3"
 val http4sV = "0.18.15"
+val doobieV = "0.5.3"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
