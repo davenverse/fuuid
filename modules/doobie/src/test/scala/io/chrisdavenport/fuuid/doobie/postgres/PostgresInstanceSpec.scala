@@ -1,14 +1,15 @@
 package io.chrisdavenport.fuuid.doobie.postgres
 
+import cats.effect.IO
+import cats.implicits._
+import doobie._
+import doobie.implicits._
+import doobie.postgres.implicits._
+import doobie.specs2._
+import io.chrisdavenport.fuuid.FUUID
+import io.chrisdavenport.fuuid.doobie.implicits._
 import org.specs2._
 import org.specs2.specification.BeforeAll
-import doobie._
-import doobie.specs2._
-import doobie.implicits._
-import cats.implicits._
-import cats.effect.IO
-
-import _root_.io.chrisdavenport.fuuid.FUUID
 
 class PostgresInstanceSpec extends mutable.Specification with IOChecker with BeforeAll {
   val transactor = Transactor.fromDriverManager[IO](
@@ -32,5 +33,5 @@ class PostgresInstanceSpec extends mutable.Specification with IOChecker with Bef
 
   check(sql"SELECT id from PostgresInstanceSpec".query[FUUID])
   check(insertId(fuuid))
-  
+
 }

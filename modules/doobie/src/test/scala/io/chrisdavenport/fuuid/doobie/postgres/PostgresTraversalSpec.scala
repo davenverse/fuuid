@@ -1,15 +1,16 @@
 package io.chrisdavenport.fuuid.doobie.postgres
 
-import org.specs2._
-import org.specs2.specification.BeforeAll
+import cats.effect.IO
+import cats.implicits._
 import doobie._
 import doobie.implicits._
-import cats.implicits._
-import cats.effect.IO
+import doobie.postgres.implicits._
+import io.chrisdavenport.fuuid.doobie.implicits._
+import io.chrisdavenport.fuuid._
+import org.specs2._
+import org.specs2.specification.BeforeAll
 
-import _root_.io.chrisdavenport.fuuid._
-
-class PostgresTraversalSpec extends mutable.Specification 
+class PostgresTraversalSpec extends mutable.Specification
   with BeforeAll with ScalaCheck with FUUIDArbitraries {
   val transactor = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
@@ -33,8 +34,8 @@ class PostgresTraversalSpec extends mutable.Specification
     sql"""INSERT into PostgresTraversalSpec (id) VALUES ($fuuid)""".update
   }
 
-  "Doobie Meta" should {
-    "traverse input and then extraction" in prop { fuuid: FUUID => 
+  "Doobie Postgres Meta" should {
+    "traverse input and then extraction" in prop { fuuid: FUUID =>
 
       val action = for {
         _ <- insertId(fuuid).run.transact(transactor)
@@ -43,7 +44,7 @@ class PostgresTraversalSpec extends mutable.Specification
 
       action.unsafeRunSync must_=== fuuid
     }
-    "fail on a non-present value" in prop { fuuid: FUUID => 
+    "fail on a non-present value" in prop { fuuid: FUUID =>
       queryBy(fuuid)
         .unique
         .transact(transactor)
@@ -51,6 +52,6 @@ class PostgresTraversalSpec extends mutable.Specification
         .map(_.isLeft)
         .unsafeRunSync must_=== true
     }
-  } 
-  
+  }
+
 }

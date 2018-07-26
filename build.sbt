@@ -1,6 +1,6 @@
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(core, `doobie-postgres`, http4s, circe, docs)
+  .aggregate(core, doobie, http4s, circe, docs)
 
 lazy val core = project.in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
@@ -8,14 +8,15 @@ lazy val core = project.in(file("modules/core"))
       name := "fuuid"
     )
 
-
-lazy val `doobie-postgres` = project.in(file("modules/doobie-postgres"))
+lazy val doobie = project.in(file("modules/doobie"))
   .settings(commonSettings, releaseSettings)
   .settings(
-    name := "fuuid-doobie-postgres",
+    name := "fuuid-doobie",
     libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-postgres"  % "0.5.3",
-      "org.tpolecat" %% "doobie-specs2"    % "0.5.3" % Test
+      "org.tpolecat" %% "doobie-core"     % doobieV,
+      "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
+      "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
+      "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
     )
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -28,7 +29,7 @@ lazy val circe = project.in(file("modules/circe"))
       "io.circe" %% "circe-core" % circeV
     )
   )
-  .dependsOn(`core` % "compile->compile;test->test")
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val http4s = project.in(file("modules/http4s"))
   .settings(commonSettings, releaseSettings)
@@ -38,24 +39,27 @@ lazy val http4s = project.in(file("modules/http4s"))
       "org.http4s" %% "http4s-dsl" % http4sV % Test
     )
   )
-  .dependsOn(`core` % "compile->compile;test->test")
+  .dependsOn(core % "compile->compile;test->test")
 
 lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "org.http4s" %% "http4s-dsl" % http4sV
+      "org.http4s"   %% "http4s-dsl"      % http4sV,
+      "org.tpolecat" %% "doobie-postgres" % doobieV,
+      "org.tpolecat" %% "doobie-h2"       % doobieV
     )
   )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(core, http4s, `doobie-postgres`, circe)
+  .dependsOn(core, http4s, doobie, circe)
 
 val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
 val specs2V = "4.3.2"
 val circeV = "0.9.3"
 val http4sV = "0.18.15"
+val doobieV = "0.5.3"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -190,10 +194,10 @@ lazy val mimaSettings = {
 
   def semverBinCompatVersions(major: Int, minor: Int, patch: Int): Set[(Int, Int, Int)] = {
     val majorVersions: List[Int] = List(major)
-    val minorVersions : List[Int] = 
+    val minorVersions : List[Int] =
       if (major >= 1) Range(0, minor).inclusive.toList
       else List(minor)
-    def patchVersions(currentMinVersion: Int): List[Int] = 
+    def patchVersions(currentMinVersion: Int): List[Int] =
       if (minor == 0 && patch == 0) List.empty[Int]
       else if (currentMinVersion != minor) List(0)
       else Range(0, patch - 1).inclusive.toList
@@ -225,7 +229,7 @@ lazy val mimaSettings = {
     mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
     mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
       .filterNot(excludedVersions.contains(_))
-      .map{v => 
+      .map{v =>
         val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
         organization.value % moduleN % v
       },

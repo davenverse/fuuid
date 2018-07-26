@@ -101,19 +101,55 @@ val service: HttpService[IO] =
   }
 ```
 
-## Doobie Postgres Integration
+## Doobie Integration
 
-To use fuuid to store UUID's in Postgres, add to your `build.sbt`:
+To use fuuid to store UUID's using doobie, add to your `build.sbt`:
 
 ```scala
-libraryDependencies += "io.chrisdavenport" %% "fuuid-doobie-postgres" % "<version>"
+libraryDependencies += "io.chrisdavenport" %% "fuuid-doobie" % "<version>"
 ```
 
-An example of a query and an insert using this integration.
+This dependency will provide a `Meta[FUUID]` which depends on `Meta[UUID]` to provide support for `FUUID`.
+You will need to provide the instance of `Meta[UUID]` in scope. Firstly, we import:
 
 ```tut:book
-import io.chrisdavenport.fuuid.doobie.postgres._
-import doobie._, doobie.implicits._
+import doobie._
+import doobie.implicits._
+import io.chrisdavenport.fuuid.doobie.implicits._
+```
+
+### Postgres Example
+
+An example of a query and an insert using this integration in Postgres.
+
+```tut:book
+// This importe will provide `Meta[UUID]` support for postgres
+import doobie.postgres.implicits._
+
+// This is the table we'll use for the insert and update below
+def createdTable: Update0 = {
+  sql"""
+    CREATE TABLE tablewithUUIDid (
+      id   UUID NOT NULL
+    )""".update
+}
+
+def queryBy(fuuid: FUUID): Query0[FUUID] = {
+    sql"""SELECT id from tablewithUUIDid where id = ${fuuid}""".query[FUUID]
+  }
+
+def insertId(fuuid: FUUID): Update0 = {
+  sql"""INSERT into tablewithUUIDid (id) VALUES ($fuuid)""".update
+}
+```
+
+### H2 Example
+
+An example of a query and an insert using this integration in H2:
+
+```tut:book
+// This importe will provide `Meta[UUID]` support for h2
+import doobie.h2.implicits._
 
 // This is the table we'll use for the insert and update below
 def createdTable: Update0 = {
