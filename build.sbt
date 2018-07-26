@@ -45,18 +45,21 @@ lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "org.http4s" %% "http4s-dsl" % http4sV
+      "org.http4s"   %% "http4s-dsl"      % http4sV,
+      "org.tpolecat" %% "doobie-postgres" % doobieV,
+      "org.tpolecat" %% "doobie-h2"       % doobieV
     )
   )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(core, http4s, `doobie-postgres`, circe)
+  .dependsOn(core, http4s, `doobie`, circe)
 
 val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
 val specs2V = "4.3.2"
 val circeV = "0.9.3"
 val http4sV = "0.18.15"
+val doobieV = "0.5.3"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
