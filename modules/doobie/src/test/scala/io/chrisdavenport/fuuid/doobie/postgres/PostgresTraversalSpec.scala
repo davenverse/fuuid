@@ -20,7 +20,7 @@ class PostgresTraversalSpec extends mutable.Specification
 
   def beforeAll(): Unit = {
     sql"""
-    CREATE TABLE PostgresTraversalSpec (
+    CREATE TABLE IF NOT EXISTS PostgresTraversalSpec (
       id   UUID NOT NULL
     )
     """.update.run.transact(transactor).void.unsafeRunSync()
