@@ -14,8 +14,8 @@ lazy val `doobie-postgres` = project.in(file("modules/doobie-postgres"))
   .settings(
     name := "fuuid-doobie-postgres",
     libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-postgres"  % "0.5.3",
-      "org.tpolecat" %% "doobie-specs2"    % "0.5.3" % Test
+      "org.tpolecat" %% "doobie-postgres"  % doobieV,
+      "org.tpolecat" %% "doobie-specs2"    % doobieV % Test
     )
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -56,6 +56,7 @@ val catsEffectV = "0.10.1"
 val specs2V = "4.3.2"
 val circeV = "0.9.3"
 val http4sV = "0.18.15"
+val doobieV = "0.5.3"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
