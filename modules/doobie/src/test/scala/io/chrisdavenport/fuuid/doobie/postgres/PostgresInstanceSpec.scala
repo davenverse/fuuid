@@ -20,7 +20,7 @@ class PostgresInstanceSpec extends mutable.Specification with IOChecker with Bef
 
   def beforeAll(): Unit = {
     sql"""
-    CREATE TABLE PostgresInstanceSpec (
+    CREATE TABLE IF NOT EXISTS PostgresInstanceSpec (
       id   UUID NOT NULL
     )
     """.update.run.transact(transactor).void.unsafeRunSync()
