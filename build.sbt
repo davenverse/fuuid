@@ -1,12 +1,20 @@
+import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(core, doobie, http4s, circe, docs)
+  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM, docs)
 
-lazy val core = project.in(file("modules/core"))
+lazy val core = crossProject(JSPlatform, JVMPlatform)
+    .crossType(CrossType.Pure)
+    .in(file("modules/core"))
     .settings(commonSettings, releaseSettings)
     .settings(
       name := "fuuid"
     )
+
+
+lazy val coreJS     = core.js
+lazy val coreJVM    = core.jvm
 
 lazy val doobie = project.in(file("modules/doobie"))
   .settings(commonSettings, releaseSettings)
@@ -19,17 +27,23 @@ lazy val doobie = project.in(file("modules/doobie"))
       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
     )
   )
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(coreJVM % "compile->compile;test->test")
 
-lazy val circe = project.in(file("modules/circe"))
+lazy val circe = crossProject(JSPlatform, JVMPlatform)
+  .crossType(CrossType.Pure)
+  .in(file("modules/circe"))
   .settings(commonSettings, releaseSettings)
   .settings(
     name := "fuuid-circe",
     libraryDependencies ++= Seq(
-      "io.circe" %% "circe-core" % circeV
+      "io.circe" %%% "circe-core" % circeV
     )
   )
   .dependsOn(core % "compile->compile;test->test")
+
+lazy val circeJS = circe.js
+lazy val circeJVM = circe.jvm
+
 
 lazy val http4s = project.in(file("modules/http4s"))
   .settings(commonSettings, releaseSettings)
@@ -39,7 +53,7 @@ lazy val http4s = project.in(file("modules/http4s"))
       "org.http4s" %% "http4s-dsl" % http4sV % Test
     )
   )
-  .dependsOn(core % "compile->compile;test->test")
+  .dependsOn(coreJVM % "compile->compile;test->test")
 
 lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
@@ -52,7 +66,7 @@ lazy val docs = project.in(file("modules/docs"))
   )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(core, http4s, doobie, circe)
+  .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
 val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
@@ -81,11 +95,11 @@ lazy val commonSettings = Seq(
   addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.7" cross CrossVersion.binary),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4"),
   libraryDependencies ++= Seq(
-    "org.typelevel"               %% "cats-effect"                % catsEffectV,
+    "org.typelevel"               %%% "cats-effect"                % catsEffectV,
 
-    "org.typelevel"               %% "cats-testkit"               % catsV         % Test,
-    "org.specs2"                  %% "specs2-core"                % specs2V       % Test,
-    "org.specs2"                  %% "specs2-scalacheck"          % specs2V       % Test
+    "org.typelevel"               %%% "cats-testkit"               % catsV         % Test,
+    "org.specs2"                  %%% "specs2-core"                % specs2V       % Test,
+    "org.specs2"                  %%% "specs2-scalacheck"          % specs2V       % Test
   )
 )
 
