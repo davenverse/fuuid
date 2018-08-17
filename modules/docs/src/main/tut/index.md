@@ -30,9 +30,9 @@ import cats.effect.IO
 // We place it in IO because this requires a Sync constraint
 val create: IO[FUUID] = FUUID.randomFUUID[IO]
 
-val fromString : Either[Throwable, FUUID] = FUUID.fromString("d6faceab-4193-4508-86ca-e1561d38fea6")
+val fromString : Either[IllegalArgumentException, FUUID] = FUUID.fromString("d6faceab-4193-4508-86ca-e1561d38fea6")
 
-val failsReferentiallyTransparently : Either[Throwable, FUUID] = FUUID.fromString("Not a UUID")
+val failsReferentiallyTransparently : Either[IllegalArgumentException, FUUID] = FUUID.fromString("Not a UUID")
 
 // For some syntax improvements
 import cats.implicits._
