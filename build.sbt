@@ -7,7 +7,7 @@ lazy val fuuid = project.in(file("."))
 lazy val core = crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure)
     .in(file("modules/core"))
-    .settings(commonSettings, releaseSettings)
+    .settings(commonSettings, releaseSettings, mimaSettings)
     .settings(
       name := "fuuid"
     )
@@ -17,7 +17,7 @@ lazy val coreJS     = core.js
 lazy val coreJVM    = core.jvm
 
 lazy val doobie = project.in(file("modules/doobie"))
-  .settings(commonSettings, releaseSettings)
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
@@ -32,7 +32,7 @@ lazy val doobie = project.in(file("modules/doobie"))
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/circe"))
-  .settings(commonSettings, releaseSettings)
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-circe",
     libraryDependencies ++= Seq(
@@ -46,7 +46,7 @@ lazy val circeJVM = circe.jvm
 
 
 lazy val http4s = project.in(file("modules/http4s"))
-  .settings(commonSettings, releaseSettings)
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-http4s",
     libraryDependencies ++= Seq(
