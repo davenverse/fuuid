@@ -35,7 +35,7 @@ object FUUID {
 
   def fromString(s: String): Either[IllegalArgumentException, FUUID] =
     Either.catchNonFatal(new FUUID(UUID.fromString(s))).leftMap {
-      case ok@IllegalArgumentException => ok
+      case ok: IllegalArgumentException => ok.asInstanceOf[IllegalArgumentException]
       case other                       => new IllegalArgumentException(other.getMessage)
     }
 
