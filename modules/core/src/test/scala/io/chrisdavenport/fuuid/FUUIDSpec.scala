@@ -11,6 +11,9 @@ object FUUIDSpec extends mutable.Specification with ScalaCheck {
       FUUID.fromString("What up yo!")
         .isLeft must_=== true
     }
+    "Fail when parsing invalid uuid" in {
+      FUUID.fromString("2630147c-4a18-4866-9bbd-b2d89acef83z").isLeft must_=== true
+    }
     "Succeed when parsing a valid UUID" in {
       FUUID.randomFUUID[IO]
         .map(_.toString)
