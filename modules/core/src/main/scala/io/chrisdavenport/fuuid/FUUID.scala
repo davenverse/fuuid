@@ -34,7 +34,11 @@ object FUUID {
     }
 
   def fromString(s: String): Either[IllegalArgumentException, FUUID] =
-    Either.catchOnly[IllegalArgumentException](new FUUID(UUID.fromString(s)))
+    Either.catchNonFatal(new FUUID(UUID.fromString(s))).leftMap {
+      case ok: IllegalArgumentException => ok.asInstanceOf[IllegalArgumentException]
+      case other                       => new IllegalArgumentException(other.getMessage)
+    }
+
 
   def fromStringF[F[_]](s: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =
     fromString(s).fold(AE.raiseError, AE.pure)
