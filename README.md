@@ -16,7 +16,7 @@ And for integrations:
 libraryDependencies ++= Seq(
     "io.chrisdavenport" %% "fuuid-circe"  % "<version>", // Circe integration
     "io.chrisdavenport" %% "fuuid-http4s" % "<version>", // Http4s integration
-    "io.chrisdavenport" %% "fuuid-doobie" % "<version>" // Doobie integration
+    "io.chrisdavenport" %% "fuuid-doobie" % "<version>"  // Doobie integration
 )
 ```
 
