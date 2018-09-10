@@ -10,3 +10,14 @@ To use fuuid in an existing SBT project with Scala 2.11 or a later version, add 
 ```scala
 libraryDependencies += "io.chrisdavenport" %% "fuuid" % "<version>"
 ```
+
+And for integrations:
+```scala
+libraryDependencies ++= Seq(
+    "io.chrisdavenport" %% "fuuid-circe"  % "<version>", // Circe integration
+    "io.chrisdavenport" %% "fuuid-http4s" % "<version>", // Http4s integration
+    "io.chrisdavenport" %% "fuuid-doobie" % "<version>" // Doobie integration
+)
+```
+
+For more info visit [the microsite](https://christopherdavenport.github.io/fuuid/)
