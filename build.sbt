@@ -69,7 +69,7 @@ lazy val docs = project.in(file("modules/docs"))
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
 val catsV = "1.2.0"
-val catsEffectV = "0.10.1"
+val catsEffectV = "1.0.0"
 val specs2V = "4.3.3"
 val circeV = "0.9.3"
 val http4sV = "0.18.16"
