@@ -33,11 +33,8 @@ object FUUID {
       override def compare(x: FUUID, y: FUUID): Int = x.compare(y)
     }
 
-  def fromString(s: String): Either[IllegalArgumentException, FUUID] =
-    Either.catchNonFatal(new FUUID(UUID.fromString(s))).leftMap {
-      case ok: IllegalArgumentException => ok.asInstanceOf[IllegalArgumentException]
-      case other                       => new IllegalArgumentException(other.getMessage)
-    }
+  def fromString(s: String): Either[Throwable, FUUID] =
+    Either.catchNonFatal(new FUUID(UUID.fromString(s)))
 
 
   def fromStringF[F[_]](s: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =

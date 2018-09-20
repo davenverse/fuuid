@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM, docs)
+  .aggregate(coreJS, coreJVM, /*doobie,*/ http4s, circeJS, circeJVM/*, docs*/)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure)
@@ -16,18 +16,18 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
 lazy val coreJS     = core.js
 lazy val coreJVM    = core.jvm
 
-lazy val doobie = project.in(file("modules/doobie"))
-  .settings(commonSettings, releaseSettings, mimaSettings)
-  .settings(
-    name := "fuuid-doobie",
-    libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-core"     % doobieV,
-      "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
-      "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
-      "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
-    )
-  )
-  .dependsOn(coreJVM % "compile->compile;test->test")
+// lazy val doobie = project.in(file("modules/doobie"))
+//   .settings(commonSettings, releaseSettings, mimaSettings)
+//   .settings(
+//     name := "fuuid-doobie",
+//     libraryDependencies ++= Seq(
+//       "org.tpolecat" %% "doobie-core"     % doobieV,
+//       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
+//       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
+//       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
+//     )
+//   )
+//   .dependsOn(coreJVM % "compile->compile;test->test")
 
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -55,24 +55,24 @@ lazy val http4s = project.in(file("modules/http4s"))
   )
   .dependsOn(coreJVM % "compile->compile;test->test")
 
-lazy val docs = project.in(file("modules/docs"))
-  .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
-  .settings(
-    libraryDependencies ++= Seq(
-      "org.http4s"   %% "http4s-dsl"      % http4sV,
-      "org.tpolecat" %% "doobie-postgres" % doobieV,
-      "org.tpolecat" %% "doobie-h2"       % doobieV
-    )
-  )
-  .enablePlugins(MicrositesPlugin)
-  .enablePlugins(TutPlugin)
-  .dependsOn(coreJVM, http4s, doobie, circeJVM)
+// lazy val docs = project.in(file("modules/docs"))
+//   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
+//   .settings(
+//     libraryDependencies ++= Seq(
+//       "org.http4s"   %% "http4s-dsl"      % http4sV,
+//       "org.tpolecat" %% "doobie-postgres" % doobieV,
+//       "org.tpolecat" %% "doobie-h2"       % doobieV
+//     )
+//   )
+//   .enablePlugins(MicrositesPlugin)
+//   .enablePlugins(TutPlugin)
+//   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "1.2.0"
-val catsEffectV = "0.10.1"
+val catsV = "1.4.0"
+val catsEffectV = "1.0.0"
 val specs2V = "4.3.4"
-val circeV = "0.9.3"
-val http4sV = "0.18.16"
+val circeV = "0.10.0-M2"
+val http4sV = "0.19.0-M2"
 val doobieV = "0.5.3"
 
 lazy val contributors = Seq(
@@ -91,6 +91,8 @@ lazy val commonSettings = Seq(
 
   scalaVersion := "2.12.6",
   crossScalaVersions := Seq(scalaVersion.value, "2.11.12"),
+
+  scalacOptions += "-Yrangepos",
 
   addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.7" cross CrossVersion.binary),
   addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4"),
