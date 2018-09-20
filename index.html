@@ -26,7 +26,7 @@ dependencies to support additional interactions.</p>
 </span>
 <span class="c1">// We place it in IO because this requires a Sync constraint
 </span><span class="k">val</span> <span class="n">create</span><span class="k">:</span> <span class="kt">IO</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$1861309665
+<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$709551022
 </span>
 <span class="k">val</span> <span class="n">fromString</span> <span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">IllegalArgumentException</span>, <span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">fromString</span><span class="o">(</span><span class="s">"d6faceab-4193-4508-86ca-e1561d38fea6"</span><span class="o">)</span>
 <span class="c1">// fromString: Either[IllegalArgumentException,io.chrisdavenport.fuuid.FUUID] = Right(d6faceab-4193-4508-86ca-e1561d38fea6)
@@ -52,10 +52,10 @@ dependencies to support additional interactions.</p>
   <span class="n">fuuid1</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
   <span class="n">fuuid2</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
 <span class="o">}</span> <span class="k">yield</span> <span class="n">fuuid2</span> <span class="o">&gt;</span> <span class="n">fuuid1</span>
-<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$1503178810
+<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$284935857
 </span>
 <span class="n">laterGreaterThanEarlier</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res5: Boolean = true
+<span class="c1">// res5: Boolean = false
 </span></code></pre>
 </div>
 
@@ -77,13 +77,13 @@ dependencies to support additional interactions.</p>
 </span>
 <span class="c1">// Running UnsafeRunSync For Tut Purposes - Do Not Do this in your code please.
 </span><span class="k">val</span> <span class="n">circeFUUID</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">].</span><span class="n">unsafeRunSync</span>
-<span class="c1">// circeFUUID: io.chrisdavenport.fuuid.FUUID = 16d56431-6bf8-4f8e-8d44-0a7fbca0c924
+<span class="c1">// circeFUUID: io.chrisdavenport.fuuid.FUUID = ac5857f1-9f79-4132-b5fd-d6f2596632f0
 </span>
 <span class="k">val</span> <span class="n">circeFUUIDJson</span> <span class="k">=</span> <span class="n">circeFUUID</span><span class="o">.</span><span class="n">asJson</span>
-<span class="c1">// circeFUUIDJson: io.circe.Json = "16d56431-6bf8-4f8e-8d44-0a7fbca0c924"
+<span class="c1">// circeFUUIDJson: io.circe.Json = "ac5857f1-9f79-4132-b5fd-d6f2596632f0"
 </span>
 <span class="k">val</span> <span class="n">reparsing</span> <span class="k">=</span> <span class="n">circeFUUIDJson</span><span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span>
-<span class="c1">// reparsing: io.circe.Decoder.Result[io.chrisdavenport.fuuid.FUUID] = Right(16d56431-6bf8-4f8e-8d44-0a7fbca0c924)
+<span class="c1">// reparsing: io.circe.Decoder.Result[io.chrisdavenport.fuuid.FUUID] = Right(ac5857f1-9f79-4132-b5fd-d6f2596632f0)
 </span></code></pre>
 </div>
 
@@ -115,7 +115,7 @@ dependencies to support additional interactions.</p>
         <span class="n">response</span> <span class="k">&lt;-</span> <span class="nc">Ok</span><span class="o">(</span><span class="n">entity</span><span class="o">)</span>
       <span class="o">}</span> <span class="k">yield</span> <span class="n">response</span>
   <span class="o">}</span>
-<span class="c1">// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$5259/625582075@2e3dad63)
+<span class="c1">// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$5270/450989190@434f982)
 </span></code></pre>
 </div>
 
