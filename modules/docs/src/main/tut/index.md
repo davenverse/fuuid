@@ -91,8 +91,8 @@ import org.http4s._, org.http4s.dsl.io._
 
 def getEntityByUuid(id: FUUID): IO[String] = ???
 
-val service: HttpService[IO] =
-  HttpService[IO] {
+val service: HttpRoutes[IO] =
+  HttpRoutes.of[IO] {
     case GET -> Root / "uuid" / FUUIDVar(id) =>
       for {
         entity <- getEntityByUuid(id)
