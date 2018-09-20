@@ -55,18 +55,18 @@ lazy val http4s = project.in(file("modules/http4s"))
   )
   .dependsOn(coreJVM % "compile->compile;test->test")
 
-// lazy val docs = project.in(file("modules/docs"))
-//   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
-//   .settings(
-//     libraryDependencies ++= Seq(
-//       "org.http4s"   %% "http4s-dsl"      % http4sV,
-//       "org.tpolecat" %% "doobie-postgres" % doobieV,
-//       "org.tpolecat" %% "doobie-h2"       % doobieV
-//     )
-//   )
-//   .enablePlugins(MicrositesPlugin)
-//   .enablePlugins(TutPlugin)
-//   .dependsOn(coreJVM, http4s, doobie, circeJVM)
+lazy val docs = project.in(file("modules/docs"))
+  .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
+  .settings(
+    libraryDependencies ++= Seq(
+      "org.http4s"   %% "http4s-dsl"      % http4sV
+      // "org.tpolecat" %% "doobie-postgres" % doobieV,
+      // "org.tpolecat" %% "doobie-h2"       % doobieV
+    )
+  )
+  .enablePlugins(MicrositesPlugin)
+  .enablePlugins(TutPlugin)
+  .dependsOn(coreJVM, http4s, /*doobie,*/ circeJVM)
 
 val catsV = "1.4.0"
 val catsEffectV = "1.0.0"

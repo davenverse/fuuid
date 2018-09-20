@@ -28,8 +28,8 @@ script:
   - sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite
 
 after_success:
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && sbt ++$TRAVIS_SCALA_VERSION publish
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "master" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && test $TRAVIS_SCALA_VERSION == "2.12.6" && sbt docs/publishMicrosite
+  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "series/0.2" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && sbt ++$TRAVIS_SCALA_VERSION publish
+  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "series/0.2" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && test $TRAVIS_SCALA_VERSION == "2.12.6" && sbt docs/publishMicrosite
 
 cache:
   directories:

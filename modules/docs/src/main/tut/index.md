@@ -30,9 +30,9 @@ import cats.effect.IO
 // We place it in IO because this requires a Sync constraint
 val create: IO[FUUID] = FUUID.randomFUUID[IO]
 
-val fromString : Either[IllegalArgumentException, FUUID] = FUUID.fromString("d6faceab-4193-4508-86ca-e1561d38fea6")
+val fromString : Either[Throwable, FUUID] = FUUID.fromString("d6faceab-4193-4508-86ca-e1561d38fea6")
 
-val failsReferentiallyTransparently : Either[IllegalArgumentException, FUUID] = FUUID.fromString("Not a UUID")
+val failsReferentiallyTransparently : Either[Throwable, FUUID] = FUUID.fromString("Not a UUID")
 
 // For some syntax improvements
 import cats.implicits._
@@ -101,7 +101,7 @@ val service: HttpService[IO] =
   }
 ```
 
-## Doobie Integration
+## Doobie Integration  - Not Implemented Now
 
 To use fuuid to store UUID's using doobie, add to your `build.sbt`:
 
@@ -112,7 +112,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid-doobie" % "<version>"
 This dependency will provide a `Meta[FUUID]` which depends on `Meta[UUID]` to provide support for `FUUID`.
 You will need to provide the instance of `Meta[UUID]` in scope. Firstly, we import:
 
-```tut:book
+```scala
 import doobie._
 import doobie.implicits._
 import io.chrisdavenport.fuuid.doobie.implicits._
@@ -122,7 +122,7 @@ import io.chrisdavenport.fuuid.doobie.implicits._
 
 An example of a query and an insert using this integration in Postgres.
 
-```tut:book
+```scala
 // This importe will provide `Meta[UUID]` support for postgres
 import doobie.postgres.implicits._
 
@@ -147,7 +147,7 @@ def insertId(fuuid: FUUID): Update0 = {
 
 An example of a query and an insert using this integration in H2:
 
-```tut:book
+```scala
 // This importe will provide `Meta[UUID]` support for h2
 import doobie.h2.implicits._
 
