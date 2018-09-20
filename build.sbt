@@ -70,7 +70,7 @@ lazy val docs = project.in(file("modules/docs"))
 
 val catsV = "1.2.0"
 val catsEffectV = "0.10.1"
-val specs2V = "4.3.3"
+val specs2V = "4.3.4"
 val circeV = "0.9.3"
 val http4sV = "0.18.16"
 val doobieV = "0.5.3"
