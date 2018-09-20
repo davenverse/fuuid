@@ -26,13 +26,13 @@ dependencies to support additional interactions.</p>
 </span>
 <span class="c1">// We place it in IO because this requires a Sync constraint
 </span><span class="k">val</span> <span class="n">create</span><span class="k">:</span> <span class="kt">IO</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
-<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$101676835
+<span class="c1">// create: cats.effect.IO[io.chrisdavenport.fuuid.FUUID] = IO$595420894
 </span>
-<span class="k">val</span> <span class="n">fromString</span> <span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">IllegalArgumentException</span>, <span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">fromString</span><span class="o">(</span><span class="s">"d6faceab-4193-4508-86ca-e1561d38fea6"</span><span class="o">)</span>
-<span class="c1">// fromString: Either[IllegalArgumentException,io.chrisdavenport.fuuid.FUUID] = Right(d6faceab-4193-4508-86ca-e1561d38fea6)
+<span class="k">val</span> <span class="n">fromString</span> <span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">Throwable</span>, <span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">fromString</span><span class="o">(</span><span class="s">"d6faceab-4193-4508-86ca-e1561d38fea6"</span><span class="o">)</span>
+<span class="c1">// fromString: Either[Throwable,io.chrisdavenport.fuuid.FUUID] = Right(d6faceab-4193-4508-86ca-e1561d38fea6)
 </span>
-<span class="k">val</span> <span class="n">failsReferentiallyTransparently</span> <span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">IllegalArgumentException</span>, <span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">fromString</span><span class="o">(</span><span class="s">"Not a UUID"</span><span class="o">)</span>
-<span class="c1">// failsReferentiallyTransparently: Either[IllegalArgumentException,io.chrisdavenport.fuuid.FUUID] = Left(java.lang.IllegalArgumentException: Invalid UUID string: Not a UUID)
+<span class="k">val</span> <span class="n">failsReferentiallyTransparently</span> <span class="k">:</span> <span class="kt">Either</span><span class="o">[</span><span class="kt">Throwable</span>, <span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">fromString</span><span class="o">(</span><span class="s">"Not a UUID"</span><span class="o">)</span>
+<span class="c1">// failsReferentiallyTransparently: Either[Throwable,io.chrisdavenport.fuuid.FUUID] = Left(java.lang.IllegalArgumentException: Invalid UUID string: Not a UUID)
 </span>
 <span class="c1">// For some syntax improvements
 </span><span class="k">import</span> <span class="nn">cats.implicits._</span>
@@ -52,10 +52,10 @@ dependencies to support additional interactions.</p>
   <span class="n">fuuid1</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
   <span class="n">fuuid2</span> <span class="k">&lt;-</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">]</span>
 <span class="o">}</span> <span class="k">yield</span> <span class="n">fuuid2</span> <span class="o">&gt;</span> <span class="n">fuuid1</span>
-<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$536161996
+<span class="c1">// laterGreaterThanEarlier: cats.effect.IO[Boolean] = IO$998658478
 </span>
 <span class="n">laterGreaterThanEarlier</span><span class="o">.</span><span class="n">unsafeRunSync</span>
-<span class="c1">// res5: Boolean = false
+<span class="c1">// res5: Boolean = true
 </span></code></pre>
 </div>
 
@@ -77,13 +77,13 @@ dependencies to support additional interactions.</p>
 </span>
 <span class="c1">// Running UnsafeRunSync For Tut Purposes - Do Not Do this in your code please.
 </span><span class="k">val</span> <span class="n">circeFUUID</span> <span class="k">=</span> <span class="nc">FUUID</span><span class="o">.</span><span class="n">randomFUUID</span><span class="o">[</span><span class="kt">IO</span><span class="o">].</span><span class="n">unsafeRunSync</span>
-<span class="c1">// circeFUUID: io.chrisdavenport.fuuid.FUUID = 49b452b1-f6fd-44e8-a257-74a89f64fefb
+<span class="c1">// circeFUUID: io.chrisdavenport.fuuid.FUUID = b8097bf1-b16e-4711-94b3-5fd19d5c76c8
 </span>
 <span class="k">val</span> <span class="n">circeFUUIDJson</span> <span class="k">=</span> <span class="n">circeFUUID</span><span class="o">.</span><span class="n">asJson</span>
-<span class="c1">// circeFUUIDJson: io.circe.Json = "49b452b1-f6fd-44e8-a257-74a89f64fefb"
+<span class="c1">// circeFUUIDJson: io.circe.Json = "b8097bf1-b16e-4711-94b3-5fd19d5c76c8"
 </span>
 <span class="k">val</span> <span class="n">reparsing</span> <span class="k">=</span> <span class="n">circeFUUIDJson</span><span class="o">.</span><span class="n">as</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span>
-<span class="c1">// reparsing: io.circe.Decoder.Result[io.chrisdavenport.fuuid.FUUID] = Right(49b452b1-f6fd-44e8-a257-74a89f64fefb)
+<span class="c1">// reparsing: io.circe.Decoder.Result[io.chrisdavenport.fuuid.FUUID] = Right(b8097bf1-b16e-4711-94b3-5fd19d5c76c8)
 </span></code></pre>
 </div>
 
@@ -115,11 +115,20 @@ dependencies to support additional interactions.</p>
         <span class="n">response</span> <span class="k">&lt;-</span> <span class="nc">Ok</span><span class="o">(</span><span class="n">entity</span><span class="o">)</span>
       <span class="o">}</span> <span class="k">yield</span> <span class="n">response</span>
   <span class="o">}</span>
-<span class="c1">// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$5246/2003070827@624a677a)
+<span class="c1">// &lt;console&gt;:31: warning: type HttpService in package http4s is deprecated (since 0.19): Deprecated in favor of HttpRoutes
+//        val service: HttpService[IO] =
+//                     ^
+// &lt;console&gt;:32: warning: method apply in object HttpService is deprecated (since 0.19): Replaced by `HttpRoutes.of`
+//          HttpService[IO] {
+//          ^
+// &lt;console&gt;:32: warning: object HttpService in package http4s is deprecated (since 0.19): Replaced by HttpRoutes
+//          HttpService[IO] {
+//          ^
+// service: org.http4s.HttpService[cats.effect.IO] = Kleisli(org.http4s.HttpService$$$Lambda$5292/815802042@4fd9e984)
 </span></code></pre>
 </div>
 
-<h2 id="doobie-integration">Doobie Integration</h2>
+<h2 id="doobie-integration----not-implemented-now">Doobie Integration  - Not Implemented Now</h2>
 
 <p>To use fuuid to store UUID’s using doobie, add to your <code class="highlighter-rouge">build.sbt</code>:</p>
 
@@ -131,14 +140,9 @@ dependencies to support additional interactions.</p>
 You will need to provide the instance of <code class="highlighter-rouge">Meta[UUID]</code> in scope. Firstly, we import:</p>
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="k">import</span> <span class="nn">doobie._</span>
-<span class="c1">// import doobie._
-</span>
 <span class="k">import</span> <span class="nn">doobie.implicits._</span>
-<span class="c1">// import doobie.implicits._
-</span>
 <span class="k">import</span> <span class="nn">io.chrisdavenport.fuuid.doobie.implicits._</span>
-<span class="c1">// import io.chrisdavenport.fuuid.doobie.implicits._
-</span></code></pre>
+</code></pre>
 </div>
 
 <h3 id="postgres-example">Postgres Example</h3>
@@ -147,8 +151,7 @@ You will need to provide the instance of <code class="highlighter-rouge">Meta[UU
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// This importe will provide `Meta[UUID]` support for postgres
 </span><span class="k">import</span> <span class="nn">doobie.postgres.implicits._</span>
-<span class="c1">// import doobie.postgres.implicits._
-</span>
+
 <span class="c1">// This is the table we'll use for the insert and update below
 </span><span class="k">def</span> <span class="n">createdTable</span><span class="k">:</span> <span class="kt">Update0</span> <span class="o">=</span> <span class="o">{</span>
   <span class="n">sql</span><span class="s">"""
@@ -156,18 +159,15 @@ You will need to provide the instance of <code class="highlighter-rouge">Meta[UU
       id   UUID NOT NULL
     )"""</span><span class="o">.</span><span class="n">update</span>
 <span class="o">}</span>
-<span class="c1">// createdTable: doobie.Update0
-</span>
+
 <span class="k">def</span> <span class="n">queryBy</span><span class="o">(</span><span class="n">fuuid</span><span class="k">:</span> <span class="kt">FUUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">Query0</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
     <span class="n">sql</span><span class="s">"""SELECT id from tablewithUUIDid where id = ${fuuid}"""</span><span class="o">.</span><span class="n">query</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span>
   <span class="o">}</span>
-<span class="c1">// queryBy: (fuuid: io.chrisdavenport.fuuid.FUUID)doobie.Query0[io.chrisdavenport.fuuid.FUUID]
-</span>
+
 <span class="k">def</span> <span class="n">insertId</span><span class="o">(</span><span class="n">fuuid</span><span class="k">:</span> <span class="kt">FUUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">Update0</span> <span class="o">=</span> <span class="o">{</span>
   <span class="n">sql</span><span class="s">"""INSERT into tablewithUUIDid (id) VALUES ($fuuid)"""</span><span class="o">.</span><span class="n">update</span>
 <span class="o">}</span>
-<span class="c1">// insertId: (fuuid: io.chrisdavenport.fuuid.FUUID)doobie.Update0
-</span></code></pre>
+</code></pre>
 </div>
 
 <h3 id="h2-example">H2 Example</h3>
@@ -176,8 +176,7 @@ You will need to provide the instance of <code class="highlighter-rouge">Meta[UU
 
 <div class="language-scala highlighter-rouge"><pre class="highlight"><code><span class="c1">// This importe will provide `Meta[UUID]` support for h2
 </span><span class="k">import</span> <span class="nn">doobie.h2.implicits._</span>
-<span class="c1">// import doobie.h2.implicits._
-</span>
+
 <span class="c1">// This is the table we'll use for the insert and update below
 </span><span class="k">def</span> <span class="n">createdTable</span><span class="k">:</span> <span class="kt">Update0</span> <span class="o">=</span> <span class="o">{</span>
   <span class="n">sql</span><span class="s">"""
@@ -185,18 +184,15 @@ You will need to provide the instance of <code class="highlighter-rouge">Meta[UU
       id   UUID NOT NULL
     )"""</span><span class="o">.</span><span class="n">update</span>
 <span class="o">}</span>
-<span class="c1">// createdTable: doobie.Update0
-</span>
+
 <span class="k">def</span> <span class="n">queryBy</span><span class="o">(</span><span class="n">fuuid</span><span class="k">:</span> <span class="kt">FUUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">Query0</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span> <span class="k">=</span> <span class="o">{</span>
     <span class="n">sql</span><span class="s">"""SELECT id from tablewithUUIDid where id = ${fuuid}"""</span><span class="o">.</span><span class="n">query</span><span class="o">[</span><span class="kt">FUUID</span><span class="o">]</span>
   <span class="o">}</span>
-<span class="c1">// queryBy: (fuuid: io.chrisdavenport.fuuid.FUUID)doobie.Query0[io.chrisdavenport.fuuid.FUUID]
-</span>
+
 <span class="k">def</span> <span class="n">insertId</span><span class="o">(</span><span class="n">fuuid</span><span class="k">:</span> <span class="kt">FUUID</span><span class="o">)</span><span class="k">:</span> <span class="kt">Update0</span> <span class="o">=</span> <span class="o">{</span>
   <span class="n">sql</span><span class="s">"""INSERT into tablewithUUIDid (id) VALUES ($fuuid)"""</span><span class="o">.</span><span class="n">update</span>
 <span class="o">}</span>
-<span class="c1">// insertId: (fuuid: io.chrisdavenport.fuuid.FUUID)doobie.Update0
-</span></code></pre>
+</code></pre>
 </div>
 </div></div></section><section class="technologies"><div class="container"><div class="row"></div></div></section></main><footer id="site-footer"><div class="container"><div class="row"><div class="col-xs-6"><p>fuuid is designed and developed by <a href="" target="_blank">Christopher Davenport</a></p></div><div class="col-xs-6"><p class="text-right"><a href="https://github.com/ChristopherDavenport/fuuid"><span class="fa fa-github"></span>View on GitHub</a></p></div></div></div></footer><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script><script src="/fuuid/highlight/highlight.pack.js"></script><script>hljs.configure({
 languages:['scala','java','bash']
