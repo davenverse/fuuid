@@ -16,18 +16,18 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
 lazy val coreJS     = core.js
 lazy val coreJVM    = core.jvm
 
- lazy val doobie = project.in(file("modules/doobie"))
-   .settings(commonSettings, releaseSettings, mimaSettings)
-   .settings(
-     name := "fuuid-doobie",
-     libraryDependencies ++= Seq(
-       "org.tpolecat" %% "doobie-core"     % doobieV,
-       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
-       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
-       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
-     )
-   )
-   .dependsOn(coreJVM % "compile->compile;test->test")
+lazy val doobie = project.in(file("modules/doobie"))
+  .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(
+    name := "fuuid-doobie",
+    libraryDependencies ++= Seq(
+      "org.tpolecat" %% "doobie-core"     % doobieV,
+      "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
+      "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
+      "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
+    )
+  )
+  .dependsOn(coreJVM % "compile->compile;test->test")
 
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -66,7 +66,7 @@ lazy val docs = project.in(file("modules/docs"))
   )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(coreJVM, http4s, /*doobie,*/ circeJVM)
+  .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
 val catsV = "1.4.0"
 val catsEffectV = "1.0.0"
