@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM, docs)
+  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM/*, docs*/)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure)
@@ -25,7 +25,8 @@ lazy val doobie = project.in(file("modules/doobie"))
       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
-    )
+    ),
+    parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
   .dependsOn(coreJVM % "compile->compile;test->test")
 
