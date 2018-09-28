@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(coreJS, coreJVM, /*doobie,*/ http4s, circeJS, circeJVM/*, docs*/)
+  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM, docs)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure)
