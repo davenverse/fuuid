@@ -2,6 +2,16 @@
 
 This file summarizes **notable** changes for each release, but does not describe internal changes unless they are particularly exciting. For complete details please see the corresponding milestones and their associated issues.
 
+## New and Notworthy for Version 0.2.0-M2
+
+Restoration of the doobie project with the new release.
+
+Upgrades:
+
+- circe 0.10.0
+- doobie 0.6.0-M3
+- http4s 0.19.0-M3
+
 ## New and Notworthy for Version 0.2.0-M1
 
 Release of all core code on cats-effect 1.0, http4s 0.19.0-M2, circe 0.10.0-M2. As doobie
