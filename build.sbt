@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val fuuid = project.in(file("."))
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(coreJS, coreJVM, /*doobie,*/ http4s, circeJS, circeJVM/*, docs*/)
+  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM/*, docs*/)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure)
@@ -16,18 +16,19 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
 lazy val coreJS     = core.js
 lazy val coreJVM    = core.jvm
 
-// lazy val doobie = project.in(file("modules/doobie"))
-//   .settings(commonSettings, releaseSettings, mimaSettings)
-//   .settings(
-//     name := "fuuid-doobie",
-//     libraryDependencies ++= Seq(
-//       "org.tpolecat" %% "doobie-core"     % doobieV,
-//       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
-//       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
-//       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
-//     )
-//   )
-//   .dependsOn(coreJVM % "compile->compile;test->test")
+lazy val doobie = project.in(file("modules/doobie"))
+  .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(
+    name := "fuuid-doobie",
+    libraryDependencies ++= Seq(
+      "org.tpolecat" %% "doobie-core"     % doobieV,
+      "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
+      "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
+      "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
+    ),
+    parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
+  )
+  .dependsOn(coreJVM % "compile->compile;test->test")
 
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -59,21 +60,21 @@ lazy val docs = project.in(file("modules/docs"))
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .settings(
     libraryDependencies ++= Seq(
-      "org.http4s"   %% "http4s-dsl"      % http4sV
-      // "org.tpolecat" %% "doobie-postgres" % doobieV,
-      // "org.tpolecat" %% "doobie-h2"       % doobieV
+      "org.http4s"   %% "http4s-dsl"      % http4sV,
+      "org.tpolecat" %% "doobie-postgres" % doobieV,
+      "org.tpolecat" %% "doobie-h2"       % doobieV
     )
   )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
-  .dependsOn(coreJVM, http4s, /*doobie,*/ circeJVM)
+  .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
 val catsV = "1.4.0"
 val catsEffectV = "1.0.0"
 val specs2V = "4.3.4"
-val circeV = "0.10.0-M2"
-val http4sV = "0.19.0-M2"
-val doobieV = "0.5.3"
+val circeV = "0.10.0"
+val http4sV = "0.19.0-M3"
+val doobieV = "0.6.0-M3"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -89,7 +90,7 @@ onLoad in Global := { s =>
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
-  scalaVersion := "2.12.6",
+  scalaVersion := "2.12.7",
   crossScalaVersions := Seq(scalaVersion.value, "2.11.12"),
 
   scalacOptions += "-Yrangepos",

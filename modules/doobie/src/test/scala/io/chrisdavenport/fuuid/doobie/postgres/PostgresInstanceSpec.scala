@@ -1,6 +1,6 @@
 package io.chrisdavenport.fuuid.doobie.postgres
 
-import cats.effect.IO
+import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import doobie._
 import doobie.implicits._
@@ -10,9 +10,13 @@ import io.chrisdavenport.fuuid.FUUID
 import io.chrisdavenport.fuuid.doobie.implicits._
 import org.specs2._
 import org.specs2.specification.BeforeAll
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class PostgresInstanceSpec extends mutable.Specification with IOChecker with BeforeAll {
-  val transactor = Transactor.fromDriverManager[IO](
+
+  implicit val contextShiftIO: ContextShift[IO] = IO.contextShift(global)
+
+  lazy val transactor = Transactor.fromDriverManager[IO](
     "org.postgresql.Driver",
     "jdbc:postgresql:world",
     "postgres", ""

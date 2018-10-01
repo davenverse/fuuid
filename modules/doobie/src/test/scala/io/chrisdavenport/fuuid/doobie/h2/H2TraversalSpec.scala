@@ -1,9 +1,8 @@
 package io.chrisdavenport.fuuid.doobie.h2
 
-import cats.effect.IO
+import cats.effect.{ContextShift, IO}
 import cats.implicits._
 import doobie._
-import doobie.h2.H2Transactor
 import doobie.h2.implicits._
 import doobie.implicits._
 import io.chrisdavenport.fuuid.doobie.implicits._
@@ -11,16 +10,20 @@ import io.chrisdavenport.fuuid._
 import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAll
+import scala.concurrent.ExecutionContext.Implicits.global
 
 class H2TraversalSpec extends Specification
   with BeforeAll with ScalaCheck with FUUIDArbitraries {
 
-  val transactor: Transactor[IO] =
-    H2Transactor.newH2Transactor[IO](
+  implicit val contextShiftIO: ContextShift[IO] = IO.contextShift(global)
+
+  lazy val transactor: Transactor[IO] =
+    Transactor.fromDriverManager[IO](
+      driver = "org.h2.Driver",
       url = "jdbc:h2:mem:testH2Table;DB_CLOSE_DELAY=-1",
       user = "sa",
       pass = ""
-    ).unsafeRunSync
+    )
 
   def beforeAll(): Unit = {
     sql"""

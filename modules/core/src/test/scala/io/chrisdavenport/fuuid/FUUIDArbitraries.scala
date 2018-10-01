@@ -9,7 +9,7 @@ trait FUUIDArbitraries {
   )
 
   implicit val arbFUUIDFunction: Arbitrary[FUUID => FUUID] = Arbitrary(
-    Arbitrary.arbitrary[FUUID].map(f1 => {f: FUUID => f1})
+    Arbitrary.arbitrary[FUUID].map(f1 => {_: FUUID => f1})
   )
 }
 
