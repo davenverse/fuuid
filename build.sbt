@@ -74,7 +74,7 @@ val catsEffectV = "1.0.0"
 val specs2V = "4.3.4"
 val circeV = "0.10.0"
 val http4sV = "0.19.0-M3"
-val doobieV = "0.6.0-M3"
+val doobieV = "0.6.0-RC1"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
