@@ -51,7 +51,8 @@ lazy val http4s = project.in(file("modules/http4s"))
   .settings(
     name := "fuuid-http4s",
     libraryDependencies ++= Seq(
-      "org.http4s" %% "http4s-dsl" % http4sV
+      "org.http4s" %% "http4s-core" % http4sV,
+      "org.http4s" %% "http4s-dsl" % http4sV % Test
     )
   )
   .dependsOn(coreJVM % "compile->compile;test->test")
