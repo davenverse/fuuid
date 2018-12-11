@@ -74,7 +74,7 @@ val catsV = "1.4.0"
 val catsEffectV = "1.1.0"
 val specs2V = "4.3.5"
 val circeV = "0.10.1"
-val http4sV = "0.19.0-M3"
+val http4sV = "0.20.0-M4"
 val doobieV = "0.6.0"
 
 lazy val contributors = Seq(
@@ -91,7 +91,7 @@ onLoad in Global := { s =>
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
-  scalaVersion := "2.12.7",
+  scalaVersion := "2.12.8",
   crossScalaVersions := Seq(scalaVersion.value, "2.11.12"),
 
   scalacOptions += "-Yrangepos",
