@@ -101,7 +101,7 @@ val service: HttpRoutes[IO] =
   }
 ```
 
-## Doobie Integration  - Not Implemented Now
+## Doobie Integration
 
 To use fuuid to store UUID's using doobie, add to your `build.sbt`:
 
@@ -112,7 +112,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid-doobie" % "<version>"
 This dependency will provide a `Meta[FUUID]` which depends on `Meta[UUID]` to provide support for `FUUID`.
 You will need to provide the instance of `Meta[UUID]` in scope. Firstly, we import:
 
-```scala
+```tut:silent
 import doobie._
 import doobie.implicits._
 import io.chrisdavenport.fuuid.doobie.implicits._
@@ -122,7 +122,7 @@ import io.chrisdavenport.fuuid.doobie.implicits._
 
 An example of a query and an insert using this integration in Postgres.
 
-```scala
+```tut:book
 // This importe will provide `Meta[UUID]` support for postgres
 import doobie.postgres.implicits._
 
@@ -147,7 +147,7 @@ def insertId(fuuid: FUUID): Update0 = {
 
 An example of a query and an insert using this integration in H2:
 
-```scala
+```tut:book
 // This importe will provide `Meta[UUID]` support for h2
 import doobie.h2.implicits._
 
