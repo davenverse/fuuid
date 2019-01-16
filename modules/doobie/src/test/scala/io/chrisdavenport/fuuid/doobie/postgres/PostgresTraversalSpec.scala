@@ -7,22 +7,53 @@ import doobie.implicits._
 import doobie.postgres.implicits._
 import io.chrisdavenport.fuuid.doobie.implicits._
 import io.chrisdavenport.fuuid._
+import io.chrisdavenport.testcontainersspecs2.ForAllTestContainer
+import com.dimafeng.testcontainers.GenericContainer
+import org.testcontainers.containers.wait.strategy.LogMessageWaitStrategy
+import java.time.Duration
+import java.time.temporal.ChronoUnit.SECONDS
 import org.specs2._
-import org.specs2.specification.BeforeAll
 import scala.concurrent.ExecutionContext.Implicits.global
 
 class PostgresTraversalSpec extends mutable.Specification
-  with BeforeAll with ScalaCheck with FUUIDArbitraries {
-
+  with ScalaCheck with FUUIDArbitraries with ForAllTestContainer {
+  sequential
   implicit val contextShiftIO: ContextShift[IO] = IO.contextShift(global)
 
-  lazy val transactor = Transactor.fromDriverManager[IO](
-    "org.postgresql.Driver",
-    "jdbc:postgresql:world",
-    "postgres", ""
+  override lazy val container = GenericContainer(
+    "postgres",
+    List(5432),
+    Map(
+      "POSTGRES_DB" -> dbName,
+      "POSTGRES_USER" -> dbUserName,
+      "POSTGRES_PASSWORD" -> dbPassword,
+    ),
+    waitStrategy = new LogMessageWaitStrategy()
+      .withRegEx(".*database system is ready to accept connections.*\\s")
+      .withTimes(2)
+      .withStartupTimeout(Duration.of(60, SECONDS))
   )
 
-  def beforeAll(): Unit = {
+  lazy val driverName = "org.postgresql.Driver"
+  lazy val jdbcUrl = s"jdbc:postgresql://${container.container.getContainerIpAddress()}:${container.container.getMappedPort(5432)}/${dbName}"
+  lazy val dbUserName = "user"
+  lazy val dbPassword = "password"
+  lazy val dbName = "db"
+
+  lazy val transactor = Transactor.fromDriverManager[IO](
+    driverName,
+    jdbcUrl,
+    dbUserName,
+    dbPassword
+  )
+
+  // lazy val transactor = Transactor.fromDriverManager[IO](
+  //   "org.postgresql.Driver",
+  //   "jdbc:postgresql:world",
+  //   "postgres", ""
+  // )
+
+  override def afterStart(): Unit = {
     sql"""
     CREATE TABLE IF NOT EXISTS PostgresTraversalSpec (
       id   UUID NOT NULL
