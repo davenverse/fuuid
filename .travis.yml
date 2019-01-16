@@ -4,7 +4,7 @@ services:
   - docker
 
 scala:
-  - 2.12.6
+  - 2.12.8
   - 2.11.12
 
 jdk:
@@ -26,7 +26,7 @@ script:
 
 after_success:
   - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "series/0.2" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && sbt ++$TRAVIS_SCALA_VERSION publish
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "series/0.2" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && test $TRAVIS_SCALA_VERSION == "2.12.6" && sbt docs/publishMicrosite
+  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "series/0.2" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && test $TRAVIS_SCALA_VERSION == "2.12.8" && sbt docs/publishMicrosite
 
 cache:
   directories:
