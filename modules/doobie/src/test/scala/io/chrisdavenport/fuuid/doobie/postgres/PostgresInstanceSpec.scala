@@ -26,7 +26,7 @@ class PostgresInstanceSpec extends mutable.Specification with IOChecker with For
     Map(
       "POSTGRES_DB" -> dbName,
       "POSTGRES_USER" -> dbUserName,
-      "POSTGRES_PASSWORD" -> dbPassword,
+      "POSTGRES_PASSWORD" -> dbPassword
     ),
     waitStrategy = new LogMessageWaitStrategy()
       .withRegEx(".*database system is ready to accept connections.*\\s")
