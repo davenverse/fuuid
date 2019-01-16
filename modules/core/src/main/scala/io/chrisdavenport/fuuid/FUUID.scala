@@ -36,6 +36,8 @@ object FUUID {
   def fromString(s: String): Either[Throwable, FUUID] =
     Either.catchNonFatal(new FUUID(UUID.fromString(s)))
 
+  def fromStringOpt(s: String): Option[FUUID] = 
+    fromString(s).toOption
 
   def fromStringF[F[_]](s: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =
     fromString(s).fold(AE.raiseError, AE.pure)
