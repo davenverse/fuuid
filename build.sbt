@@ -24,7 +24,8 @@ lazy val doobie = project.in(file("modules/doobie"))
       "org.tpolecat" %% "doobie-core"     % doobieV,
       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
-      "org.tpolecat" %% "doobie-specs2"   % doobieV % Test
+      "org.tpolecat" %% "doobie-specs2"   % doobieV % Test,
+      "io.chrisdavenport"           %% "testcontainers-specs2" % "0.1.0" % Test
     ),
     parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
@@ -70,7 +71,7 @@ lazy val docs = project.in(file("modules/docs"))
   .enablePlugins(TutPlugin)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "1.4.0"
+val catsV = "1.5.0"
 val catsEffectV = "1.1.0"
 val specs2V = "4.3.6"
 val circeV = "0.11.1"
