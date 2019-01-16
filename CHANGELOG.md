@@ -2,6 +2,25 @@
 
 This file summarizes **notable** changes for each release, but does not describe internal changes unless they are particularly exciting. For complete details please see the corresponding milestones and their associated issues.
 
+## New and Noteworthy for Version 0.2.0-M4
+
+Minor Updates for upstream http4s. Mostly just library maintenance and upstream dep bumps.
+
+Fixes:
+
+- Fixes for doobie documentation [#77](https://github.com/ChristopherDavenport/fuuid/pull/77)
+- Microsite Publication and CI Fix [#81](https://github.com/ChristopherDavenport/fuuid/pull/81)
+
+Upgrades:
+
+- circe 0.11.1
+- http4s 0.20.0-M5
+- specs2 4.3.6
+
+Plugins:
+
+- sbt-release
+
 ## New and Noteworthy for Version 0.2.0-M3
 
 A new feature, and quite a few upgrades. Only non-stable module is http4s since it does not have a stable yet. Many thanks to Gabriele Petronella for the Query Param Decoder Implementation
