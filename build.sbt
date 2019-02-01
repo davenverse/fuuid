@@ -71,7 +71,7 @@ lazy val docs = project.in(file("modules/docs"))
   .enablePlugins(TutPlugin)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "1.5.0"
+val catsV = "1.6.0"
 val catsEffectV = "1.2.0"
 val specs2V = "4.4.1"
 val circeV = "0.11.1"
