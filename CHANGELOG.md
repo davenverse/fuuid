@@ -2,6 +2,22 @@
 
 This file summarizes **notable** changes for each release, but does not describe internal changes unless they are particularly exciting. For complete details please see the corresponding milestones and their associated issues.
 
+## New and Noteworthy for Version 0.2.0-M5
+
+## Feature
+
+- Add fromStringOpt [#85](https://github.com/ChristopherDavenport/fuuid/pull/85)
+
+## Updates
+
+- http4s 0.20.0-M6
+- cats-effect 1.2.0
+- specs2 4.4.1
+- cats-testkit 1.6.0
+- sbt-ghpages 0.6.3
+- sbt-tpolecat 0.1.5
+- sbt-updates 0.4.0
+
 ## New and Noteworthy for Version 0.2.0-M4
 
 Minor Updates for upstream http4s. Mostly just library maintenance and upstream dep bumps.
