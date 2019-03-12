@@ -53,5 +53,16 @@ object FUUIDSpec extends mutable.Specification with ScalaCheck {
     }
   }
 
+  "FUUID.fuuid" should {
+    "compile for a literal" in {
+      FUUID.fuuid("00000000-075b-cd15-0000-0000075bcd15")
+      ok
+    }
+  }
+
+  // FUUID.fuuid("kasdfasd")
+
+
+
 }
 

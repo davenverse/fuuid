@@ -5,6 +5,9 @@ import cats.implicits._
 import cats.effect.Sync
 import java.util.UUID
 
+import scala.language.experimental.macros
+import scala.reflect.macros.whitebox
+
 final class FUUID private (private val uuid: UUID){
 
   // Direct show method so people do not use toString
@@ -47,6 +50,27 @@ object FUUID {
   def randomFUUID[F[_]: Sync]: F[FUUID] = Sync[F].delay(
     new FUUID(UUID.randomUUID)
   )
+
+  def fuuid(s: String): FUUID = macro Macros.fuuidLiteral
+
+  private[FUUID] class Macros(val c: whitebox.Context) {
+    import c.universe._
+    def fuuidLiteral(s: c.Expr[String]): Tree =
+      s.tree match {
+        case Literal(Constant(s: String))=>
+            fromString(s)
+            .fold(
+              e => c.abort(c.enclosingPosition, e.getMessage),
+              _ =>
+                q"_root_.io.chrisdavenport.fuuid.FUUID.fromString($s).fold(throw _, _root_.scala.Predef.identity)"
+            )
+        case _ =>
+          c.abort(
+            c.enclosingPosition,
+            s"This method uses a macro to verify that a FUUID literal is valid. Use FUUID.fromString if you have a dynamic value you want to parse as an FUUID."
+          )
+      }
+  }
 
   /**
     * A Home For functions we don't trust
