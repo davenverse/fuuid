@@ -76,7 +76,7 @@ val catsEffectV = "1.2.0"
 val specs2V = "4.5.0"
 val circeV = "0.11.1"
 val http4sV = "0.20.0-M6"
-val doobieV = "0.6.0"
+val doobieV = "0.7.0-M3"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -93,7 +93,7 @@ lazy val commonSettings = Seq(
   scalacOptions += "-Yrangepos",
 
   addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.9" cross CrossVersion.binary),
-  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.2.4"),
+  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0-M4"),
   libraryDependencies ++= Seq(
     "org.typelevel"               %%% "cats-effect"                % catsEffectV,
 
