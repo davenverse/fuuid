@@ -60,7 +60,7 @@ object FUUID {
         case Literal(Constant(s: String))=>
             fromString(s)
             .fold(
-              e => c.abort(c.enclosingPosition, e.getMessage),
+              e => c.abort(c.enclosingPosition, e.getMessage.replace("UUID", "FUUID")),
               _ =>
                 q"_root_.io.chrisdavenport.fuuid.FUUID.fromString($s).fold(throw _, _root_.scala.Predef.identity)"
             )
