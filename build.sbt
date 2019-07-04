@@ -25,7 +25,7 @@ lazy val doobie = project.in(file("modules/doobie"))
       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test,
-      "io.chrisdavenport"           %% "testcontainers-specs2" % "0.1.0" % Test
+      "io.chrisdavenport"           %% "testcontainers-specs2" % "0.2.0-M1" % Test
     ),
     parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
@@ -71,12 +71,12 @@ lazy val docs = project.in(file("modules/docs"))
   .enablePlugins(TutPlugin)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "1.6.1"
-val catsEffectV = "1.3.1"
-val specs2V = "4.6.0"
-val circeV = "0.11.1"
-val http4sV = "0.20.3"
-val doobieV = "0.7.0"
+val catsV = "2.0.0-M4"       //https://github.com/typelevel/cats/releases
+val catsEffectV = "2.0.0-M4" //https://github.com/typelevel/cats-effect/releases
+val specs2V = "4.6.0"        //https://github.com/etorreborre/specs2/releases
+val circeV = "0.12.0-M3"     //https://github.com/circe/circe/releases
+val http4sV = "0.21.0-M1"    //https://github.com/http4s/http4s/releases
+val doobieV = "0.8.0-M1"     //https://github.com/tpolecat/doobie/releases
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -87,13 +87,13 @@ lazy val contributors = Seq(
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
-  scalaVersion := "2.12.8",
-  crossScalaVersions := Seq(scalaVersion.value, "2.11.12"),
+  scalaVersion := "2.13.0",
+  crossScalaVersions := Seq(scalaVersion.value, "2.12.8", "2.11.12"),
 
   scalacOptions += "-Yrangepos",
 
-  addCompilerPlugin("org.spire-math" % "kind-projector" % "0.9.10" cross CrossVersion.binary),
-  addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0"),
+  addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.10.3" cross CrossVersion.binary),
+  addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.0"),
   libraryDependencies ++= Seq(
     "org.typelevel"               %%% "cats-effect"                % catsEffectV,
 
@@ -198,7 +198,7 @@ lazy val micrositeSettings = Seq(
     "-Ywarn-unused:imports",
     "-Xlint:-missing-interpolator,_"
   ),
-  libraryDependencies += "com.47deg" %% "github4s" % "0.18.6",
+  libraryDependencies += "com.47deg" %% "github4s" % "0.20.1",
   micrositePushSiteWith := GitHub4s,
   micrositeGithubToken := sys.env.get("GITHUB_TOKEN")
 )
