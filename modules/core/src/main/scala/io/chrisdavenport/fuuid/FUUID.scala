@@ -5,7 +5,6 @@ import cats.implicits._
 import cats.effect.Sync
 import java.util.UUID
 
-import scala.language.experimental.macros
 import scala.reflect.macros.whitebox
 
 final class FUUID private (private val uuid: UUID){
