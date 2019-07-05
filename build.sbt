@@ -41,6 +41,9 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
       "io.circe" %%% "circe-core" % circeV
     )
   )
+  .jsSettings(
+    libraryDependencies += "io.circe" %%% "not-java-time" % "0.2.0" % Test
+  )
   .dependsOn(core % "compile->compile;test->test")
 
 lazy val circeJS = circe.js
@@ -71,12 +74,13 @@ lazy val docs = project.in(file("modules/docs"))
   .enablePlugins(TutPlugin)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "2.0.0-M4"       //https://github.com/typelevel/cats/releases
-val catsEffectV = "2.0.0-M4" //https://github.com/typelevel/cats-effect/releases
-val specs2V = "4.6.0"        //https://github.com/etorreborre/specs2/releases
-val circeV = "0.12.0-M3"     //https://github.com/circe/circe/releases
-val http4sV = "0.21.0-M1"    //https://github.com/http4s/http4s/releases
-val doobieV = "0.8.0-M1"     //https://github.com/tpolecat/doobie/releases
+val catsV = "2.0.0-M4"            //https://github.com/typelevel/cats/releases
+val catsEffectV = "2.0.0-M4"      //https://github.com/typelevel/cats-effect/releases
+val specs2V = "4.6.0"             //https://github.com/etorreborre/specs2/releases
+val circeV = "0.12.0-M3"          //https://github.com/circe/circe/releases
+val http4sV = "0.21.0-M1"         //https://github.com/http4s/http4s/releases
+val doobieV = "0.8.0-M1"          //https://github.com/tpolecat/doobie/releases
+val scalaJavaTimeV = "2.0.0-RC3"  // https://github.com/cquiroz/scala-java-time/releases
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -88,7 +92,7 @@ lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
   scalaVersion := "2.13.0",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.8", "2.11.12"),
+  crossScalaVersions := Seq(scalaVersion.value, "2.12.8"),
 
   scalacOptions += "-Yrangepos",
 
