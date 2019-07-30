@@ -1,6 +1,7 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 
 lazy val fuuid = project.in(file("."))
+  .disablePlugins(MimaPlugin)
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
   .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM/*, docs*/)
 
@@ -62,6 +63,7 @@ lazy val http4s = project.in(file("modules/http4s"))
   .dependsOn(coreJVM % "compile->compile;test->test")
 
 lazy val docs = project.in(file("modules/docs"))
+  .disablePlugins(MimaPlugin)
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .settings(
     libraryDependencies ++= Seq(
