@@ -26,7 +26,7 @@ lazy val doobie = project.in(file("modules/doobie"))
       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test,
-      "io.chrisdavenport"           %% "testcontainers-specs2" % "0.2.0-M1" % Test
+      "io.chrisdavenport"           %% "testcontainers-specs2" % testContainersSpecs2V % Test
     ),
     parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
@@ -76,13 +76,15 @@ lazy val docs = project.in(file("modules/docs"))
   .enablePlugins(TutPlugin)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "2.0.0-M4"            //https://github.com/typelevel/cats/releases
-val catsEffectV = "2.0.0-M4"      //https://github.com/typelevel/cats-effect/releases
+val catsV = "2.0.0-RC1"            //https://github.com/typelevel/cats/releases
+val catsEffectV = "2.0.0-RC1"      //https://github.com/typelevel/cats-effect/releases
 val specs2V = "4.7.0"             //https://github.com/etorreborre/specs2/releases
-val circeV = "0.12.0-M4"          //https://github.com/circe/circe/releases
-val http4sV = "0.21.0-M3"         //https://github.com/http4s/http4s/releases
-val doobieV = "0.8.0-M3"          //https://github.com/tpolecat/doobie/releases
+val disciplineSpecs2V = "1.0.0-RC1" 
+val circeV = "0.12.0-RC3"          //https://github.com/circe/circe/releases
+val http4sV = "0.21.0-M4"         //https://github.com/http4s/http4s/releases
+val doobieV = "0.8.0-RC1"          //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.0.0-RC3"  // https://github.com/cquiroz/scala-java-time/releases
+val testContainersSpecs2V = "0.2.0-M1" // 
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -101,9 +103,11 @@ lazy val commonSettings = Seq(
   addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.10.3" cross CrossVersion.binary),
   addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
   libraryDependencies ++= Seq(
+    "org.scala-lang"              %  "scala-reflect"               % scalaVersion.value,
     "org.typelevel"               %%% "cats-effect"                % catsEffectV,
 
-    "org.typelevel"               %%% "cats-testkit"               % catsV         % Test,
+    "org.typelevel"               %%% "cats-laws"                  % catsV         % Test,
+    "org.typelevel"               %%% "discipline-specs2"          % disciplineSpecs2V % Test,
     "org.specs2"                  %%% "specs2-core"                % specs2V       % Test,
     "org.specs2"                  %%% "specs2-scalacheck"          % specs2V       % Test
   )
