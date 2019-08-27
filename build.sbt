@@ -76,8 +76,8 @@ lazy val docs = project.in(file("modules/docs"))
   .enablePlugins(TutPlugin)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "2.0.0-RC1"            //https://github.com/typelevel/cats/releases
-val catsEffectV = "2.0.0-RC1"      //https://github.com/typelevel/cats-effect/releases
+val catsV = "2.0.0-RC2"            //https://github.com/typelevel/cats/releases
+val catsEffectV = "2.0.0-RC2"      //https://github.com/typelevel/cats-effect/releases
 val specs2V = "4.7.0"             //https://github.com/etorreborre/specs2/releases
 val disciplineSpecs2V = "1.0.0-RC1" 
 val circeV = "0.12.0-RC3"          //https://github.com/circe/circe/releases
