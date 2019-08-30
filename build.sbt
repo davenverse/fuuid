@@ -177,7 +177,6 @@ lazy val micrositeSettings = Seq(
 )
 
 lazy val mimaSettings = {
-  import sbtrelease.Version
 
   def semverBinCompatVersions(major: Int, minor: Int, patch: Int): Set[(Int, Int, Int)] = {
     val majorVersions: List[Int] = List(major)
