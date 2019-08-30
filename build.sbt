@@ -84,7 +84,7 @@ val circeV = "0.12.0-RC3"          //https://github.com/circe/circe/releases
 val http4sV = "0.21.0-M4"         //https://github.com/http4s/http4s/releases
 val doobieV = "0.8.0-RC1"          //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.0.0-RC3"  // https://github.com/cquiroz/scala-java-time/releases
-val testContainersSpecs2V = "0.2.0-M1" // 
+val testContainersSpecs2V = "0.2.0-M2" // 
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
