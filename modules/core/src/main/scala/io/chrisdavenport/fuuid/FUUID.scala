@@ -60,8 +60,11 @@ object FUUID {
             fromString(s)
             .fold(
               e => c.abort(c.enclosingPosition, e.getMessage.replace("UUID", "FUUID")),
-              _ =>
-                q"_root_.io.chrisdavenport.fuuid.FUUID.fromString($s).fold(throw _, _root_.scala.Predef.identity)"
+              _ => q"""
+                @SuppressWarnings(Array("org.wartremover.warts.Throw"))
+                val fuuid = _root_.io.chrisdavenport.fuuid.FUUID.fromString($s).fold(throw _, _root_.scala.Predef.identity)
+                fuuid
+              """
             )
         case _ =>
           c.abort(
