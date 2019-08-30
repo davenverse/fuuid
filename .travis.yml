@@ -3,30 +3,55 @@ language: scala
 services:
   - docker
 
-scala:
-  - 2.13.0
-  - 2.12.8
-
 jdk:
   - openjdk11
 
 before_install:
+  - git fetch --tags
   - export PATH=${PATH}:./vendor/bundle
 
-install:
-  - rvm use 2.6.0 --install --fuzzy
-  - gem update --system
-  - gem install sass
-  - gem install jekyll -v 3.2.1
+stages:
+  - name: test
+  - name: release
+    if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
 
-script:
-  - sbt ++$TRAVIS_SCALA_VERSION test
-  - sbt ++$TRAVIS_SCALA_VERSION mimaReportBinaryIssues
-  - test $TRAVIS_SCALA_VERSION == "2.13.0" || sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite
 
-after_success:
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "series/0.2" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && sbt ++$TRAVIS_SCALA_VERSION publish
-  - test $TRAVIS_PULL_REQUEST == "false" && test $TRAVIS_BRANCH == "series/0.2" && test $TRAVIS_REPO_SLUG == "ChristopherDavenport/fuuid" && test $TRAVIS_SCALA_VERSION == "2.12.8" && sbt docs/publishMicrosite
+jobs:
+  include:
+    # stage="test" if no stage is specified
+    -
+      name: test 2.13
+      scala: 2.13.0
+      script: sbt ++$TRAVIS_SCALA_VERSION test
+    - name: test 2.12
+      scala: 2.12.9
+      script: sbt ++$TRAVIS_SCALA_VERSION test
+    -
+      name: mima
+      script: sbt +mimaReportBinaryIssues
+    -
+      name: docs
+      scala: 2.12.9
+      install:
+        - rvm use 2.6.0 --install --fuzzy
+        - gem update --system
+        - gem install sass
+        - gem install jekyll -v 3.2.1
+      script: sbt ++$TRAVIS_SCALA_VERSION docs/makeMicrosite
+    # run ci-release only if previous stages passed
+    - stage: release
+      name: release
+      script: 
+        - sbt ci-release
+    - stage: release
+      name: microsite
+      scala: 2.12.9
+      install:
+        - rvm use 2.6.0 --install --fuzzy
+        - gem update --system
+        - gem install sass
+        - gem install jekyll -v 3.2.1
+      script: sbt ++$TRAVIS_SCALA_VERSION docs/publishMicrosite
 
 cache:
   directories:
