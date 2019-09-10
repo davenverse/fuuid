@@ -5,7 +5,7 @@ import cats.implicits._
 import cats.effect.Sync
 import java.util.UUID
 
-import scala.reflect.macros.whitebox
+import scala.reflect.macros.blackbox
 
 final class FUUID private (private val uuid: UUID){
 
@@ -52,19 +52,19 @@ object FUUID {
 
   def fuuid(s: String): FUUID = macro Macros.fuuidLiteral
 
-  private[FUUID] class Macros(val c: whitebox.Context) {
+  private[FUUID] class Macros(val c: blackbox.Context) {
     import c.universe._
-    def fuuidLiteral(s: c.Expr[String]): Tree =
+    def fuuidLiteral(s: c.Expr[String]): c.Expr[FUUID] =
       s.tree match {
         case Literal(Constant(s: String))=>
             fromString(s)
             .fold(
               e => c.abort(c.enclosingPosition, e.getMessage.replace("UUID", "FUUID")),
-              _ => q"""
+              _ => c.Expr(q"""
                 @SuppressWarnings(Array("org.wartremover.warts.Throw"))
                 val fuuid = _root_.io.chrisdavenport.fuuid.FUUID.fromString($s).fold(throw _, _root_.scala.Predef.identity)
                 fuuid
-              """
+              """)
             )
         case _ =>
           c.abort(
