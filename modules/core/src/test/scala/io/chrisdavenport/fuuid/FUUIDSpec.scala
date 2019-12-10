@@ -4,7 +4,7 @@ import java.util.UUID
 import cats.effect.IO
 import org.specs2._
 
-object FUUIDSpec extends mutable.Specification with ScalaCheck {
+class FUUIDSpec extends mutable.Specification with ScalaCheck {
 
   "FUUID.fromString" should {
     "Fail when parsing an invalid string" in {

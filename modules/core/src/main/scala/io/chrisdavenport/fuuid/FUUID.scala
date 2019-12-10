@@ -75,6 +75,13 @@ object FUUID {
   }
 
   /**
+    * Creates a new name-based UUIDv5.
+    * NOTE: Not implemented for Scala.js!
+    **/ 
+  def nameBased[F[_]](namespace: FUUID, name: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =
+    PlatformSpecificMethods.nameBased[F](namespace, name, AE)
+
+  /**
     * A Home For functions we don't trust
     * Hopefully making it very clear that this code needs
     * to be dealt with carefully.
