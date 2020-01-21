@@ -82,7 +82,7 @@ val specs2V = "4.8.2"             //https://github.com/etorreborre/specs2/releas
 val disciplineSpecs2V = "1.0.0" 
 val circeV = "0.12.3"          //https://github.com/circe/circe/releases
 val http4sV = "0.21.0-M6"         //https://github.com/http4s/http4s/releases
-val doobieV = "0.8.7"          //https://github.com/tpolecat/doobie/releases
+val doobieV = "0.8.8"          //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.0.0-RC3"  // https://github.com/cquiroz/scala-java-time/releases
 val testContainersSpecs2V = "0.2.0-M2" // 
 

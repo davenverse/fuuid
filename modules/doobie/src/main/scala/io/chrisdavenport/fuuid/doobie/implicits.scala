@@ -2,7 +2,7 @@ package io.chrisdavenport.fuuid.doobie
 
 import java.util.UUID
 
-import doobie.util.Meta
+import doobie.Meta
 import io.chrisdavenport.fuuid.FUUID
 
 object implicits {
