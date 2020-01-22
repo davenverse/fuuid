@@ -21,6 +21,7 @@ jobs:
       script: sbt ++$TRAVIS_SCALA_VERSION test
     - name: test jdk8 2.13
       scala: 2.13.0
+      jdk: oraclejdk8
       script: sbt ++$TRAVIS_SCALA_VERSION test
     - name: test jdk11 2.12
       scala: 2.12.9
@@ -28,13 +29,14 @@ jobs:
       script: sbt ++$TRAVIS_SCALA_VERSION test
     - name: test jdk8 2.12
       scala: 2.12.9
+      jdk: oraclejdk8
       script: sbt ++$TRAVIS_SCALA_VERSION test
     - name: mima
-      jdk: openjdk8
+      jdk: oraclejdk8
       script: sbt +mimaReportBinaryIssues
     - name: docs
       scala: 2.12.9
-      jdk: openjdk8
+      jdk: oraclejdk8
       install:
         - rvm use 2.6.0 --install --fuzzy
         - gem update --system
@@ -44,7 +46,7 @@ jobs:
     # run ci-release only if previous stages passed
     - stage: release
       name: release
-      jdk: openjdk8
+      jdk: oraclejdk8
       script: 
         - sbt ci-release
     - stage: release
