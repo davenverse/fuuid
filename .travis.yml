@@ -3,9 +3,6 @@ language: scala
 services:
   - docker
 
-jdk:
-  - openjdk11
-
 before_install:
   - git fetch --tags
   - export PATH=${PATH}:./vendor/bundle
@@ -15,23 +12,31 @@ stages:
   - name: release
     if: ((branch = master AND type = push) OR (tag IS present)) AND NOT fork
 
-
 jobs:
   include:
     # stage="test" if no stage is specified
-    -
-      name: test 2.13
+    - name: test jdk11 2.13
       scala: 2.13.0
+      jdk: openjdk11
       script: sbt ++$TRAVIS_SCALA_VERSION test
-    - name: test 2.12
+    - name: test jdk8 2.13
+      scala: 2.13.0
+      jdk: openjdk8
+      script: sbt ++$TRAVIS_SCALA_VERSION test
+    - name: test jdk11 2.12
       scala: 2.12.9
+      jdk: openjdk11
       script: sbt ++$TRAVIS_SCALA_VERSION test
-    -
-      name: mima
+    - name: test jdk8 2.12
+      scala: 2.12.9
+      jdk: openjdk8
+      script: sbt ++$TRAVIS_SCALA_VERSION test
+    - name: mima
+      jdk: openjdk8
       script: sbt +mimaReportBinaryIssues
-    -
-      name: docs
+    - name: docs
       scala: 2.12.9
+      jdk: openjdk8
       install:
         - rvm use 2.6.0 --install --fuzzy
         - gem update --system
@@ -41,11 +46,13 @@ jobs:
     # run ci-release only if previous stages passed
     - stage: release
       name: release
+      jdk: openjdk8
       script: 
         - sbt ci-release
     - stage: release
       name: microsite
       scala: 2.12.9
+      jdk: openjdk11
       install:
         - rvm use 2.6.0 --install --fuzzy
         - gem update --system
