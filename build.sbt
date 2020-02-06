@@ -3,7 +3,7 @@ import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
 lazy val fuuid = project.in(file("."))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM/*, docs*/)
+  .aggregate(coreJS, coreJVM, taglessJS, taglessJVM, doobie, http4s, circeJS, circeJVM/*, docs*/)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
     .crossType(CrossType.Pure)
@@ -13,9 +13,20 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
       name := "fuuid"
     )
 
-
 lazy val coreJS     = core.js
 lazy val coreJVM    = core.jvm
+
+lazy val tagless = crossProject(JSPlatform, JVMPlatform)
+    .crossType(CrossType.Pure)
+    .in(file("modules/tagless"))
+    .settings(commonSettings, releaseSettings, mimaSettings)
+    .dependsOn(core)
+    .settings(
+      name := "fuuid-tagless"
+    )
+
+lazy val taglessJS     = tagless.js
+lazy val taglessJVM    = tagless.jvm
 
 lazy val doobie = project.in(file("modules/doobie"))
   .settings(commonSettings, releaseSettings, mimaSettings)
@@ -77,7 +88,7 @@ lazy val docs = project.in(file("modules/docs"))
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
 val catsV = "2.1.0"            //https://github.com/typelevel/cats/releases
-val catsEffectV = "2.0.0"      //https://github.com/typelevel/cats-effect/releases
+val catsEffectV = "2.1.0"      //https://github.com/typelevel/cats-effect/releases
 val specs2V = "4.8.3"             //https://github.com/etorreborre/specs2/releases
 val disciplineSpecs2V = "1.0.0" 
 val circeV = "0.13.0-RC1"          //https://github.com/circe/circe/releases
@@ -95,12 +106,10 @@ lazy val contributors = Seq(
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
-  scalaVersion := "2.13.0",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.8"),
+  scalaVersion := "2.13.1",
+  crossScalaVersions := Seq(scalaVersion.value, "2.12.10"),
 
-  scalacOptions += "-Yrangepos",
-
-  addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.10.3" cross CrossVersion.binary),
+  addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.11.0" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
   libraryDependencies ++= Seq(
     "org.scala-lang"              %  "scala-reflect"               % scalaVersion.value,
