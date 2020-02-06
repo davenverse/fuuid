@@ -4,6 +4,14 @@ import java.util.UUID
 import cats.implicits._
 import cats.effect.Sync
 
+/**
+  * This trait is an F-algebra representation of the ability to generate FUUID's.
+  * 
+  * At some edge a Sync is required in order to populate the randomness when required.
+  */
+@scala.annotation.implicitNotFound("""Cannot find implicit value for FUUIDGen[${F}].
+Building this implicit value depends on having an implicit
+Sync[${F}] or some equivalent type.""")
 trait FUUIDGen[F[_]]{
   /**
    * Creates a Random FUUID
