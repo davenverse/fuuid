@@ -34,7 +34,8 @@ trait FUUIDGen[F[_]]{
 object FUUIDGen {
   def apply[F[_]](implicit ev: FUUIDGen[F]): FUUIDGen[F] = ev
 
-  implicit def fromSync[F[_]: Sync]: FUUIDGen[F] = new SyncFUUIDGen[F]
+  // Sync f => class FUUIDGen f
+  implicit def instance[F[_]: Sync]: FUUIDGen[F] = new SyncFUUIDGen[F]
 
   private class SyncFUUIDGen[F[_]: Sync] extends FUUIDGen[F]{
     def random: F[FUUID] = FUUID.randomFUUID[F]
