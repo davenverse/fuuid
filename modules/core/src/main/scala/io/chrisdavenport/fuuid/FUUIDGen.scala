@@ -1,6 +1,5 @@
-package io.chrisdavenport.fuuid.tagless
+package io.chrisdavenport.fuuid
 
-import io.chrisdavenport.fuuid.FUUID
 import java.util.UUID
 import cats.implicits._
 import cats.effect.Sync

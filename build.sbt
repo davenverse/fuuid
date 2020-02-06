@@ -16,18 +16,6 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
 lazy val coreJS     = core.js
 lazy val coreJVM    = core.jvm
 
-lazy val tagless = crossProject(JSPlatform, JVMPlatform)
-    .crossType(CrossType.Pure)
-    .in(file("modules/tagless"))
-    .settings(commonSettings, releaseSettings, mimaSettings)
-    .dependsOn(core)
-    .settings(
-      name := "fuuid-tagless"
-    )
-
-lazy val taglessJS     = tagless.js
-lazy val taglessJVM    = tagless.jvm
-
 lazy val doobie = project.in(file("modules/doobie"))
   .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
