@@ -13,7 +13,7 @@ trait CatsResource[F[_], A] extends BeforeAfterAll {
   def resource: Resource[F, A]
 
   implicit def ResourceEffect: Effect[F]
-  protected val ResourceTimeout: Duration = 10.seconds
+  protected val ResourceTimeout: Duration = 20.seconds
 
   private var value : Option[A] = None
   private var shutdown : F[Unit] = ResourceEffect.unit

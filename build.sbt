@@ -26,7 +26,7 @@ lazy val doobie = project.in(file("modules/doobie"))
       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test,
       "io.chrisdavenport"           %% "testcontainers-specs2" % testContainersSpecs2V % Test,
-      "io.chrisdavenport"           %% "whale-tail"            % "0.0.3" % Test
+      "io.chrisdavenport"           %% "whale-tail"            % "0.0.0+21-32e9386b+20200721-1324-SNAPSHOT" % Test
     ),
     parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
@@ -88,6 +88,7 @@ val scalaJavaTimeV = "2.0.0"  // https://github.com/cquiroz/scala-java-time/rele
 val testContainersSpecs2V = "0.2.0-M2" // 
 val log4CatsV = "1.0.1"
 
+
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
   "JesusMtnez" -> "Jesús Martínez-B. H."
@@ -108,7 +109,7 @@ lazy val commonSettings = Seq(
 
 
     "com.codecommit" %% "cats-effect-testing-specs2" % "0.4.0" % Test,
-    "io.chrisdavenport"           %% "log4cats-slf4j"             % log4catsV % Test,
+    "io.chrisdavenport"           %% "log4cats-slf4j"             % log4CatsV % Test,
     "org.typelevel"               %%% "cats-laws"                  % catsV         % Test,
     "org.typelevel"               %%% "discipline-specs2"          % disciplineSpecs2V % Test,
     "org.specs2"                  %%% "specs2-core"                % specs2V       % Test,
@@ -174,7 +175,6 @@ lazy val micrositeSettings = Seq(
     "-Ywarn-unused:imports",
     "-Xlint:-missing-interpolator,_"
   ),
-  libraryDependencies += "com.47deg" %% "github4s" % "0.20.1",
   micrositePushSiteWith := GitHub4s,
   micrositeGithubToken := sys.env.get("GITHUB_TOKEN")
 )
