@@ -25,8 +25,7 @@ lazy val doobie = project.in(file("modules/doobie"))
       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test,
-      "io.chrisdavenport"           %% "testcontainers-specs2" % testContainersSpecs2V % Test,
-      "io.chrisdavenport"           %% "whale-tail"            % "0.0.0+21-32e9386b+20200721-1324-SNAPSHOT" % Test
+      "io.chrisdavenport"           %% "whale-tail"            % "0.0.4" % Test
     ),
     parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
