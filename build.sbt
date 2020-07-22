@@ -25,7 +25,9 @@ lazy val doobie = project.in(file("modules/doobie"))
       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test,
-      "io.chrisdavenport"           %% "whale-tail"            % "0.0.4" % Test
+      "io.chrisdavenport"           %% "whale-tail"            % "0.0.4" % Test,
+      "com.codecommit" %% "cats-effect-testing-specs2" % "0.4.0" % Test,
+      "io.chrisdavenport"           %% "log4cats-slf4j"             % log4CatsV % Test,
     ),
     parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
@@ -105,10 +107,6 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scala-lang"              %  "scala-reflect"               % scalaVersion.value,
     "org.typelevel"               %%% "cats-effect"                % catsEffectV,
-
-
-    "com.codecommit" %% "cats-effect-testing-specs2" % "0.4.0" % Test,
-    "io.chrisdavenport"           %% "log4cats-slf4j"             % log4CatsV % Test,
     "org.typelevel"               %%% "cats-laws"                  % catsV         % Test,
     "org.typelevel"               %%% "discipline-specs2"          % disciplineSpecs2V % Test,
     "org.specs2"                  %%% "specs2-core"                % specs2V       % Test,
