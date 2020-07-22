@@ -22,12 +22,8 @@ class PostgresInstanceSpec extends mutable.Specification with CheckHelper with C
       """.update.run.transact(transactor).void
     )
 
-  def insertId(fuuid: FUUID): Update0 = {
-    sql"""INSERT into PostgresInstanceSpec (id) VALUES ($fuuid)""".update
-  }
-  val fuuid = FUUID.randomFUUID[IO].unsafeRunSync
 
   check(sql"SELECT id from PostgresInstanceSpec".query[FUUID])
-  check(insertId(fuuid))
+  check(Update[FUUID]("""INSERT into PostgresInstanceSpec (id) VALUES (?)"""))
 
 }
