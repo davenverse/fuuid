@@ -9,6 +9,7 @@ import org.specs2.specification.create.{ FormattingFragments => Format }
 import org.specs2.specification.dsl.Online._
 
 trait CheckHelper {self : mutable.Specification with CatsResourceIO[Transactor[IO]] => 
+  sequential
 
     private def checkImpl(args: AnalysisArgs): Fragments = {
       // continuesWith is necessary to make sure the query doesn't run too early

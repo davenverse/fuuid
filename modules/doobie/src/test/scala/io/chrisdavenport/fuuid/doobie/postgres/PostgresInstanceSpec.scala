@@ -11,7 +11,6 @@ import _root_.io.chrisdavenport.fuuid.doobie.postgres.rig._
 
 
 class PostgresInstanceSpec extends mutable.Specification with CheckHelper with CatsResourceIO[Transactor[IO]]{
-  sequential
 
   override def resource = TransactorResource.create
     .evalTap( transactor => 

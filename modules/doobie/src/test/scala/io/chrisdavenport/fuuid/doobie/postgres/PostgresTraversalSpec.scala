@@ -11,7 +11,6 @@ import cats.effect._
 
 class PostgresTraversalSpec extends mutable.Specification
   with ScalaCheck with FUUIDArbitraries with CatsResourceIO[Transactor[IO]] {
-  // sequential
 
   override def resource: Resource[IO,_root_.doobie.Transactor[IO]] = 
     TransactorResource.create.evalTap{transactor => 
