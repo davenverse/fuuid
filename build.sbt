@@ -78,7 +78,7 @@ lazy val docs = project.in(file("modules/docs"))
 
 val catsV = "2.1.1"            //https://github.com/typelevel/cats/releases
 val catsEffectV = "2.1.2"      //https://github.com/typelevel/cats-effect/releases
-val specs2V = "4.9.4"             //https://github.com/etorreborre/specs2/releases
+val specs2V = "4.10.5"             //https://github.com/etorreborre/specs2/releases
 val disciplineSpecs2V = "1.1.0" 
 val circeV = "0.13.0"          //https://github.com/circe/circe/releases
 val http4sV = "0.21.7"         //https://github.com/http4s/http4s/releases
