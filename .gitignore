@@ -3,6 +3,9 @@ target/
 # vim
 *.sw?
 
+#VSCode
+.vscode/
+
 # Ignore [ce]tags files
 tags
 .metals
