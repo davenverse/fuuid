@@ -70,7 +70,8 @@ lazy val docs = project.in(file("modules/docs"))
       "org.http4s"   %% "http4s-dsl"      % http4sV,
       "org.tpolecat" %% "doobie-postgres" % doobieV,
       "org.tpolecat" %% "doobie-h2"       % doobieV
-    )
+    ),
+    githubWorkflowArtifactUpload := false
   )
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(TutPlugin)
