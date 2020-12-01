@@ -98,7 +98,7 @@ lazy val commonSettings = Seq(
   scalaVersion := "2.13.1",
   crossScalaVersions := Seq(scalaVersion.value, "2.12.10"),
 
-  addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.11.1" cross CrossVersion.full),
+  addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.11.2" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
   libraryDependencies ++= Seq(
     "org.scala-lang"              %  "scala-reflect"               % scalaVersion.value,
