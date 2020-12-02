@@ -43,10 +43,22 @@ ThisBuild / githubWorkflowBuild := Seq(
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
 
-ThisBuild / githubWorkflowPublishPreamble ++= MicrositeWorkflowSteps
+ThisBuild / githubWorkflowPublishPreamble ++= WorkflowStep.Use(
+  "olafurpg",
+  "setup-gpg",
+  "v3"
+) +: MicrositeWorkflowSteps
 
 ThisBuild / githubWorkflowPublish := Seq(
-  WorkflowStep.Sbt(List("ci-release")),
+  WorkflowStep.Sbt(
+    List("ci-release"),
+    env = Map(
+      "PGP_PASSPHRASE" -> "${{ secrets.PGP_PASSPHRASE }}",
+      "PGP_SECRET" -> "${{ secrets.PGP_SECRET }}",
+      "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
+      "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}"
+    )
+  ),
   WorkflowStep.Sbt(List("docs/publishMicrosite"), cond = Some(MicrositesCond))
 )
 

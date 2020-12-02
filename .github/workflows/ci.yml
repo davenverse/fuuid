@@ -138,6 +138,8 @@ jobs:
           tar xf targets.tar
           rm targets.tar
 
+      - uses: olafurpg/setup-gpg@v3
+
       - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
         uses: ruby/setup-ruby@v1
         with:
@@ -152,7 +154,12 @@ jobs:
       - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
         run: gem install jekyll -v 3.2.1
 
-      - run: sbt ++${{ matrix.scala }} ci-release
+      - env:
+          PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+          PGP_SECRET: ${{ secrets.PGP_SECRET }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        run: sbt ++${{ matrix.scala }} ci-release
 
       - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
         run: sbt ++${{ matrix.scala }} docs/publishMicrosite
