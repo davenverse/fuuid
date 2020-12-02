@@ -1,6 +1,6 @@
 val Scala212 = "2.12.12"
 val Scala213 = "2.13.4"
-val Java8 = "openjdk8"
+val Java8 = "adopt@1.8"
 
 ThisBuild / crossScalaVersions := Seq(Scala213, Scala212)
 ThisBuild / scalaVersion := Scala213
@@ -10,7 +10,7 @@ val MimaCond = s"matrix.java == '$Java8'"
 
 ThisBuild / githubWorkflowPublishTargetBranches := Seq()
 
-ThisBuild / githubWorkflowJavaVersions := Seq(Java8, "openjdk11")
+ThisBuild / githubWorkflowJavaVersions := Seq(Java8, "adopt@1.11")
 
 val MicrositeWorkflowSteps: Seq[WorkflowStep] = Seq(
   WorkflowStep.Use(

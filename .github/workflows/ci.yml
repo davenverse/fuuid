@@ -24,7 +24,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         scala: [2.13.4, 2.12.12]
-        java: [openjdk8, openjdk11]
+        java: [adopt@1.8, adopt@1.11]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -49,18 +49,18 @@ jobs:
             ~/Library/Caches/Coursier/v1
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         run: gem update --system
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         run: gem install sass
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         run: gem install jekyll -v 3.2.1
 
       - name: Check that workflows are up to date
@@ -70,10 +70,10 @@ jobs:
         run: sbt ++${{ matrix.scala }} test
 
       - name: Validate binary compatibility
-        if: matrix.java == 'openjdk8'
+        if: matrix.java == 'adopt@1.8'
         run: sbt ++${{ matrix.scala }} mimaReportBinaryIssues
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         run: sbt ++${{ matrix.scala }} docs/makeMicrosite
 
       - name: Compress target directories
@@ -93,7 +93,7 @@ jobs:
       matrix:
         os: [ubuntu-latest]
         scala: [2.13.4]
-        java: [openjdk8]
+        java: [adopt@1.8]
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout current branch (full)
@@ -140,18 +140,18 @@ jobs:
 
       - uses: olafurpg/setup-gpg@v3
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 2.6
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         run: gem update --system
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         run: gem install sass
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         run: gem install jekyll -v 3.2.1
 
       - env:
@@ -161,5 +161,5 @@ jobs:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         run: sbt ++${{ matrix.scala }} ci-release
 
-      - if: matrix.scala == '2.12.12' && matrix.java == 'openjdk8'
+      - if: matrix.scala == '2.12.12' && matrix.java == 'adopt@1.8'
         run: sbt ++${{ matrix.scala }} docs/publishMicrosite
