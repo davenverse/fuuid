@@ -1,31 +1,83 @@
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+val Scala212 = "2.12.12"
+val Scala213 = "2.13.4"
+val Java8 = "openjdk8"
 
-lazy val fuuid = project.in(file("."))
+ThisBuild / crossScalaVersions := Seq(Scala213, Scala212)
+ThisBuild / scalaVersion := Scala213
+
+val MicrositesCond = s"matrix.scala == '$Scala212' && matrix.java == '$Java8'"
+val MimaCond = s"matrix.java == '$Java8'"
+
+ThisBuild / githubWorkflowPublishTargetBranches := Seq()
+
+ThisBuild / githubWorkflowJavaVersions := Seq(Java8, "openjdk11")
+
+val MicrositeWorkflowSteps: Seq[WorkflowStep] = Seq(
+  WorkflowStep.Use(
+    "ruby",
+    "setup-ruby",
+    "v1",
+    params = Map("ruby-version" -> "2.6"),
+    cond = Some(MicrositesCond)
+  ),
+  WorkflowStep.Run(List("gem update --system"), cond = Some(MicrositesCond)),
+  WorkflowStep.Run(List("gem install sass"), cond = Some(MicrositesCond)),
+  WorkflowStep.Run(List("gem install jekyll -v 3.2.1"), cond = Some(MicrositesCond))
+)
+
+ThisBuild / githubWorkflowBuildPreamble ++= MicrositeWorkflowSteps
+
+ThisBuild / githubWorkflowBuild := Seq(
+  WorkflowStep.Sbt(
+    List("test"),
+    name = Some("Validate unit tests")
+  ),
+  WorkflowStep.Sbt(
+    List("mimaReportBinaryIssues"),
+    name = Some("Validate binary compatibility"),
+    cond = Some(MimaCond)
+  ),
+  WorkflowStep.Sbt(List("docs/makeMicrosite"), cond = Some(MicrositesCond))
+)
+
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
+
+ThisBuild / githubWorkflowPublishPreamble ++= MicrositeWorkflowSteps
+
+ThisBuild / githubWorkflowPublish := Seq(
+  WorkflowStep.Sbt(List("ci-release")),
+  WorkflowStep.Sbt(List("docs/publishMicrosite"), cond = Some(MicrositesCond))
+)
+
+lazy val fuuid = project
+  .in(file("."))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM/*, docs*/)
+  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM /*, docs*/ )
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
-    .crossType(CrossType.Pure)
-    .in(file("modules/core"))
-    .settings(commonSettings, releaseSettings, mimaSettings)
-    .settings(
-      name := "fuuid"
-    )
+  .crossType(CrossType.Pure)
+  .in(file("modules/core"))
+  .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(
+    name := "fuuid"
+  )
 
-lazy val coreJS     = core.js
-lazy val coreJVM    = core.jvm
+lazy val coreJS = core.js
+lazy val coreJVM = core.jvm
 
-lazy val doobie = project.in(file("modules/doobie"))
+lazy val doobie = project
+  .in(file("modules/doobie"))
   .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-core"     % doobieV,
-      "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
-      "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
-      "org.tpolecat" %% "doobie-specs2"   % doobieV % Test,
-      "io.chrisdavenport"           %% "testcontainers-specs2" % testContainersSpecs2V % Test
+      "org.tpolecat"      %% "doobie-core"           % doobieV,
+      "org.tpolecat"      %% "doobie-postgres"       % doobieV               % Test,
+      "org.tpolecat"      %% "doobie-h2"             % doobieV               % Test,
+      "org.tpolecat"      %% "doobie-specs2"         % doobieV               % Test,
+      "io.chrisdavenport" %% "testcontainers-specs2" % testContainersSpecs2V % Test
     ),
     parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
@@ -42,7 +94,6 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
     )
   )
   .jsSettings(
-          
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeV % Test
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -50,19 +101,20 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
 lazy val circeJS = circe.js
 lazy val circeJVM = circe.jvm
 
-
-lazy val http4s = project.in(file("modules/http4s"))
+lazy val http4s = project
+  .in(file("modules/http4s"))
   .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-http4s",
     libraryDependencies ++= Seq(
       "org.http4s" %% "http4s-core" % http4sV,
-      "org.http4s" %% "http4s-dsl" % http4sV % Test
+      "org.http4s" %% "http4s-dsl"  % http4sV % Test
     )
   )
   .dependsOn(coreJVM % "compile->compile;test->test")
 
-lazy val docs = project.in(file("modules/docs"))
+lazy val docs = project
+  .in(file("modules/docs"))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
   .settings(
@@ -76,15 +128,15 @@ lazy val docs = project.in(file("modules/docs"))
   .enablePlugins(TutPlugin)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "2.1.1"            //https://github.com/typelevel/cats/releases
-val catsEffectV = "2.1.2"      //https://github.com/typelevel/cats-effect/releases
-val specs2V = "4.9.4"             //https://github.com/etorreborre/specs2/releases
-val disciplineSpecs2V = "1.1.0" 
-val circeV = "0.13.0"          //https://github.com/circe/circe/releases
-val http4sV = "0.21.13"         //https://github.com/http4s/http4s/releases
-val doobieV = "0.9.0"          //https://github.com/tpolecat/doobie/releases
-val scalaJavaTimeV = "2.0.0"  // https://github.com/cquiroz/scala-java-time/releases
-val testContainersSpecs2V = "0.2.0-M2" // 
+val catsV = "2.1.1" //https://github.com/typelevel/cats/releases
+val catsEffectV = "2.1.2" //https://github.com/typelevel/cats-effect/releases
+val specs2V = "4.9.4" //https://github.com/etorreborre/specs2/releases
+val disciplineSpecs2V = "1.1.0"
+val circeV = "0.13.0" //https://github.com/circe/circe/releases
+val http4sV = "0.21.13" //https://github.com/http4s/http4s/releases
+val doobieV = "0.9.0" //https://github.com/tpolecat/doobie/releases
+val scalaJavaTimeV = "2.0.0" // https://github.com/cquiroz/scala-java-time/releases
+val testContainersSpecs2V = "0.2.0-M2" //
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -94,20 +146,15 @@ lazy val contributors = Seq(
 // General Settings
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
-
-  scalaVersion := "2.13.1",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.10"),
-
-  addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.11.2" cross CrossVersion.full),
-  addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
+  addCompilerPlugin("org.typelevel" % "kind-projector"     % "0.11.2" cross CrossVersion.full),
+  addCompilerPlugin("com.olegpy"   %% "better-monadic-for" % "0.3.1"),
   libraryDependencies ++= Seq(
-    "org.scala-lang"              %  "scala-reflect"               % scalaVersion.value,
-    "org.typelevel"               %%% "cats-effect"                % catsEffectV,
-
-    "org.typelevel"               %%% "cats-laws"                  % catsV         % Test,
-    "org.typelevel"               %%% "discipline-specs2"          % disciplineSpecs2V % Test,
-    "org.specs2"                  %%% "specs2-core"                % specs2V       % Test,
-    "org.specs2"                  %%% "specs2-scalacheck"          % specs2V       % Test
+    "org.scala-lang"                        % "scala-reflect"   % scalaVersion.value,
+    "org.typelevel" %%% "cats-effect"       % catsEffectV,
+    "org.typelevel" %%% "cats-laws"         % catsV             % Test,
+    "org.typelevel" %%% "discipline-specs2" % disciplineSpecs2V % Test,
+    "org.specs2" %%% "specs2-core"          % specs2V           % Test,
+    "org.specs2" %%% "specs2-scalacheck"    % specs2V           % Test
   )
 )
 
@@ -128,13 +175,14 @@ lazy val releaseSettings = {
     },
     pomExtra := {
       <developers>
-        {for ((username, name) <- contributors) yield
-        <developer>
+        {
+        for ((username, name) <- contributors)
+          yield <developer>
           <id>{username}</id>
           <name>{name}</name>
           <url>http://github.com/{username}</url>
         </developer>
-        }
+      }
       </developers>
     }
   )
@@ -178,7 +226,7 @@ lazy val mimaSettings = {
 
   def semverBinCompatVersions(major: Int, minor: Int, patch: Int): Set[(Int, Int, Int)] = {
     val majorVersions: List[Int] = List(major)
-    val minorVersions : List[Int] =
+    val minorVersions: List[Int] =
       if (major >= 1) Range(0, minor).inclusive.toList
       else List(minor)
     def patchVersions(currentMinVersion: Int): List[Int] =
@@ -198,7 +246,7 @@ lazy val mimaSettings = {
     VersionNumber(version) match {
       case VersionNumber(Seq(major, minor, patch, _*), _, _) if patch.toInt > 0 =>
         semverBinCompatVersions(major.toInt, minor.toInt, patch.toInt)
-          .map{case (maj, min, pat) => maj.toString + "." + min.toString + "." + pat.toString}
+          .map { case (maj, min, pat) => maj.toString + "." + min.toString + "." + pat.toString }
       case _ =>
         Set.empty[String]
     }
@@ -213,7 +261,7 @@ lazy val mimaSettings = {
     mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
     mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
       .filterNot(excludedVersions.contains(_))
-      .map{v =>
+      .map { v =>
         val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
         organization.value % moduleN % v
       },
