@@ -8,18 +8,18 @@ class FUUIDSpec extends mutable.Specification with ScalaCheck {
 
   "FUUID.fromString" should {
     "Fail when parsing an invalid string" in {
-      FUUID.fromString("What up yo!")
-        .isLeft must_=== true
+      FUUID.fromString("What up yo!").isLeft must_=== true
     }
     "Fail when parsing invalid uuid" in {
       FUUID.fromString("2630147c-4a18-4866-9bbd-b2d89acef83z").isLeft must_=== true
     }
     "Succeed when parsing a valid UUID" in {
-      FUUID.randomFUUID[IO]
+      FUUID
+        .randomFUUID[IO]
         .map(_.toString)
         .map(FUUID.fromString)
         .map(_.isRight)
-        .unsafeRunSync must_=== true
+        .unsafeRunSync() must_=== true
     }
   }
 
@@ -62,7 +62,4 @@ class FUUIDSpec extends mutable.Specification with ScalaCheck {
 
   // FUUID.fuuid("kasdfasd")
 
-
-
 }
-

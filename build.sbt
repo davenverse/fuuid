@@ -2,30 +2,18 @@ val Scala212 = "2.12.12"
 val Scala213 = "2.13.4"
 val Java8 = "adopt@1.8"
 
+ThisBuild / githubWorkflowSbtCommand := "csbt"
+
+ThisBuild / githubWorkflowPublishTargetBranches := Seq() // disable publication for now
+ThisBuild / githubWorkflowArtifactUpload := false
+
 ThisBuild / crossScalaVersions := Seq(Scala213, Scala212)
 ThisBuild / scalaVersion := Scala213
 
 val MicrositesCond = s"matrix.scala == '$Scala212' && matrix.java == '$Java8'"
 val MimaCond = s"matrix.java == '$Java8'"
 
-ThisBuild / githubWorkflowPublishTargetBranches := Seq()
-
 ThisBuild / githubWorkflowJavaVersions := Seq(Java8, "adopt@1.11")
-
-val MicrositeWorkflowSteps: Seq[WorkflowStep] = Seq(
-  WorkflowStep.Use(
-    "ruby",
-    "setup-ruby",
-    "v1",
-    params = Map("ruby-version" -> "2.6"),
-    cond = Some(MicrositesCond)
-  ),
-  WorkflowStep.Run(List("gem update --system"), cond = Some(MicrositesCond)),
-  WorkflowStep.Run(List("gem install sass"), cond = Some(MicrositesCond)),
-  WorkflowStep.Run(List("gem install jekyll -v 3.2.1"), cond = Some(MicrositesCond))
-)
-
-ThisBuild / githubWorkflowBuildPreamble ++= MicrositeWorkflowSteps
 
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(
@@ -34,20 +22,38 @@ ThisBuild / githubWorkflowBuild := Seq(
   ),
   WorkflowStep.Sbt(
     List("mimaReportBinaryIssues"),
-    name = Some("Validate binary compatibility"),
+    name = Some("Binary Compatibility Check"),
     cond = Some(MimaCond)
+  )
+)
+
+def micrositeWorkflowSteps(cond: Option[String] = None): List[WorkflowStep] = List(
+  WorkflowStep.Use(
+    "ruby",
+    "setup-ruby",
+    "v1",
+    params = Map("ruby-version" -> "2.6"),
+    cond = cond
   ),
-  WorkflowStep.Sbt(List("docs/makeMicrosite"), cond = Some(MicrositesCond))
+  WorkflowStep.Run(List("gem update --system"), cond = cond),
+  WorkflowStep.Run(List("gem install sass"), cond = cond),
+  WorkflowStep.Run(List("gem install jekyll -v 3.2.1"), cond = cond)
+)
+
+ThisBuild / githubWorkflowAddedJobs ++= Seq(
+  WorkflowJob(
+    "microsite",
+    "Microsite",
+    githubWorkflowJobSetup.value.toList ::: (micrositeWorkflowSteps(None) :+ WorkflowStep
+      .Sbt(List("docs/makeMicrosite"), name = Some("Build the microsite"))),
+    scalas = List(Scala212)
+  )
 )
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
 
-ThisBuild / githubWorkflowPublishPreamble ++= WorkflowStep.Use(
-  "olafurpg",
-  "setup-gpg",
-  "v3"
-) +: MicrositeWorkflowSteps
+ThisBuild / githubWorkflowPublishPreamble += WorkflowStep.Use("olafurpg", "setup-gpg", "v3")
 
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
@@ -58,8 +64,10 @@ ThisBuild / githubWorkflowPublish := Seq(
       "SONATYPE_PASSWORD" -> "${{ secrets.SONATYPE_PASSWORD }}",
       "SONATYPE_USERNAME" -> "${{ secrets.SONATYPE_USERNAME }}"
     )
-  ),
-  WorkflowStep.Sbt(List("docs/publishMicrosite"), cond = Some(MicrositesCond))
+  )
+) ++ micrositeWorkflowSteps(Some(MicrositesCond)).toSeq :+ WorkflowStep.Sbt(
+  List("docs/publishMicrosite"),
+  cond = Some(MicrositesCond)
 )
 
 lazy val fuuid = project

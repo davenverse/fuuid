@@ -11,9 +11,8 @@ class FUUIDJvmSpec extends mutable.Specification with ScalaCheck {
         namespace <- FUUID.randomFUUID[IO]
         namebased <- FUUID.nameBased[IO](namespace, "What up yo!")
         parsed <- FUUID.fromStringF[IO](namebased.toString)
-      } yield parsed)
-        .attempt
-        .unsafeRunSync
+      } yield parsed).attempt
+        .unsafeRunSync()
         .isRight must_=== true
     }
 
@@ -23,7 +22,7 @@ class FUUIDJvmSpec extends mutable.Specification with ScalaCheck {
 
       val expected = FUUID.fromStringF[IO]("1cce4593-d217-5b33-be0d-2e81462e79d3").unsafeRunSync()
 
-      FUUID.nameBased[IO](namespace, name).unsafeRunSync must_=== expected
+      FUUID.nameBased[IO](namespace, name).unsafeRunSync() must_=== expected
     }
   }
 }

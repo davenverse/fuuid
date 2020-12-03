@@ -35,7 +35,8 @@ class PostgresInstanceSpec extends mutable.Specification with IOChecker with For
   )
 
   lazy val driverName = "org.postgresql.Driver"
-  lazy val jdbcUrl = s"jdbc:postgresql://${container.container.getContainerIpAddress()}:${container.container.getMappedPort(5432)}/${dbName}"
+  lazy val jdbcUrl = s"jdbc:postgresql://${container.container
+    .getContainerIpAddress()}:${container.container.getMappedPort(5432)}/${dbName}"
   lazy val dbUserName = "user"
   lazy val dbPassword = "password"
   lazy val dbName = "db"
@@ -47,19 +48,17 @@ class PostgresInstanceSpec extends mutable.Specification with IOChecker with For
     dbPassword
   )
 
-
   override def afterStart(): Unit = {
     sql"""
     CREATE TABLE IF NOT EXISTS PostgresInstanceSpec (
-      id   UUID NOT NULL
+      id UUID NOT NULL
     )
     """.update.run.transact(transactor).void.unsafeRunSync()
   }
 
-  def insertId(fuuid: FUUID): Update0 = {
+  def insertId(fuuid: FUUID): Update0 =
     sql"""INSERT into PostgresInstanceSpec (id) VALUES ($fuuid)""".update
-  }
-  val fuuid = FUUID.randomFUUID[IO].unsafeRunSync
+  val fuuid = FUUID.randomFUUID[IO].unsafeRunSync()
 
   check(sql"SELECT id from PostgresInstanceSpec".query[FUUID])
   check(insertId(fuuid))

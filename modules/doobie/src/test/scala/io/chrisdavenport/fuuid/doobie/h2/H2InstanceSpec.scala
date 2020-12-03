@@ -24,15 +24,13 @@ class H2InstanceSpec extends Specification with IOChecker with BeforeAll {
       pass = ""
     )
 
-  def beforeAll(): Unit = {
-    sql"CREATE TABLE test (id UUID NOT NULL)".update.run.transact(transactor).void.unsafeRunSync
-  }
+  def beforeAll(): Unit =
+    sql"CREATE TABLE test (id UUID NOT NULL)".update.run.transact(transactor).void.unsafeRunSync()
 
-  def insertId(fuuid: FUUID): Update0 = {
+  def insertId(fuuid: FUUID): Update0 =
     sql"""INSERT into test (id) VALUES ($fuuid)""".update
-  }
 
-  val fuuid = FUUID.randomFUUID[IO].unsafeRunSync
+  val fuuid = FUUID.randomFUUID[IO].unsafeRunSync()
 
   check(sql"SELECT id from test".query[FUUID])
   check(insertId(fuuid))
