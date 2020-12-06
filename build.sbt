@@ -73,7 +73,9 @@ lazy val docs = project.in(file("modules/docs"))
     )
   )
   .enablePlugins(MicrositesPlugin)
-  .enablePlugins(TutPlugin)
+  .enablePlugins(MdocPlugin)
+  .enablePlugins(NoPublishPlugin)
+  .settings(mdocIn := sourceDirectory.value / "main" / "mdoc")
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
 val catsV = "2.1.1"            //https://github.com/typelevel/cats/releases
@@ -160,15 +162,7 @@ lazy val micrositeSettings = Seq(
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"
   ),
-  scalacOptions in Tut --= Seq(
-    "-Xfatal-warnings",
-    "-Ywarn-unused-import",
-    "-Ywarn-numeric-widen",
-    "-Ywarn-dead-code",
-    "-Ywarn-unused:imports",
-    "-Xlint:-missing-interpolator,_"
-  ),
-  libraryDependencies += "com.47deg" %% "github4s" % "0.20.1",
+  libraryDependencies += "com.47deg" %% "github4s" % "0.27.1",
   micrositePushSiteWith := GitHub4s,
   micrositeGithubToken := sys.env.get("GITHUB_TOKEN")
 )

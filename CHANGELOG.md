@@ -57,7 +57,7 @@ Upgrades:
 Plugins:
 
 - Kind Projector
-- Tut
+- Mdoc
 - ScalaJS
 
 ## New and Noteworthy for Version 0.2.0-M2

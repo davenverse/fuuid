@@ -14,7 +14,7 @@ dependencies to support additional interactions.
 
 ## Quick Start
 
-To use fuuid in an existing SBT project with Scala 2.11 or a later version, add the following dependency to your
+To use fuuid in an existing SBT project with Scala 2.12 or a later version, add the following dependency to your
 `build.sbt`:
 
 ```scala
@@ -23,7 +23,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid" % "<version>"
 
 ## Examples
 
-```tut:book
+```scala mdoc:silent
 import io.chrisdavenport.fuuid.FUUID
 import cats.effect.IO
 
@@ -42,7 +42,7 @@ val equalToItself : IO[Boolean] = for {
   fuuid <- FUUID.randomFUUID[IO]
 } yield fuuid === fuuid
 
-equalToItself.unsafeRunSync
+equalToItself.unsafeRunSync()
 
 // Uses cats Order
 val laterGreaterThanEarlier : IO[Boolean] = for {
@@ -50,7 +50,7 @@ val laterGreaterThanEarlier : IO[Boolean] = for {
   fuuid2 <- FUUID.randomFUUID[IO]
 } yield fuuid2 > fuuid1
 
-laterGreaterThanEarlier.unsafeRunSync
+laterGreaterThanEarlier.unsafeRunSync()
 ```
 
 ## Circe Integration
@@ -63,12 +63,12 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid-circe" % "<version>"
 
 An example using this integration:
 
-```tut:book
+```scala mdoc:silent
 import io.chrisdavenport.fuuid.circe._
 import io.circe.syntax._
 
-// Running UnsafeRunSync For Tut Purposes - Do Not Do this in your code please.
-val circeFUUID = FUUID.randomFUUID[IO].unsafeRunSync
+// Running UnsafeRunSync For Mdoc Purposes - Do Not Do this in your code please.
+val circeFUUID = FUUID.randomFUUID[IO].unsafeRunSync()
 
 val circeFUUIDJson = circeFUUID.asJson
 
@@ -85,7 +85,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid-http4s" % "<version>"
 
 An example using this integration:
 
-```tut:book
+```scala mdoc:silent
 import io.chrisdavenport.fuuid.http4s.FUUIDVar
 import org.http4s._, org.http4s.dsl.io._
 
@@ -112,7 +112,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid-doobie" % "<version>"
 This dependency will provide a `Meta[FUUID]` which depends on `Meta[UUID]` to provide support for `FUUID`.
 You will need to provide the instance of `Meta[UUID]` in scope. Firstly, we import:
 
-```tut:silent
+```scala
 import doobie._
 import doobie.implicits._
 import io.chrisdavenport.fuuid.doobie.implicits._
@@ -122,7 +122,7 @@ import io.chrisdavenport.fuuid.doobie.implicits._
 
 An example of a query and an insert using this integration in Postgres.
 
-```tut:book
+```scala
 // This importe will provide `Meta[UUID]` support for postgres
 import doobie.postgres.implicits._
 
@@ -145,10 +145,10 @@ def insertId(fuuid: FUUID): Update0 = {
 
 ### H2 Example
 
-An example of a query and an insert using this integration in H2:
+An example of a query and an insert using this integration in h2:
 
-```tut:book
-// This importe will provide `Meta[UUID]` support for h2
+```scala
+// This importe will provide `Meta[UUID]` support for H2
 import doobie.h2.implicits._
 
 // This is the table we'll use for the insert and update below
