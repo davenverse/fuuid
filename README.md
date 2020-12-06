@@ -4,7 +4,7 @@ Head on [over to the microsite](https://christopherdavenport.github.io/fuuid/)
 
 ## Impatient Quickstart
 
-To use fuuid in an existing SBT project with Scala 2.11 or a later version, add the following dependency to your
+To use fuuid in an existing SBT project with Scala 2.12 or a later version, add the following dependency to your
 `build.sbt`:
 
 ```scala

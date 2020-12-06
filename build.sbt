@@ -95,7 +95,7 @@ lazy val contributors = Seq(
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
-  scalaVersion := "2.13.1",
+  scalaVersion := "2.13.4",
   crossScalaVersions := Seq(scalaVersion.value, "2.12.10"),
 
   addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.11.2" cross CrossVersion.full),
@@ -160,7 +160,6 @@ lazy val micrositeSettings = Seq(
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"
   ),
-  fork in tut := true,
   scalacOptions in Tut --= Seq(
     "-Xfatal-warnings",
     "-Ywarn-unused-import",
