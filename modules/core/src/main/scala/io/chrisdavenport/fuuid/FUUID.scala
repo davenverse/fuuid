@@ -98,7 +98,7 @@ object FUUID {
   /**
     * The Nil UUID.
     *
-    * This is a the constant UUID for which all bits are 0.
+    * This is a constant UUID for which all bits are 0.
     *
     * @see [[https://tools.ietf.org/html/rfc4122#section-4.1.7]]
     */
