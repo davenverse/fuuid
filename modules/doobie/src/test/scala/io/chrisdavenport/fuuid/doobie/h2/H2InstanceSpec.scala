@@ -1,7 +1,7 @@
 package io.chrisdavenport.fuuid.doobie.h2
 
 import cats.effect.{ContextShift, IO}
-import cats.syntax.functor._
+// import cats.syntax.functor._
 import doobie._
 import doobie.h2.implicits._
 import doobie.implicits._

@@ -25,7 +25,9 @@ lazy val doobie = project.in(file("modules/doobie"))
       "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
       "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
       "org.tpolecat" %% "doobie-specs2"   % doobieV % Test,
-      "io.chrisdavenport"           %% "testcontainers-specs2" % testContainersSpecs2V % Test
+      "io.chrisdavenport"           %% "whale-tail"            % "0.0.4" % Test,
+      "com.codecommit" %% "cats-effect-testing-specs2" % "0.4.0" % Test,
+      "io.chrisdavenport"           %% "log4cats-slf4j"             % log4CatsV % Test,
     ),
     parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
@@ -85,6 +87,8 @@ val http4sV = "0.21.15"         //https://github.com/http4s/http4s/releases
 val doobieV = "0.9.0"          //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.0.0"  // https://github.com/cquiroz/scala-java-time/releases
 val testContainersSpecs2V = "0.2.0-M2" // 
+val log4CatsV = "1.0.1"
+
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -103,7 +107,6 @@ lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
     "org.scala-lang"              %  "scala-reflect"               % scalaVersion.value,
     "org.typelevel"               %%% "cats-effect"                % catsEffectV,
-
     "org.typelevel"               %%% "cats-laws"                  % catsV         % Test,
     "org.typelevel"               %%% "discipline-specs2"          % disciplineSpecs2V % Test,
     "org.specs2"                  %%% "specs2-core"                % specs2V       % Test,
@@ -169,7 +172,6 @@ lazy val micrositeSettings = Seq(
     "-Ywarn-unused:imports",
     "-Xlint:-missing-interpolator,_"
   ),
-  libraryDependencies += "com.47deg" %% "github4s" % "0.20.1",
   micrositePushSiteWith := GitHub4s,
   micrositeGithubToken := sys.env.get("GITHUB_TOKEN")
 )
