@@ -38,7 +38,7 @@ object FUUID {
   def fromString(s: String): Either[Throwable, FUUID] =
     Either.catchNonFatal(new FUUID(UUID.fromString(s)))
 
-  def fromStringOpt(s: String): Option[FUUID] = 
+  def fromStringOpt(s: String): Option[FUUID] =
     fromString(s).toOption
 
   def fromStringF[F[_]](s: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =
@@ -77,7 +77,7 @@ object FUUID {
   /**
     * Creates a new name-based UUIDv5.
     * NOTE: Not implemented for Scala.js!
-    **/ 
+    **/
   def nameBased[F[_]](namespace: FUUID, name: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =
     PlatformSpecificMethods.nameBased[F](namespace, name, AE)
 
@@ -95,4 +95,13 @@ object FUUID {
     def withUUID[A](fuuid: FUUID)(f: UUID => A): A = f(fuuid.uuid)
   }
 
+  /**
+    * The Nil UUID.
+    *
+    * This is a constant UUID for which all bits are 0.
+    *
+    * @see [[https://tools.ietf.org/html/rfc4122#section-4.1.7]]
+    */
+  val NilUUID: FUUID =
+    FUUID.fromUUID(new UUID(0L, 0L))
 }
