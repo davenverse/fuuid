@@ -146,4 +146,13 @@ object FUUID {
     def withUUID[A](fuuid: FUUID)(f: UUID => A): A = f(fuuid.uuid)
   }
 
+  /**
+    * The Nil UUID.
+    *
+    * This is a constant UUID for which all bits are 0.
+    *
+    * @see [[https://tools.ietf.org/html/rfc4122#section-4.1.7]]
+    */
+  val NilUUID: FUUID =
+    FUUID.fromUUID(new UUID(0L, 0L))
 }
