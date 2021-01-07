@@ -42,7 +42,7 @@ val equalToItself : IO[Boolean] = for {
   fuuid <- FUUID.randomFUUID[IO]
 } yield fuuid === fuuid
 
-equalToItself.unsafeRunSync
+equalToItself.unsafeRunSync()
 
 // Uses cats Order
 val laterGreaterThanEarlier : IO[Boolean] = for {
@@ -50,7 +50,7 @@ val laterGreaterThanEarlier : IO[Boolean] = for {
   fuuid2 <- FUUID.randomFUUID[IO]
 } yield fuuid2 > fuuid1
 
-laterGreaterThanEarlier.unsafeRunSync
+laterGreaterThanEarlier.unsafeRunSync()
 ```
 
 ## Circe Integration
@@ -68,7 +68,7 @@ import io.chrisdavenport.fuuid.circe._
 import io.circe.syntax._
 
 // Running UnsafeRunSync For Tut Purposes - Do Not Do this in your code please.
-val circeFUUID = FUUID.randomFUUID[IO].unsafeRunSync
+val circeFUUID = FUUID.randomFUUID[IO].unsafeRunSync()
 
 val circeFUUIDJson = circeFUUID.asJson
 
