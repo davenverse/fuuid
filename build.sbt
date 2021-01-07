@@ -42,7 +42,7 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
     )
   )
   .jsSettings(
-          
+
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeV % Test
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -79,12 +79,12 @@ lazy val docs = project.in(file("modules/docs"))
 val catsV = "2.1.1"            //https://github.com/typelevel/cats/releases
 val catsEffectV = "2.1.2"      //https://github.com/typelevel/cats-effect/releases
 val specs2V = "4.9.4"             //https://github.com/etorreborre/specs2/releases
-val disciplineSpecs2V = "1.1.0" 
+val disciplineSpecs2V = "1.1.0"
 val circeV = "0.13.0"          //https://github.com/circe/circe/releases
-val http4sV = "0.21.14"         //https://github.com/http4s/http4s/releases
+val http4sV = "0.21.15"         //https://github.com/http4s/http4s/releases
 val doobieV = "0.9.0"          //https://github.com/tpolecat/doobie/releases
-val scalaJavaTimeV = "2.1.0"  // https://github.com/cquiroz/scala-java-time/releases
-val testContainersSpecs2V = "0.2.0-M2" // 
+val scalaJavaTimeV = "2.0.0"  // https://github.com/cquiroz/scala-java-time/releases
+val testContainersSpecs2V = "0.2.0-M2" //
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -95,8 +95,8 @@ lazy val contributors = Seq(
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
-  scalaVersion := "2.13.1",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.10"),
+  scalaVersion := "2.13.4",
+  crossScalaVersions := Seq(scalaVersion.value, "2.12.12"),
 
   addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.11.2" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),
