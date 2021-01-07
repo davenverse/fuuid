@@ -1,7 +1,6 @@
 package io.chrisdavenport.fuuid.doobie.postgres
 
 import cats.effect.{ContextShift, IO}
-import cats.implicits._
 import doobie._
 import doobie.implicits._
 import doobie.postgres.implicits._
