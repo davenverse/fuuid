@@ -42,7 +42,7 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
     )
   )
   .jsSettings(
-          
+
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeV % Test
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -79,12 +79,12 @@ lazy val docs = project.in(file("modules/docs"))
 val catsV = "2.1.1"            //https://github.com/typelevel/cats/releases
 val catsEffectV = "2.1.2"      //https://github.com/typelevel/cats-effect/releases
 val specs2V = "4.9.4"             //https://github.com/etorreborre/specs2/releases
-val disciplineSpecs2V = "1.1.0" 
+val disciplineSpecs2V = "1.1.0"
 val circeV = "0.13.0"          //https://github.com/circe/circe/releases
 val http4sV = "0.21.15"         //https://github.com/http4s/http4s/releases
-val doobieV = "0.9.0"          //https://github.com/tpolecat/doobie/releases
+val doobieV = "0.10.0"          //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.0.0"  // https://github.com/cquiroz/scala-java-time/releases
-val testContainersSpecs2V = "0.2.0-M2" // 
+val testContainersSpecs2V = "0.2.0-M2" //
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
