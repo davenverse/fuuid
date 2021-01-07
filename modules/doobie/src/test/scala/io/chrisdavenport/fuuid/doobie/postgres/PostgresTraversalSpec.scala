@@ -77,7 +77,7 @@ class PostgresTraversalSpec extends mutable.Specification
         fuuid <- queryBy(fuuid).unique.transact(transactor)
       } yield fuuid
 
-      action.unsafeRunSync must_=== fuuid
+      action.unsafeRunSync() must_=== fuuid
     }
     "fail on a non-present value" in prop { fuuid: FUUID =>
       queryBy(fuuid)
@@ -85,7 +85,7 @@ class PostgresTraversalSpec extends mutable.Specification
         .transact(transactor)
         .attempt
         .map(_.isLeft)
-        .unsafeRunSync must_=== true
+        .unsafeRunSync() must_=== true
     }
   }
 
