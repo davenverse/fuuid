@@ -59,7 +59,7 @@ class PostgresInstanceSpec extends mutable.Specification with IOChecker with For
   def insertId(fuuid: FUUID): Update0 = {
     sql"""INSERT into PostgresInstanceSpec (id) VALUES ($fuuid)""".update
   }
-  val fuuid = FUUID.randomFUUID[IO].unsafeRunSync
+  val fuuid = FUUID.randomFUUID[IO].unsafeRunSync()
 
   check(sql"SELECT id from PostgresInstanceSpec".query[FUUID])
   check(insertId(fuuid))
