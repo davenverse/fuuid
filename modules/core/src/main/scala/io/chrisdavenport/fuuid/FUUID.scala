@@ -1,6 +1,7 @@
 package io.chrisdavenport.fuuid
 
 import cats._
+import cats.data._
 import cats.implicits._
 import cats.effect.Sync
 import java.util.UUID
@@ -38,11 +39,61 @@ object FUUID {
   def fromString(s: String): Either[Throwable, FUUID] =
     Either.catchNonFatal(new FUUID(UUID.fromString(s)))
 
+  /** Attempt to parse a UUID from a `String` accumulating errors in a
+   * `cats.data.NonEmptyList` on failure.
+   *
+   * This is useful when you wish to parse more than one UUID at a time and
+   * return all the failures, not just the first one. For example,
+   *
+   * {{{
+   * scala> import cats._, cats.data._, cats.implicits._, io.chrisdavenport.fuuid._
+   * import cats._
+   * import cats.data._
+   * import cats.implicits._
+   * import io.chrisdavenport.fuuid._
+   *
+   * scala> (FUUID.fromStringVNel("a"), FUUID.fromStringVNel("b")).mapN((a, b) => println(s"\$a \$b"))
+   * res0: cats.data.ValidatedNel[Throwable,Unit] = Invalid(NonEmptyList(java.lang.IllegalArgumentException: Invalid UUID string: a, java.lang.IllegalArgumentException: Invalid UUID string: b))
+   * }}}
+   */
+  def fromStringVNel(s: String): ValidatedNel[Throwable, FUUID] =
+    fromStringAccumulating[ValidatedNel[Throwable, *], NonEmptyList](s)
+
+  /** Attempt to parse a UUID from a `String` accumulating errors in a
+   * `cats.data.NonEmptyChain` on failure.
+   *
+   * This is useful when you wish to parse more than one UUID at a time and
+   * return all the failures, not just the first one. For example,
+   *
+   * {{{
+   * scala> import cats._, cats.data._, cats.implicits._, io.chrisdavenport.fuuid._
+   * import cats._
+   * import cats.data._
+   * import cats.implicits._
+   * import io.chrisdavenport.fuuid._
+   *
+   * scala> (FUUID.fromStringVNec("a"), FUUID.fromStringVNec("b")).mapN((a, b) => println(s"\$a \$b"))
+   * res0: cats.data.ValidatedNec[Throwable,Unit] = Invalid(NonEmptyChain(java.lang.IllegalArgumentException: Invalid UUID string: a, java.lang.IllegalArgumentException: Invalid UUID string: b))
+   * }}}
+   */
+  def fromStringVNec(s: String): ValidatedNec[Throwable, FUUID] =
+    fromStringAccumulating[ValidatedNec[Throwable, *], NonEmptyChain](s)
+
   def fromStringOpt(s: String): Option[FUUID] =
     fromString(s).toOption
 
   def fromStringF[F[_]](s: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =
     fromString(s).fold(AE.raiseError, AE.pure)
+
+  /** Like [[#fromStringF]] but using an `Applicative` of `Throwable`.
+   *
+   * Generally this will be used with something like `cats.data.Validated` to
+   * accumulate errors when parsing more than one [[FUUID]].
+   *
+   * See [[#fromStringVNel]] and [[#fromStringVNec]] for examples.
+   */
+  def fromStringAccumulating[F[_], E[_]](s: String)(implicit A: Applicative[E], AE: ApplicativeError[F, E[Throwable]]): F[FUUID] =
+    fromString(s).fold(e => AE.raiseError(A.pure(e)), AE.pure)
 
   def fromUUID(uuid: UUID): FUUID = new FUUID(uuid)
 
