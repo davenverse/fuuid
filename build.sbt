@@ -85,6 +85,9 @@ val http4sV = "0.21.17"         //https://github.com/http4s/http4s/releases
 val doobieV = "0.10.0"          //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.0.0"  // https://github.com/cquiroz/scala-java-time/releases
 val testContainersSpecs2V = "0.2.0-M2" //
+val scala212Version = "2.12.12"
+val scala213Version = "2.13.4"
+val scala3Version = "3.0.0-M3"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -95,8 +98,8 @@ lazy val contributors = Seq(
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
-  scalaVersion := "2.13.4",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.12"),
+  scalaVersion := scala213Version,
+  crossScalaVersions := Seq(scala212Version, scala213Version, scala3Version),
 
   addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.11.3" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy"    %% "better-monadic-for" % "0.3.1"),

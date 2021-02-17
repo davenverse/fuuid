@@ -31,6 +31,14 @@ jobs:
       scala: 2.12.12
       jdk: openjdk8
       script: sbt ++$TRAVIS_SCALA_VERSION test
+    - name: test jdk11 3.0.0-M3
+      scala: 3.0.0-M3
+      jdk: openjdk11
+      script: sbt ++$TRAVIS_SCALA_VERSION test
+    - name: test jdk8 3.0.0-M3
+      scala: 3.0.0-M3
+      jdk: openjdk8
+      script: sbt ++$TRAVIS_SCALA_VERSION test
     - name: mima
       jdk: openjdk8
       script: sbt +mimaReportBinaryIssues
