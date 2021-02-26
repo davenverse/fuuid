@@ -95,7 +95,7 @@ lazy val contributors = Seq(
 lazy val commonSettings = Seq(
   organization := "io.chrisdavenport",
 
-  scalaVersion := "2.13.4",
+  scalaVersion := "2.13.5",
   crossScalaVersions := Seq(scalaVersion.value, "2.12.12"),
 
   addCompilerPlugin("org.typelevel" %  "kind-projector"     % "0.11.3" cross CrossVersion.full),
