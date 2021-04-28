@@ -1,7 +1,6 @@
 package io.chrisdavenport.fuuid.doobie.h2
 
 import cats.effect.{ContextShift, IO}
-import cats.implicits._
 import doobie._
 import doobie.h2.implicits._
 import doobie.implicits._
@@ -30,7 +29,7 @@ class H2TraversalSpec extends Specification
     CREATE TABLE testH2Table (
       id   UUID NOT NULL
     )
-    """.update.run.transact(transactor).void.unsafeRunSync
+    """.update.run.transact(transactor).void.unsafeRunSync()
   }
 
   def queryBy(fuuid: FUUID): Query0[FUUID] = {
@@ -50,7 +49,7 @@ class H2TraversalSpec extends Specification
         fuuid <- queryBy(fuuid).unique.transact(transactor)
       } yield fuuid
 
-      action.unsafeRunSync must_=== fuuid
+      action.unsafeRunSync() must_=== fuuid
     }
 
     "fail on a non-present value" in prop { fuuid: FUUID =>
@@ -59,7 +58,7 @@ class H2TraversalSpec extends Specification
         .transact(transactor)
         .attempt
         .map(_.isLeft)
-        .unsafeRunSync must_=== true
+        .unsafeRunSync() must_=== true
     }
   }
 

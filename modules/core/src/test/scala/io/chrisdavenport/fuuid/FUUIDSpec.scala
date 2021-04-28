@@ -19,7 +19,7 @@ class FUUIDSpec extends mutable.Specification with ScalaCheck {
         .map(_.toString)
         .map(FUUID.fromString)
         .map(_.isRight)
-        .unsafeRunSync must_=== true
+        .unsafeRunSync() must_=== true
     }
   }
 
