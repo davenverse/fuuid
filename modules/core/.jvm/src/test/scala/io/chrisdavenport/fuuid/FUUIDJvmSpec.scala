@@ -11,8 +11,7 @@ class FUUIDJvmSpec extends mutable.Specification with ScalaCheck {
         namespace <- FUUID.randomFUUID[IO]
         namebased <- FUUID.nameBased[IO](namespace, "What up yo!")
         parsed <- FUUID.fromStringF[IO](namebased.toString)
-      } yield parsed)
-        .attempt
+      } yield parsed).attempt
         .unsafeRunSync()
         .isRight must_=== true
     }

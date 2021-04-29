@@ -8,7 +8,7 @@ import java.util.UUID
 
 import scala.reflect.macros.blackbox
 
-final class FUUID private (private val uuid: UUID){
+final class FUUID private (private val uuid: UUID) {
 
   // Direct show method so people do not use toString
   def show: String = uuid.show
@@ -29,7 +29,7 @@ final class FUUID private (private val uuid: UUID){
 
 object FUUID {
   implicit val instancesFUUID: Hash[FUUID] with Order[FUUID] with Show[FUUID] =
-    new Hash[FUUID] with Order[FUUID] with Show[FUUID]{
+    new Hash[FUUID] with Order[FUUID] with Show[FUUID] {
       override def show(t: FUUID): String = t.show
       override def eqv(x: FUUID, y: FUUID): Boolean = x.eqv(y)
       override def hash(x: FUUID): Int = x.hashCode
@@ -39,7 +39,8 @@ object FUUID {
   def fromString(s: String): Either[Throwable, FUUID] =
     Either.catchNonFatal(new FUUID(UUID.fromString(s)))
 
-  /** Attempt to parse a UUID from a `String` accumulating errors in a
+  /**
+   * Attempt to parse a UUID from a `String` accumulating errors in a
    * `cats.data.NonEmptyList` on failure.
    *
    * This is useful when you wish to parse more than one UUID at a time and
@@ -59,7 +60,8 @@ object FUUID {
   def fromStringVNel(s: String): ValidatedNel[Throwable, FUUID] =
     fromStringAccumulating[ValidatedNel[Throwable, *], NonEmptyList](s)
 
-  /** Attempt to parse a UUID from a `String` accumulating errors in a
+  /**
+   * Attempt to parse a UUID from a `String` accumulating errors in a
    * `cats.data.NonEmptyChain` on failure.
    *
    * This is useful when you wish to parse more than one UUID at a time and
@@ -85,14 +87,17 @@ object FUUID {
   def fromStringF[F[_]](s: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =
     fromString(s).fold(AE.raiseError, AE.pure)
 
-  /** Like [[#fromStringF]] but using an `Applicative` of `Throwable`.
+  /**
+   * Like [[#fromStringF]] but using an `Applicative` of `Throwable`.
    *
    * Generally this will be used with something like `cats.data.Validated` to
    * accumulate errors when parsing more than one [[FUUID]].
    *
    * See [[#fromStringVNel]] and [[#fromStringVNec]] for examples.
    */
-  def fromStringAccumulating[F[_], E[_]](s: String)(implicit A: Applicative[E], AE: ApplicativeError[F, E[Throwable]]): F[FUUID] =
+  def fromStringAccumulating[F[_], E[_]](
+      s: String
+  )(implicit A: Applicative[E], AE: ApplicativeError[F, E[Throwable]]): F[FUUID] =
     fromString(s).fold(e => AE.raiseError(A.pure(e)), AE.pure)
 
   def fromUUID(uuid: UUID): FUUID = new FUUID(uuid)
@@ -107,8 +112,8 @@ object FUUID {
     import c.universe._
     def fuuidLiteral(s: c.Expr[String]): c.Expr[FUUID] =
       s.tree match {
-        case Literal(Constant(s: String))=>
-            fromString(s)
+        case Literal(Constant(s: String)) =>
+          fromString(s)
             .fold(
               e => c.abort(c.enclosingPosition, e.getMessage.replace("UUID", "FUUID")),
               _ => c.Expr(q"""
@@ -126,33 +131,35 @@ object FUUID {
   }
 
   /**
-    * Creates a new name-based UUIDv5.
-    * NOTE: Not implemented for Scala.js!
-    **/
-  def nameBased[F[_]](namespace: FUUID, name: String)(implicit AE: ApplicativeError[F, Throwable]): F[FUUID] =
+   * Creates a new name-based UUIDv5.
+   * NOTE: Not implemented for Scala.js!
+   */
+  def nameBased[F[_]](namespace: FUUID, name: String)(implicit
+      AE: ApplicativeError[F, Throwable]
+  ): F[FUUID] =
     PlatformSpecificMethods.nameBased[F](namespace, name, AE)
 
   /**
-    * A Home For functions we don't trust
-    * Hopefully making it very clear that this code needs
-    * to be dealt with carefully.
-    *
-    * Likely necessary for some interop
-    *
-    * Please do not import directly but prefer `FUUID.Unsafe.xxx`
-    **/
+   * A Home For functions we don't trust
+   * Hopefully making it very clear that this code needs
+   * to be dealt with carefully.
+   *
+   * Likely necessary for some interop
+   *
+   * Please do not import directly but prefer `FUUID.Unsafe.xxx`
+   */
   object Unsafe {
     def toUUID(fuuid: FUUID): UUID = fuuid.uuid
     def withUUID[A](fuuid: FUUID)(f: UUID => A): A = f(fuuid.uuid)
   }
 
   /**
-    * The Nil UUID.
-    *
-    * This is a constant UUID for which all bits are 0.
-    *
-    * @see [[https://tools.ietf.org/html/rfc4122#section-4.1.7]]
-    */
+   * The Nil UUID.
+   *
+   * This is a constant UUID for which all bits are 0.
+   *
+   * @see [[https://tools.ietf.org/html/rfc4122#section-4.1.7]]
+   */
   val NilUUID: FUUID =
     FUUID.fromUUID(new UUID(0L, 0L))
 }

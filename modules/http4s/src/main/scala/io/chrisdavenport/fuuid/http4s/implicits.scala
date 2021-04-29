@@ -13,11 +13,12 @@ object implicits {
       def decode(value: QueryParameterValue): ValidatedNel[ParseFailure, FUUID] =
         FUUID
           .fromString(value.value)
-          .leftMap(
-            _ =>
-              ParseFailure(
-                "Failed to parse FUUID query parameter",
-                s"Could not parse ${value.value} as a FUUID"))
+          .leftMap(_ =>
+            ParseFailure(
+              "Failed to parse FUUID query parameter",
+              s"Could not parse ${value.value} as a FUUID"
+            )
+          )
           .toValidatedNel
     }
 }

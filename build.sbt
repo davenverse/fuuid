@@ -6,7 +6,7 @@ val Scala212 = "2.12.13"
 
 ThisBuild / organization := "io.chrisdavenport"
 ThisBuild / crossScalaVersions := Seq(Scala213, Scala212)
-ThisBuild / scalaVersion := Scala212
+ThisBuild / scalaVersion := Scala213
 
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8", "adopt@1.11")
 
@@ -53,48 +53,50 @@ ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(R
 
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
-    List("release"),
+    List("release")
   )
 ) ++ micrositeWorkflowSteps(Some(MicrositesCond)).toSeq :+ WorkflowStep.Sbt(
   List("docs/publishMicrosite"),
   cond = Some(MicrositesCond)
 )
 
-lazy val fuuid = project.in(file("."))
+lazy val fuuid = project
+  .in(file("."))
   .disablePlugins(MimaPlugin)
   .settings(commonSettings, releaseSettings, skipOnPublishSettings)
-  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM/*, docs*/)
+  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM /*, docs*/ )
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
-    .crossType(CrossType.Pure)
-    .in(file("modules/core"))
-    .settings(commonSettings, releaseSettings)
-    .settings(
-      name := "fuuid"
-    )
+  .crossType(CrossType.Pure)
+  .in(file("modules/core"))
+  .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(
+    name := "fuuid"
+  )
 
-lazy val coreJS     = core.js
-lazy val coreJVM    = core.jvm
+lazy val coreJS = core.js
+lazy val coreJVM = core.jvm
 
-lazy val doobie = project.in(file("modules/doobie"))
-  .settings(commonSettings, releaseSettings)
+lazy val doobie = project
+  .in(file("modules/doobie"))
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-core"     % doobieV,
-      "org.tpolecat" %% "doobie-postgres" % doobieV % Test,
-      "org.tpolecat" %% "doobie-h2"       % doobieV % Test,
-      "org.tpolecat" %% "doobie-specs2"   % doobieV % Test,
-      "io.chrisdavenport"           %% "testcontainers-specs2" % testContainersSpecs2V % Test
+      "org.tpolecat" %% "doobie-core"                     % doobieV,
+      "org.tpolecat" %% "doobie-postgres"                 % doobieV         % Test,
+      "org.tpolecat" %% "doobie-h2"                       % doobieV         % Test,
+      "org.tpolecat" %% "doobie-specs2"                   % doobieV         % Test,
+      "com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersV % Test
     ),
-    parallelExecution in Test := false // Needed due to a driver initialization deadlock between Postgres and H2
+    Test / parallelExecution := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
   .dependsOn(coreJVM % "compile->compile;test->test")
 
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/circe"))
-  .settings(commonSettings, releaseSettings)
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-circe",
     libraryDependencies ++= Seq(
@@ -102,7 +104,6 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
     )
   )
   .jsSettings(
-
     libraryDependencies += "io.github.cquiroz" %%% "scala-java-time" % scalaJavaTimeV % Test
   )
   .dependsOn(core % "compile->compile;test->test")
@@ -110,35 +111,37 @@ lazy val circe = crossProject(JSPlatform, JVMPlatform)
 lazy val circeJS = circe.js
 lazy val circeJVM = circe.jvm
 
-
-lazy val http4s = project.in(file("modules/http4s"))
-  .settings(commonSettings, releaseSettings)
+lazy val http4s = project
+  .in(file("modules/http4s"))
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-http4s",
     libraryDependencies ++= Seq(
       "org.http4s" %% "http4s-core" % http4sV,
-      "org.http4s" %% "http4s-dsl" % http4sV % Test
+      "org.http4s" %% "http4s-dsl"  % http4sV % Test
     )
   )
   .dependsOn(coreJVM % "compile->compile;test->test")
 
-lazy val docs = project.in(file("modules/docs"))
+lazy val docs = project
+  .in(file("modules/docs"))
   .disablePlugins(MimaPlugin)
   .enablePlugins(MicrositesPlugin)
   .enablePlugins(MdocPlugin)
   .settings(commonSettings, micrositeSettings, skipOnPublishSettings)
   .settings(mdocIn := sourceDirectory.value / "main" / "mdoc")
+  .settings(githubWorkflowArtifactUpload := false)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "2.1.1"            //https://github.com/typelevel/cats/releases
-val catsEffectV = "2.1.2"      //https://github.com/typelevel/cats-effect/releases
-val specs2V = "4.9.4"             //https://github.com/etorreborre/specs2/releases
-val disciplineSpecs2V = "1.1.0"
-val circeV = "0.13.0"          //https://github.com/circe/circe/releases
-val http4sV = "0.21.17"         //https://github.com/http4s/http4s/releases
-val doobieV = "0.10.0"          //https://github.com/tpolecat/doobie/releases
-val scalaJavaTimeV = "2.0.0"  // https://github.com/cquiroz/scala-java-time/releases
-val testContainersSpecs2V = "0.2.0-M2" //
+val catsV = "2.6.0" //https://github.com/typelevel/cats/releases
+val catsEffectV = "2.5.0" //https://github.com/typelevel/cats-effect/releases
+val specs2V = "4.11.0" //https://github.com/etorreborre/specs2/releases
+val disciplineSpecs2V = "1.1.5"
+val circeV = "0.13.0" //https://github.com/circe/circe/releases
+val http4sV = "0.21.22" //https://github.com/http4s/http4s/releases
+val doobieV = "0.13.1" //https://github.com/tpolecat/doobie/releases
+val scalaJavaTimeV = "2.0.0" // https://github.com/cquiroz/scala-java-time/releases
+val testcontainersV = "0.39.3"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -150,32 +153,41 @@ lazy val commonSettings = Seq(
   addCompilerPlugin("org.typelevel" % "kind-projector"     % "0.11.3" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy"   %% "better-monadic-for" % "0.3.1"),
   libraryDependencies ++= Seq(
-    "org.scala-lang"              %  "scala-reflect"               % scalaVersion.value,
-    "org.typelevel"               %%% "cats-effect"                % catsEffectV,
-
-    "org.typelevel"               %%% "cats-laws"                  % catsV         % Test,
-    "org.typelevel"               %%% "discipline-specs2"          % disciplineSpecs2V % Test,
-    "org.specs2"                  %%% "specs2-core"                % specs2V       % Test,
-    "org.specs2"                  %%% "specs2-scalacheck"          % specs2V       % Test
+    "org.scala-lang"                        % "scala-reflect"   % scalaVersion.value,
+    "org.typelevel" %%% "cats-effect"       % catsEffectV,
+    "org.typelevel" %%% "cats-laws"         % catsV             % Test,
+    "org.typelevel" %%% "discipline-specs2" % disciplineSpecs2V % Test,
+    "org.specs2" %%% "specs2-core"          % specs2V           % Test,
+    "org.specs2" %%% "specs2-scalacheck"    % specs2V           % Test
   )
 )
 
 lazy val releaseSettings = {
   Seq(
-    publishArtifact in Test := false,
+    Test / publishArtifact := false,
     scmInfo := Some(
       ScmInfo(
-        url("https://github.com/ChristopherDavenport/fuuid"),
-        "git@github.com:ChristopherDavenport/fuuid.git"
+        url("https://github.com/davenverse/fuuid"),
+        "git@github.com:davenverse/fuuid.git"
       )
     ),
-    homepage := Some(url("https://github.com/ChristopherDavenport/fuuid")),
+    homepage := Some(url("https://github.com/davenverse/fuuid")),
     licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
     publishMavenStyle := true,
     startYear := Some(2018),
     developers := List(
-      Developer("christopherdavenport", "Christopher Davenport", "chris@christopherdavenport.tech", new java.net.URL("https://christopherdavenport.github.io/")),
-      Developer("JesusMtnez", "Jesús Martínez-B. H.", "jesusmartinez93@gmail.com", new java.net.URL("https://jesusmtnez.es/"))
+      Developer(
+        "christopherdavenport",
+        "Christopher Davenport",
+        "chris@christopherdavenport.tech",
+        new java.net.URL("https://christopherdavenport.github.io/")
+      ),
+      Developer(
+        "JesusMtnez",
+        "Jesús Martínez-B. H.",
+        "jesusmartinez93@gmail.com",
+        new java.net.URL("https://jesusmtnez.es/")
+      )
     )
   )
 }
@@ -212,8 +224,59 @@ lazy val micrositeSettings = Seq(
   micrositeGithubToken := sys.env.get("GITHUB_TOKEN")
 )
 
+lazy val mimaSettings = {
+
+  def semverBinCompatVersions(major: Int, minor: Int, patch: Int): Set[(Int, Int, Int)] = {
+    val majorVersions: List[Int] = List(major)
+    val minorVersions : List[Int] =
+      if (major >= 1) Range(0, minor).inclusive.toList
+      else List(minor)
+    def patchVersions(currentMinVersion: Int): List[Int] =
+      if (minor == 0 && patch == 0) List.empty[Int]
+      else if (currentMinVersion != minor) List(0)
+      else Range(0, patch - 1).inclusive.toList
+
+    val versions = for {
+      maj <- majorVersions
+      min <- minorVersions
+      pat <- patchVersions(min)
+    } yield (maj, min, pat)
+    versions.toSet
+  }
+
+  def mimaVersions(version: String): Set[String] = {
+    VersionNumber(version) match {
+      case VersionNumber(Seq(major, minor, patch, _*), _, _) if patch.toInt > 0 =>
+        semverBinCompatVersions(major.toInt, minor.toInt, patch.toInt)
+          .map{case (maj, min, pat) => maj.toString + "." + min.toString + "." + pat.toString}
+      case _ =>
+        Set.empty[String]
+    }
+  }
+  // Safety Net For Exclusions
+  lazy val excludedVersions: Set[String] = Set()
+
+  // Safety Net for Inclusions
+  lazy val extraVersions: Set[String] = Set()
+
+  Seq(
+    mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
+    mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
+      .filterNot(excludedVersions.contains(_))
+      .map{v =>
+        val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
+        organization.value % moduleN % v
+      },
+    mimaBinaryIssueFilters ++= {
+      import com.typesafe.tools.mima.core._
+      import com.typesafe.tools.mima.core.ProblemFilters._
+      Seq()
+    }
+  )
+}
+
 lazy val skipOnPublishSettings = Seq(
-  skip in publish := true,
+  publish / skip := true,
   publish := (()),
   publishLocal := (()),
   publishArtifact := false,
