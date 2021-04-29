@@ -140,7 +140,7 @@ val disciplineSpecs2V = "1.1.5"
 val circeV = "0.13.0" //https://github.com/circe/circe/releases
 val http4sV = "0.21.22" //https://github.com/http4s/http4s/releases
 val doobieV = "0.13.1" //https://github.com/tpolecat/doobie/releases
-val scalaJavaTimeV = "2.0.0" // https://github.com/cquiroz/scala-java-time/releases
+val scalaJavaTimeV = "2.2.2" // https://github.com/cquiroz/scala-java-time/releases
 val testcontainersV = "0.39.3"
 
 lazy val contributors = Seq(
