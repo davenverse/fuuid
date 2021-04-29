@@ -69,7 +69,7 @@ lazy val fuuid = project
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/core"))
-  .settings(commonSettings, releaseSettings)
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid"
   )
@@ -79,7 +79,7 @@ lazy val coreJVM = core.jvm
 
 lazy val doobie = project
   .in(file("modules/doobie"))
-  .settings(commonSettings, releaseSettings)
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
@@ -96,7 +96,7 @@ lazy val doobie = project
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/circe"))
-  .settings(commonSettings, releaseSettings)
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-circe",
     libraryDependencies ++= Seq(
@@ -113,7 +113,7 @@ lazy val circeJVM = circe.jvm
 
 lazy val http4s = project
   .in(file("modules/http4s"))
-  .settings(commonSettings, releaseSettings)
+  .settings(commonSettings, releaseSettings, mimaSettings)
   .settings(
     name := "fuuid-http4s",
     libraryDependencies ++= Seq(
@@ -222,6 +222,57 @@ lazy val micrositeSettings = Seq(
   micrositePushSiteWith := GitHub4s,
   micrositeGithubToken := sys.env.get("GITHUB_TOKEN")
 )
+
+lazy val mimaSettings = {
+
+  def semverBinCompatVersions(major: Int, minor: Int, patch: Int): Set[(Int, Int, Int)] = {
+    val majorVersions: List[Int] = List(major)
+    val minorVersions : List[Int] =
+      if (major >= 1) Range(0, minor).inclusive.toList
+      else List(minor)
+    def patchVersions(currentMinVersion: Int): List[Int] =
+      if (minor == 0 && patch == 0) List.empty[Int]
+      else if (currentMinVersion != minor) List(0)
+      else Range(0, patch - 1).inclusive.toList
+
+    val versions = for {
+      maj <- majorVersions
+      min <- minorVersions
+      pat <- patchVersions(min)
+    } yield (maj, min, pat)
+    versions.toSet
+  }
+
+  def mimaVersions(version: String): Set[String] = {
+    VersionNumber(version) match {
+      case VersionNumber(Seq(major, minor, patch, _*), _, _) if patch.toInt > 0 =>
+        semverBinCompatVersions(major.toInt, minor.toInt, patch.toInt)
+          .map{case (maj, min, pat) => maj.toString + "." + min.toString + "." + pat.toString}
+      case _ =>
+        Set.empty[String]
+    }
+  }
+  // Safety Net For Exclusions
+  lazy val excludedVersions: Set[String] = Set()
+
+  // Safety Net for Inclusions
+  lazy val extraVersions: Set[String] = Set()
+
+  Seq(
+    mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
+    mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
+      .filterNot(excludedVersions.contains(_))
+      .map{v =>
+        val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
+        organization.value % moduleN % v
+      },
+    mimaBinaryIssueFilters ++= {
+      import com.typesafe.tools.mima.core._
+      import com.typesafe.tools.mima.core.ProblemFilters._
+      Seq()
+    }
+  )
+}
 
 lazy val skipOnPublishSettings = Seq(
   publish / skip := true,
