@@ -23,7 +23,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid" % "<version>"
 
 ## Examples
 
-```tut:book
+```
 import io.chrisdavenport.fuuid.FUUID
 import cats.effect.IO
 
@@ -63,7 +63,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid-circe" % "<version>"
 
 An example using this integration:
 
-```tut:book
+```
 import io.chrisdavenport.fuuid.circe._
 import io.circe.syntax._
 
@@ -85,7 +85,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid-http4s" % "<version>"
 
 An example using this integration:
 
-```tut:book
+```
 import io.chrisdavenport.fuuid.http4s.FUUIDVar
 import org.http4s._, org.http4s.dsl.io._
 
@@ -112,7 +112,7 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid-doobie" % "<version>"
 This dependency will provide a `Meta[FUUID]` which depends on `Meta[UUID]` to provide support for `FUUID`.
 You will need to provide the instance of `Meta[UUID]` in scope. Firstly, we import:
 
-```tut:silent
+```scala mdoc:silent
 import doobie._
 import doobie.implicits._
 import io.chrisdavenport.fuuid.doobie.implicits._
@@ -122,7 +122,7 @@ import io.chrisdavenport.fuuid.doobie.implicits._
 
 An example of a query and an insert using this integration in Postgres.
 
-```tut:book
+```
 // This importe will provide `Meta[UUID]` support for postgres
 import doobie.postgres.implicits._
 
@@ -147,7 +147,7 @@ def insertId(fuuid: FUUID): Update0 = {
 
 An example of a query and an insert using this integration in H2:
 
-```tut:book
+```
 // This importe will provide `Meta[UUID]` support for h2
 import doobie.h2.implicits._
 
