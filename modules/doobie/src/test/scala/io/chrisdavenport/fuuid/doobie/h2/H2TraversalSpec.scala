@@ -11,8 +11,7 @@ import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAll
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class H2TraversalSpec extends Specification
-  with BeforeAll with ScalaCheck with FUUIDArbitraries {
+class H2TraversalSpec extends Specification with BeforeAll with ScalaCheck with FUUIDArbitraries {
 
   implicit val contextShiftIO: ContextShift[IO] = IO.contextShift(global)
 
@@ -32,18 +31,15 @@ class H2TraversalSpec extends Specification
     """.update.run.transact(transactor).void.unsafeRunSync()
   }
 
-  def queryBy(fuuid: FUUID): Query0[FUUID] = {
+  def queryBy(fuuid: FUUID): Query0[FUUID] =
     sql"""SELECT id from testH2Table where id = ${fuuid}""".query[FUUID]
-  }
 
-  def insertId(fuuid: FUUID): Update0 = {
+  def insertId(fuuid: FUUID): Update0 =
     sql"""INSERT into testH2Table (id) VALUES ($fuuid)""".update
-  }
 
   "Doobie H2 Meta" should {
 
     "traverse input and then extraction" in prop { fuuid: FUUID =>
-
       val action = for {
         _ <- insertId(fuuid).run.transact(transactor)
         fuuid <- queryBy(fuuid).unique.transact(transactor)
@@ -53,8 +49,7 @@ class H2TraversalSpec extends Specification
     }
 
     "fail on a non-present value" in prop { fuuid: FUUID =>
-      queryBy(fuuid)
-        .unique
+      queryBy(fuuid).unique
         .transact(transactor)
         .attempt
         .map(_.isLeft)
