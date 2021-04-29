@@ -14,8 +14,11 @@ import java.time.temporal.ChronoUnit.SECONDS
 import org.specs2._
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class PostgresTraversalSpec extends mutable.Specification
-  with ScalaCheck with FUUIDArbitraries with ForAllTestContainer {
+class PostgresTraversalSpec
+    extends mutable.Specification
+    with ScalaCheck
+    with FUUIDArbitraries
+    with ForAllTestContainer {
   sequential
   implicit val contextShiftIO: ContextShift[IO] = IO.contextShift(global)
 
@@ -34,7 +37,8 @@ class PostgresTraversalSpec extends mutable.Specification
   )
 
   lazy val driverName = "org.postgresql.Driver"
-  lazy val jdbcUrl = s"jdbc:postgresql://${container.container.getContainerIpAddress()}:${container.container.getMappedPort(5432)}/${dbName}"
+  lazy val jdbcUrl = s"jdbc:postgresql://${container.container
+    .getContainerIpAddress()}:${container.container.getMappedPort(5432)}/${dbName}"
   lazy val dbUserName = "user"
   lazy val dbPassword = "password"
   lazy val dbName = "db"
@@ -60,17 +64,14 @@ class PostgresTraversalSpec extends mutable.Specification
     """.update.run.transact(transactor).void.unsafeRunSync()
   }
 
-  def queryBy(fuuid: FUUID): Query0[FUUID] = {
+  def queryBy(fuuid: FUUID): Query0[FUUID] =
     sql"""SELECT id from PostgresTraversalSpec where id = ${fuuid}""".query[FUUID]
-  }
 
-  def insertId(fuuid: FUUID): Update0 = {
+  def insertId(fuuid: FUUID): Update0 =
     sql"""INSERT into PostgresTraversalSpec (id) VALUES ($fuuid)""".update
-  }
 
   "Doobie Postgres Meta" should {
     "traverse input and then extraction" in prop { fuuid: FUUID =>
-
       val action = for {
         _ <- insertId(fuuid).run.transact(transactor)
         fuuid <- queryBy(fuuid).unique.transact(transactor)
@@ -79,8 +80,7 @@ class PostgresTraversalSpec extends mutable.Specification
       action.unsafeRunSync() must_=== fuuid
     }
     "fail on a non-present value" in prop { fuuid: FUUID =>
-      queryBy(fuuid)
-        .unique
+      queryBy(fuuid).unique
         .transact(transactor)
         .attempt
         .map(_.isLeft)

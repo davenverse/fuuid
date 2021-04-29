@@ -1,4 +1,64 @@
 import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+import sbtghactions.UseRef
+
+val Scala213 = "2.13.5"
+val Scala212 = "2.12.13"
+
+ThisBuild / organization := "io.chrisdavenport"
+ThisBuild / crossScalaVersions := Seq(Scala213, Scala212)
+ThisBuild / scalaVersion := Scala213
+
+ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8", "adopt@1.11")
+
+val MicrositesCond = s"matrix.scala == '$Scala212'"
+
+ThisBuild / githubWorkflowBuild := Seq(
+  WorkflowStep.Sbt(List("test"), name = Some("Test")),
+  WorkflowStep.Sbt(List("mimaReportBinaryIssues"), name = Some("Binary Compatibility Check"))
+)
+
+def micrositeWorkflowSteps(cond: Option[String] = None): List[WorkflowStep] = List(
+  WorkflowStep.Use(
+    UseRef.Public("ruby", "setup-ruby", "v1"),
+    params = Map("ruby-version" -> "2.6"),
+    cond = cond
+  ),
+  WorkflowStep.Run(List("gem update --system"), cond = cond),
+  WorkflowStep.Run(List("gem install sass"), cond = cond),
+  WorkflowStep.Run(List("gem install jekyll -v 4"), cond = cond)
+)
+
+ThisBuild / githubWorkflowAddedJobs ++= Seq(
+  WorkflowJob(
+    "scalafmt",
+    "Scalafmt",
+    githubWorkflowJobSetup.value.toList ::: List(
+      WorkflowStep.Sbt(List("scalafmtCheckAll"), name = Some("Scalafmt"))
+    ),
+    // Awaiting release of https://github.com/scalameta/scalafmt/pull/2324/files
+    scalas = crossScalaVersions.value.toList.filter(_.startsWith("2."))
+  ),
+  WorkflowJob(
+    "microsite",
+    "Microsite",
+    githubWorkflowJobSetup.value.toList ::: (micrositeWorkflowSteps(None) :+ WorkflowStep
+      .Sbt(List("docs/makeMicrosite"), name = Some("Build the microsite"))),
+    scalas = List(Scala212)
+  )
+)
+
+ThisBuild / githubWorkflowTargetBranches := List("*", "series/*")
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+ThisBuild / githubWorkflowPublishTargetBranches := Seq(RefPredicate.StartsWith(Ref.Tag("v")))
+
+ThisBuild / githubWorkflowPublish := Seq(
+  WorkflowStep.Sbt(
+    List("release")
+  )
+) ++ micrositeWorkflowSteps(Some(MicrositesCond)).toSeq :+ WorkflowStep.Sbt(
+  List("docs/publishMicrosite"),
+  cond = Some(MicrositesCond)
+)
 
 lazy val fuuid = project
   .in(file("."))
@@ -9,7 +69,7 @@ lazy val fuuid = project
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/core"))
-  .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(commonSettings, releaseSettings)
   .settings(
     name := "fuuid"
   )
@@ -19,7 +79,7 @@ lazy val coreJVM = core.jvm
 
 lazy val doobie = project
   .in(file("modules/doobie"))
-  .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(commonSettings, releaseSettings)
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
@@ -36,7 +96,7 @@ lazy val doobie = project
 lazy val circe = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/circe"))
-  .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(commonSettings, releaseSettings)
   .settings(
     name := "fuuid-circe",
     libraryDependencies ++= Seq(
@@ -53,7 +113,7 @@ lazy val circeJVM = circe.jvm
 
 lazy val http4s = project
   .in(file("modules/http4s"))
-  .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(commonSettings, releaseSettings)
   .settings(
     name := "fuuid-http4s",
     libraryDependencies ++= Seq(
@@ -66,16 +126,10 @@ lazy val http4s = project
 lazy val docs = project
   .in(file("modules/docs"))
   .disablePlugins(MimaPlugin)
-  .settings(commonSettings, skipOnPublishSettings, micrositeSettings)
-  .settings(
-    libraryDependencies ++= Seq(
-      "org.http4s"   %% "http4s-dsl"      % http4sV,
-      "org.tpolecat" %% "doobie-postgres" % doobieV,
-      "org.tpolecat" %% "doobie-h2"       % doobieV
-    )
-  )
   .enablePlugins(MicrositesPlugin)
-  .enablePlugins(TutPlugin)
+  .enablePlugins(MdocPlugin)
+  .settings(commonSettings, micrositeSettings, skipOnPublishSettings)
+  .settings(mdocIn := sourceDirectory.value / "main" / "mdoc")
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
 val catsV = "2.6.0" //https://github.com/typelevel/cats/releases
@@ -94,12 +148,7 @@ lazy val contributors = Seq(
 )
 
 // General Settings
-
-ThisBuild / scalaVersion := "2.13.5"
-
 lazy val commonSettings = Seq(
-  organization := "io.chrisdavenport",
-  crossScalaVersions := Seq(scalaVersion.value, "2.12.13"),
   addCompilerPlugin("org.typelevel" % "kind-projector"     % "0.11.3" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy"   %% "better-monadic-for" % "0.3.1"),
   libraryDependencies ++= Seq(
@@ -124,21 +173,21 @@ lazy val releaseSettings = {
     homepage := Some(url("https://github.com/davenverse/fuuid")),
     licenses += ("MIT", url("http://opensource.org/licenses/MIT")),
     publishMavenStyle := true,
-    pomIncludeRepository := { _ =>
-      false
-    },
-    pomExtra := {
-      <developers>
-        {
-        for ((username, name) <- contributors)
-          yield <developer>
-          <id>{username}</id>
-          <name>{name}</name>
-          <url>http://github.com/{username}</url>
-        </developer>
-      }
-      </developers>
-    }
+    startYear := Some(2018),
+    developers := List(
+      Developer(
+        "christopherdavenport",
+        "Christopher Davenport",
+        "chris@christopherdavenport.tech",
+        new java.net.URL("https://christopherdavenport.github.io/")
+      ),
+      Developer(
+        "JesusMtnez",
+        "Jesús Martínez-B. H.",
+        "jesusmartinez93@gmail.com",
+        new java.net.URL("https://jesusmtnez.es/")
+      )
+    )
   )
 }
 
@@ -162,8 +211,7 @@ lazy val micrositeSettings = Seq(
     "gray-lighter" -> "#F4F3F4",
     "white-color" -> "#FFFFFF"
   ),
-  Tut / fork := true,
-  Tut / scalacOptions --= Seq(
+  scalacOptions --= Seq(
     "-Xfatal-warnings",
     "-Ywarn-unused-import",
     "-Ywarn-numeric-widen",
@@ -171,61 +219,9 @@ lazy val micrositeSettings = Seq(
     "-Ywarn-unused:imports",
     "-Xlint:-missing-interpolator,_"
   ),
-  libraryDependencies += "com.47deg" %% "github4s" % "0.20.1",
   micrositePushSiteWith := GitHub4s,
   micrositeGithubToken := sys.env.get("GITHUB_TOKEN")
 )
-
-lazy val mimaSettings = {
-
-  def semverBinCompatVersions(major: Int, minor: Int, patch: Int): Set[(Int, Int, Int)] = {
-    val majorVersions: List[Int] = List(major)
-    val minorVersions: List[Int] =
-      if (major >= 1) Range(0, minor).inclusive.toList
-      else List(minor)
-    def patchVersions(currentMinVersion: Int): List[Int] =
-      if (minor == 0 && patch == 0) List.empty[Int]
-      else if (currentMinVersion != minor) List(0)
-      else Range(0, patch - 1).inclusive.toList
-
-    val versions = for {
-      maj <- majorVersions
-      min <- minorVersions
-      pat <- patchVersions(min)
-    } yield (maj, min, pat)
-    versions.toSet
-  }
-
-  def mimaVersions(version: String): Set[String] = {
-    VersionNumber(version) match {
-      case VersionNumber(Seq(major, minor, patch, _*), _, _) if patch.toInt > 0 =>
-        semverBinCompatVersions(major.toInt, minor.toInt, patch.toInt)
-          .map { case (maj, min, pat) => maj.toString + "." + min.toString + "." + pat.toString }
-      case _ =>
-        Set.empty[String]
-    }
-  }
-  // Safety Net For Exclusions
-  lazy val excludedVersions: Set[String] = Set()
-
-  // Safety Net for Inclusions
-  lazy val extraVersions: Set[String] = Set()
-
-  Seq(
-    mimaFailOnProblem := mimaVersions(version.value).toList.headOption.isDefined,
-    mimaPreviousArtifacts := (mimaVersions(version.value) ++ extraVersions)
-      .filterNot(excludedVersions.contains(_))
-      .map { v =>
-        val moduleN = moduleName.value + "_" + scalaBinaryVersion.value.toString
-        organization.value % moduleN % v
-      },
-    mimaBinaryIssueFilters ++= {
-      import com.typesafe.tools.mima.core._
-      import com.typesafe.tools.mima.core.ProblemFilters._
-      Seq()
-    }
-  )
-}
 
 lazy val skipOnPublishSettings = Seq(
   publish / skip := true,
