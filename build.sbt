@@ -83,11 +83,11 @@ lazy val doobie = project
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
-      "org.tpolecat"      %% "doobie-core"           % doobieV,
-      "org.tpolecat"      %% "doobie-postgres"       % doobieV               % Test,
-      "org.tpolecat"      %% "doobie-h2"             % doobieV               % Test,
-      "org.tpolecat"      %% "doobie-specs2"         % doobieV               % Test,
-      "io.chrisdavenport" %% "testcontainers-specs2" % testContainersSpecs2V % Test
+      "org.tpolecat" %% "doobie-core"                     % doobieV,
+      "org.tpolecat" %% "doobie-postgres"                 % doobieV         % Test,
+      "org.tpolecat" %% "doobie-h2"                       % doobieV         % Test,
+      "org.tpolecat" %% "doobie-specs2"                   % doobieV         % Test,
+      "com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersV % Test
     ),
     Test / parallelExecution := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
@@ -140,7 +140,7 @@ val circeV = "0.13.0" //https://github.com/circe/circe/releases
 val http4sV = "0.21.22" //https://github.com/http4s/http4s/releases
 val doobieV = "0.13.1" //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.0.0" // https://github.com/cquiroz/scala-java-time/releases
-val testContainersSpecs2V = "0.2.0-M2" //
+val testcontainersV = "0.39.3"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
