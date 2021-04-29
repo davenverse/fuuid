@@ -130,6 +130,7 @@ lazy val docs = project
   .enablePlugins(MdocPlugin)
   .settings(commonSettings, micrositeSettings, skipOnPublishSettings)
   .settings(mdocIn := sourceDirectory.value / "main" / "mdoc")
+  .settings(githubWorkflowArtifactUpload := false)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
 val catsV = "2.6.0" //https://github.com/typelevel/cats/releases
