@@ -1,4 +1,4 @@
-[![GitHub Actions](https://github.com/davenverse/fuuid/workflows/CI/badge.svg)](https://github.com/davenverse/fuuid/actions)
+[![GitHub Actions](https://github.com/davenverse/fuuid/workflows/Continuous%20Integration/badge.svg)](https://github.com/davenverse/fuuid/actions)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/fuuid_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/fuuid_2.13)
 [![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-Scala-blue.svg)](CODE_OF_CONDUCT.md)
 [![Mergify Status](https://img.shields.io/endpoint.svg?url=https://gh.mergify.io/badges/davenverse/fuuid)](https://mergify.io)
