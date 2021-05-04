@@ -1,10 +1,16 @@
-# fuuid - Functional UUID [![Build Status](https://travis-ci.com/ChristopherDavenport/fuuid.svg?branch=master)](https://travis-ci.com/ChristopherDavenport/fuuid) [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/fuuid_2.12/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/fuuid_2.12)
+[![GitHub Actions](https://github.com/davenverse/fuuid/workflows/Continuous%20Integration/badge.svg)](https://github.com/davenverse/fuuid/actions)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/fuuid_2.13/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.chrisdavenport/fuuid_2.13)
+[![Code of Conduct](https://img.shields.io/badge/Code%20of%20Conduct-Scala-blue.svg)](CODE_OF_CONDUCT.md)
+[![Mergify Status](https://img.shields.io/endpoint.svg?url=https://gh.mergify.io/badges/davenverse/fuuid)](https://mergify.io)
+[![Scala Steward badge](https://img.shields.io/badge/Scala_Steward-helping-blue.svg?style=flat&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAQCAMAAAARSr4IAAAAVFBMVEUAAACHjojlOy5NWlrKzcYRKjGFjIbp293YycuLa3pYY2LSqql4f3pCUFTgSjNodYRmcXUsPD/NTTbjRS+2jomhgnzNc223cGvZS0HaSD0XLjbaSjElhIr+AAAAAXRSTlMAQObYZgAAAHlJREFUCNdNyosOwyAIhWHAQS1Vt7a77/3fcxxdmv0xwmckutAR1nkm4ggbyEcg/wWmlGLDAA3oL50xi6fk5ffZ3E2E3QfZDCcCN2YtbEWZt+Drc6u6rlqv7Uk0LdKqqr5rk2UCRXOk0vmQKGfc94nOJyQjouF9H/wCc9gECEYfONoAAAAASUVORK5CYII=)](https://scala-steward.org)
 
-Head on [over to the microsite](https://christopherdavenport.github.io/fuuid/)
+# fuuid - Functional UUID
+
+Head on [over to the microsite](https://davenverse.github.io/fuuid/)
 
 ## Impatient Quickstart
 
-To use fuuid in an existing SBT project with Scala 2.11 or a later version, add the following dependency to your
+To use fuuid in an existing SBT project with Scala 2.12 or a later version, add the following dependency to your
 `build.sbt`:
 
 ```scala
@@ -20,4 +26,4 @@ libraryDependencies ++= Seq(
 )
 ```
 
-For more info visit [the microsite](https://christopherdavenport.github.io/fuuid/)
+For more info visit [the microsite](https://davenverse.github.io/fuuid/)
