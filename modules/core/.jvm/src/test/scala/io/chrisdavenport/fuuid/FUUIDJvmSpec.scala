@@ -5,6 +5,8 @@ import org.specs2._
 
 class FUUIDJvmSpec extends mutable.Specification with ScalaCheck {
 
+  import cats.effect.unsafe.implicits.global
+
   "FUUID.nameBased" should {
     "produce a valid UUID" in {
       (for {

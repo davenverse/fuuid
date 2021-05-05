@@ -1,10 +1,14 @@
 package io.chrisdavenport.fuuid
 
 import java.util.UUID
+
 import cats.effect.IO
 import org.specs2._
+import cats.effect.testing.specs2.CatsEffect
 
-class FUUIDSpec extends mutable.Specification with ScalaCheck {
+class FUUIDSpec extends mutable.Specification with ScalaCheck with CatsEffect {
+
+  // import cats.effect.unsafe.implicits.global
 
   "FUUID.fromString" should {
     "Fail when parsing an invalid string" in {
@@ -18,8 +22,7 @@ class FUUIDSpec extends mutable.Specification with ScalaCheck {
         .randomFUUID[IO]
         .map(_.toString)
         .map(FUUID.fromString)
-        .map(_.isRight)
-        .unsafeRunSync() must_=== true
+        .map(_.isRight must_=== true)
     }
   }
 
