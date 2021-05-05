@@ -3,12 +3,10 @@ package io.chrisdavenport.fuuid
 import java.util.UUID
 
 import cats.effect.IO
-import org.specs2._
+import org.specs2.mutable.Specification
 import cats.effect.testing.specs2.CatsEffect
 
-class FUUIDSpec extends mutable.Specification with ScalaCheck with CatsEffect {
-
-  // import cats.effect.unsafe.implicits.global
+class FUUIDSpec extends Specification with CatsEffect {
 
   "FUUID.fromString" should {
     "Fail when parsing an invalid string" in {
@@ -62,7 +60,4 @@ class FUUIDSpec extends mutable.Specification with ScalaCheck with CatsEffect {
       ok
     }
   }
-
-  // FUUID.fuuid("kasdfasd")
-
 }

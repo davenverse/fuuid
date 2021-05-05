@@ -1,9 +1,10 @@
 package io.chrisdavenport.fuuid
 
 import cats.effect.IO
-import org.specs2._
+import cats.effect.testing.specs2.CatsEffect
+import org.specs2.mutable.Specification
 
-class FUUIDJvmSpec extends mutable.Specification with ScalaCheck {
+class FUUIDJvmSpec extends Specification with CatsEffect {
 
   import cats.effect.unsafe.implicits.global
 
@@ -13,9 +14,7 @@ class FUUIDJvmSpec extends mutable.Specification with ScalaCheck {
         namespace <- FUUID.randomFUUID[IO]
         namebased <- FUUID.nameBased[IO](namespace, "What up yo!")
         parsed <- FUUID.fromStringF[IO](namebased.toString)
-      } yield parsed).attempt
-        .unsafeRunSync()
-        .isRight must_=== true
+      } yield parsed).attempt.map(_.isRight must_=== true)
     }
 
     "conform to an example" in {
@@ -24,7 +23,7 @@ class FUUIDJvmSpec extends mutable.Specification with ScalaCheck {
 
       val expected = FUUID.fromStringF[IO]("1cce4593-d217-5b33-be0d-2e81462e79d3").unsafeRunSync()
 
-      FUUID.nameBased[IO](namespace, name).unsafeRunSync() must_=== expected
+      FUUID.nameBased[IO](namespace, name).map(_ must_=== expected)
     }
   }
 }
