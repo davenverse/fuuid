@@ -150,7 +150,7 @@ lazy val contributors = Seq(
 
 // General Settings
 lazy val commonSettings = Seq(
-  addCompilerPlugin("org.typelevel" % "kind-projector"     % "0.11.3" cross CrossVersion.full),
+  addCompilerPlugin("org.typelevel" % "kind-projector"     % "0.12.0" cross CrossVersion.full),
   addCompilerPlugin("com.olegpy"   %% "better-monadic-for" % "0.3.1"),
   libraryDependencies ++= Seq(
     "org.scala-lang"                        % "scala-reflect"   % scalaVersion.value,
