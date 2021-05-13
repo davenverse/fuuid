@@ -133,7 +133,7 @@ lazy val docs = project
   .settings(githubWorkflowArtifactUpload := false)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
-val catsV = "2.6.0" //https://github.com/typelevel/cats/releases
+val catsV = "2.6.1" //https://github.com/typelevel/cats/releases
 val catsEffectV = "2.5.0" //https://github.com/typelevel/cats-effect/releases
 val specs2V = "4.11.0" //https://github.com/etorreborre/specs2/releases
 val disciplineSpecs2V = "1.1.5"
