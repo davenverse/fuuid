@@ -120,7 +120,7 @@ jobs:
           tar xf targets.tar
           rm targets.tar
 
-      - run: sbt ++${{ matrix.scala }} release
+      - run: sbt ++${{ matrix.scala }} ci-release
 
       - if: matrix.scala == '2.12.13'
         uses: ruby/setup-ruby@v1
