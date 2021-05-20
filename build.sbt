@@ -8,6 +8,7 @@ ThisBuild / organization := "io.chrisdavenport"
 ThisBuild / crossScalaVersions := Seq(Scala213, Scala212)
 ThisBuild / scalaVersion := Scala213
 
+ThisBuild / githubWorkflowArtifactUpload := false
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8", "adopt@1.11")
 
 val MicrositesCond = s"matrix.scala == '$Scala212'"
