@@ -11,11 +11,10 @@ import io.chrisdavenport.fuuid.doobie.implicits._
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class PostgresInstanceSpec extends Specification with IOChecker with BeforeAfterAll {
   sequential
-  implicit val contextShiftIO: ContextShift[IO] = IO.contextShift(global)
+
+  import cats.effect.unsafe.implicits.global
 
   lazy val container = PostgreSQLContainer()
 

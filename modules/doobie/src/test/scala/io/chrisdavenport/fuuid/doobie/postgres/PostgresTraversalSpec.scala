@@ -11,15 +11,14 @@ import org.specs2.ScalaCheck
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAfterAll
 
-import scala.concurrent.ExecutionContext.Implicits.global
-
 class PostgresTraversalSpec
     extends Specification
     with ScalaCheck
     with FUUIDArbitraries
     with BeforeAfterAll {
   sequential
-  implicit val contextShiftIO: ContextShift[IO] = IO.contextShift(global)
+
+  import cats.effect.unsafe.implicits.global
 
   lazy val container = PostgreSQLContainer()
 
