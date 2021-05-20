@@ -58,15 +58,6 @@ jobs:
       - name: Binary Compatibility Check
         run: sbt ++${{ matrix.scala }} mimaReportBinaryIssues
 
-      - name: Compress target directories
-        run: tar cf targets.tar modules/http4s/target modules/circe/.jvm/target target modules/doobie/target modules/core/.js/target modules/circe/.js/target modules/core/.jvm/target project/target
-
-      - name: Upload target directories
-        uses: actions/upload-artifact@v2
-        with:
-          name: target-${{ matrix.os }}-${{ matrix.scala }}-${{ matrix.java }}
-          path: targets.tar
-
   publish:
     name: Publish Artifacts
     needs: [build]
@@ -100,51 +91,35 @@ jobs:
             ~/Library/Caches/Coursier/v1
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
-      - name: Download target directories (2.13.6)
-        uses: actions/download-artifact@v2
-        with:
-          name: target-${{ matrix.os }}-2.13.6-${{ matrix.java }}
+      - uses: olafurpg/setup-gpg@v3
 
-      - name: Inflate target directories (2.13.6)
-        run: |
-          tar xf targets.tar
-          rm targets.tar
-
-      - name: Download target directories (2.12.13)
-        uses: actions/download-artifact@v2
-        with:
-          name: target-${{ matrix.os }}-2.12.13-${{ matrix.java }}
-
-      - name: Inflate target directories (2.12.13)
-        run: |
-          tar xf targets.tar
-          rm targets.tar
-
-      - run: sbt ++${{ matrix.scala }} ci-release
-
-      - if: matrix.scala == '2.12.13'
+      - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.6.0
 
-      - if: matrix.scala == '2.12.13'
-        run: gem update --system
+      - name: Install microsite dependencies
+        run: |
+          gem install saas
+          gem install jekyll -v 3.2.1
 
-      - if: matrix.scala == '2.12.13'
-        run: gem install sass
+      - name: Publish artifacts to Sonatype
+        env:
+          PGP_PASSPHRASE: ${{ secrets.PGP_PASSPHRASE }}
+          PGP_SECRET: ${{ secrets.PGP_SECRET }}
+          SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+          SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+        run: sbt ++${{ matrix.scala }} ci-release
 
-      - if: matrix.scala == '2.12.13'
-        run: gem install jekyll -v 4
-
-      - if: matrix.scala == '2.12.13'
-        run: sbt ++${{ matrix.scala }} docs/publishMicrosite
+      - name: Publish microsite
+        run: sbt ++${{ matrix.scala }} '++2.13.6 docs/publishMicrosite'
 
   scalafmt:
     name: Scalafmt
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [2.13.6, 2.12.13]
+        scala: [2.13.6]
         java: [adopt@1.8]
     runs-on: ${{ matrix.os }}
     steps:
@@ -171,14 +146,14 @@ jobs:
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
       - name: Scalafmt
-        run: sbt ++${{ matrix.scala }} scalafmtCheckAll
+        run: sbt ++${{ matrix.scala }} scalafmtCheckAll scalafmtSbtCheck
 
   microsite:
     name: Microsite
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [2.12.13]
+        scala: [2.13.6]
         java: [adopt@1.8]
     runs-on: ${{ matrix.os }}
     steps:
@@ -204,15 +179,15 @@ jobs:
             ~/Library/Caches/Coursier/v1
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
-      - uses: ruby/setup-ruby@v1
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 2.6.0
 
-      - run: gem update --system
-
-      - run: gem install sass
-
-      - run: gem install jekyll -v 4
+      - name: Install microsite dependencies
+        run: |
+          gem install saas
+          gem install jekyll -v 3.2.1
 
       - name: Build the microsite
         run: sbt ++${{ matrix.scala }} docs/makeMicrosite
