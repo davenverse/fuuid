@@ -1,6 +1,6 @@
 package io.chrisdavenport.fuuid.doobie.h2
 
-import cats.effect.{ContextShift, IO}
+import cats.effect.IO
 import doobie._
 import doobie.h2.implicits._
 import doobie.implicits._
@@ -9,11 +9,10 @@ import io.chrisdavenport.fuuid.FUUID
 import io.chrisdavenport.fuuid.doobie.implicits._
 import org.specs2.mutable.Specification
 import org.specs2.specification.BeforeAll
-import scala.concurrent.ExecutionContext.Implicits.global
 
 class H2InstanceSpec extends Specification with IOChecker with BeforeAll {
 
-  implicit val contextShiftIO: ContextShift[IO] = IO.contextShift(global)
+  import cats.effect.unsafe.implicits.global
 
   lazy val transactor: Transactor[IO] =
     Transactor.fromDriverManager[IO](
