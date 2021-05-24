@@ -157,7 +157,7 @@ val http4sV = "1.0.0-M21" //https://github.com/http4s/http4s/releases
 val doobieV = "1.0.0-M2" //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.3.0" // https://github.com/cquiroz/scala-java-time/releases
 val testcontainersV = "0.39.4"
-val catsEffectTestingV = "1.1.0"
+val catsEffectTestingV = "1.1.1"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
