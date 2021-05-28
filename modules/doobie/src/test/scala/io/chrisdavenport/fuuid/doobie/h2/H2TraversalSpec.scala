@@ -38,7 +38,7 @@ class H2TraversalSpec extends Specification with BeforeAll with ScalaCheck with 
 
   "Doobie H2 Meta" should {
 
-    "traverse input and then extraction" in prop { fuuid: FUUID =>
+    "traverse input and then extraction" in prop { (fuuid: FUUID) =>
       val action = for {
         _ <- insertId(fuuid).run.transact(transactor)
         fuuid <- queryBy(fuuid).unique.transact(transactor)
@@ -47,7 +47,7 @@ class H2TraversalSpec extends Specification with BeforeAll with ScalaCheck with 
       action.unsafeRunSync() must_=== fuuid
     }
 
-    "fail on a non-present value" in prop { fuuid: FUUID =>
+    "fail on a non-present value" in prop { (fuuid: FUUID) =>
       queryBy(fuuid).unique
         .transact(transactor)
         .attempt

@@ -13,11 +13,11 @@ class FUUIDQueryParamDecoder extends Specification with ScalaCheck with FUUIDArb
 
   "FUUID QueryParamDecoder" should {
 
-    "work properly given a valid UUID" in prop { validFuuid: FUUID =>
+    "work properly given a valid UUID" in prop { (validFuuid: FUUID) =>
       IdQueryParamMatcher.unapply(Map("id" -> List(validFuuid.show))) must beSome(validFuuid)
     }
 
-    "fail given an invalid UUID" in prop { invalidUuid: String =>
+    "fail given an invalid UUID" in prop { (invalidUuid: String) =>
       IdQueryParamMatcher.unapply(Map("id" -> List(invalidUuid))) must beNone
     }.setArbitrary(Arbitrary(Gen.alphaStr))
   }

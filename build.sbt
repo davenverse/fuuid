@@ -1,12 +1,14 @@
-import sbtcrossproject.CrossPlugin.autoImport.{crossProject, CrossType}
+import sbtcrossproject.CrossPlugin.autoImport.crossProject
 import sbtghactions.UseRef
 
 val Scala213 = "2.13.6"
 val Scala212 = "2.12.13"
+val Scala3 = "3.0.0"
 
+Global / onChangedBuildSource := ReloadOnSourceChanges
 ThisBuild / organization := "io.chrisdavenport"
-ThisBuild / crossScalaVersions := Seq(Scala213, Scala212)
-ThisBuild / scalaVersion := Scala213
+ThisBuild / crossScalaVersions := Seq(Scala3, Scala213, Scala212)
+ThisBuild / scalaVersion := Scala3
 
 ThisBuild / githubWorkflowArtifactUpload := false
 ThisBuild / githubWorkflowJavaVersions := Seq("adopt@1.8", "adopt@1.11")
@@ -75,6 +77,16 @@ ThisBuild / githubWorkflowPublish := Seq(
   )
 )
 
+def crossCompileDirs(scalaVersion: String, baseDirectory: File) = {
+  val major = CrossVersion.partialVersion(scalaVersion) match {
+    case Some((2, _)) => "-2"
+    case _ => "-3"
+  }
+  List(CrossType.Pure, CrossType.Full).flatMap(
+    _.sharedSrcDir(baseDirectory, "main").toList.map(f => file(f.getPath + major))
+  )
+}
+
 lazy val fuuid = project
   .in(file("."))
   .disablePlugins(MimaPlugin)
@@ -85,6 +97,12 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
   .in(file("modules/core"))
   .settings(commonSettings, releaseSettings, mimaSettings)
+  .settings(
+    Compile / unmanagedSourceDirectories ++= crossCompileDirs(
+      scalaVersion.value,
+      baseDirectory.value
+    )
+  )
   .settings(
     name := "fuuid"
   )
@@ -98,11 +116,12 @@ lazy val doobie = project
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
-      "org.tpolecat" %% "doobie-core"                     % doobieV,
-      "org.tpolecat" %% "doobie-postgres"                 % doobieV         % Test,
-      "org.tpolecat" %% "doobie-h2"                       % doobieV         % Test,
-      "org.tpolecat" %% "doobie-specs2"                   % doobieV         % Test,
-      "com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersV % Test
+      "org.tpolecat"  %% "doobie-core"                     % doobieV,
+      "org.tpolecat"  %% "doobie-postgres"                 % doobieV         % Test,
+      "org.tpolecat"  %% "doobie-h2"                       % doobieV         % Test,
+      ("org.tpolecat" %% "doobie-specs2"                   % doobieV         % Test).cross(CrossVersion.for3Use2_13),
+      ("com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersV % Test)
+        .cross(CrossVersion.for3Use2_13)
     ),
     Test / parallelExecution := false // Needed due to a driver initialization deadlock between Postgres and H2
   )
@@ -153,7 +172,7 @@ val catsEffectV = "3.1.1" //https://github.com/typelevel/cats-effect/releases
 val specs2V = "4.12.0" //https://github.com/etorreborre/specs2/releases
 val disciplineSpecs2V = "1.1.6"
 val circeV = "0.14.1" //https://github.com/circe/circe/releases
-val http4sV = "1.0.0-M21" //https://github.com/http4s/http4s/releases
+val http4sV = "1.0.0-M23" //https://github.com/http4s/http4s/releases
 val doobieV = "1.0.0-M5" //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.3.0" // https://github.com/cquiroz/scala-java-time/releases
 val testcontainersV = "0.39.5"
@@ -166,17 +185,29 @@ lazy val contributors = Seq(
 
 // General Settings
 lazy val commonSettings = Seq(
-  addCompilerPlugin("org.typelevel" % "kind-projector"     % "0.13.0" cross CrossVersion.full),
-  addCompilerPlugin("com.olegpy"   %% "better-monadic-for" % "0.3.1"),
   libraryDependencies ++= Seq(
-    "org.scala-lang"                                 % "scala-reflect"    % scalaVersion.value,
-    "org.typelevel" %%% "cats-effect"                % catsEffectV,
-    "org.typelevel" %%% "cats-laws"                  % catsV              % Test,
-    "org.typelevel" %%% "discipline-specs2"          % disciplineSpecs2V  % Test,
-    "org.specs2" %%% "specs2-core"                   % specs2V            % Test,
-    "org.specs2" %%% "specs2-scalacheck"             % specs2V            % Test,
-    "org.typelevel" %%% "cats-effect-testing-specs2" % catsEffectTestingV % Test
-  )
+    "org.typelevel" %%% "cats-effect"                 % catsEffectV,
+    "org.typelevel" %%% "cats-laws"                   % catsV              % Test,
+    "org.typelevel" %%% "discipline-specs2"           % disciplineSpecs2V  % Test,
+    ("org.specs2" %%% "specs2-core"                   % specs2V            % Test).cross(CrossVersion.for3Use2_13),
+    ("org.specs2" %%% "specs2-scalacheck"             % specs2V            % Test).cross(CrossVersion.for3Use2_13),
+    ("org.typelevel" %%% "cats-effect-testing-specs2" % catsEffectTestingV % Test)
+      .cross(CrossVersion.for3Use2_13)
+  ),
+  libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+    case Some((3, _)) => Nil
+    case _ =>
+      Seq(
+        scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
+        scalaOrganization.value % "scala-reflect"  % scalaVersion.value % Provided,
+        compilerPlugin("org.typelevel" % "kind-projector"     % "0.13.0" cross CrossVersion.full),
+        compilerPlugin("com.olegpy"   %% "better-monadic-for" % "0.3.1")
+      )
+  }),
+  scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
+    case Some((2, 13)) => Seq("-Ymacro-annotations")
+    case _ => Nil
+  })
 )
 
 lazy val releaseSettings = {
@@ -248,6 +279,7 @@ lazy val mimaSettings = {
     val minorVersions: List[Int] =
       if (major >= 1) Range(0, minor).inclusive.toList
       else List(minor)
+
     def patchVersions(currentMinVersion: Int): List[Int] =
       if (minor == 0 && patch == 0) List.empty[Int]
       else if (currentMinVersion != minor) List(0)
@@ -270,6 +302,7 @@ lazy val mimaSettings = {
         Set.empty[String]
     }
   }
+
   // Safety Net For Exclusions
   lazy val excludedVersions: Set[String] = Set()
 

@@ -48,7 +48,7 @@ class PostgresTraversalSpec
     sql"""INSERT into PostgresTraversalSpec (id) VALUES ($fuuid)""".update
 
   "Doobie Postgres Meta" should {
-    "traverse input and then extraction" in prop { fuuid: FUUID =>
+    "traverse input and then extraction" in prop { (fuuid: FUUID) =>
       val action = for {
         _ <- insertId(fuuid).run.transact(transactor)
         fuuid <- queryBy(fuuid).unique.transact(transactor)
@@ -56,7 +56,7 @@ class PostgresTraversalSpec
 
       action.unsafeRunSync() must_=== fuuid
     }
-    "fail on a non-present value" in prop { fuuid: FUUID =>
+    "fail on a non-present value" in prop { (fuuid: FUUID) =>
       queryBy(fuuid).unique
         .transact(transactor)
         .attempt

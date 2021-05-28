@@ -8,3 +8,5 @@ tags
 .metals
 .bloop
 project/metals.sbt
+.bsp
+.DS_Store
