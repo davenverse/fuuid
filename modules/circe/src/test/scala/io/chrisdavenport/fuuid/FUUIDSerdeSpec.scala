@@ -8,13 +8,13 @@ import org.specs2.mutable.Specification
 
 class FUUIDSerdeSpec extends Specification with ScalaCheck with FUUIDArbitraries {
   "circe serialization and deserialization" should {
-    "correct serialize and deserialize" in prop { validFUUID: FUUID =>
+    "correct serialize and deserialize" in prop { (validFUUID: FUUID) =>
       validFUUID.asJson.as[FUUID] must beRight.like { case fuuid =>
         fuuid === validFUUID
       }
     }
 
-    "correct key serialize and deserialize" in prop { validFUUID: FUUID =>
+    "correct key serialize and deserialize" in prop { (validFUUID: FUUID) =>
       KeyDecoder[FUUID].apply(KeyEncoder[FUUID].apply(validFUUID)) must beSome.like { case fuuid =>
         fuuid === validFUUID
       }
