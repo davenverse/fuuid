@@ -1,24 +1,21 @@
 package io.chrisdavenport.fuuid.doobie.postgres
 
 import cats.effect._
+import munit.{CatsEffectSuite, ScalaCheckSuite}
 import com.dimafeng.testcontainers.PostgreSQLContainer
 import doobie._
+import doobie.munit.IOChecker
 import doobie.implicits._
 import doobie.postgres.implicits._
 import io.chrisdavenport.fuuid._
 import io.chrisdavenport.fuuid.doobie.implicits._
-import org.specs2.ScalaCheck
-import org.specs2.mutable.Specification
-import org.specs2.specification.BeforeAfterAll
+import org.scalacheck.Prop.forAll
 
 class PostgresTraversalSpec
-    extends Specification
-    with ScalaCheck
-    with FUUIDArbitraries
-    with BeforeAfterAll {
-  sequential
-
-  import cats.effect.unsafe.implicits.global
+    extends CatsEffectSuite
+    with IOChecker
+    with ScalaCheckSuite
+    with FUUIDArbitraries {
 
   lazy val container = PostgreSQLContainer()
 
@@ -47,21 +44,26 @@ class PostgresTraversalSpec
   def insertId(fuuid: FUUID): Update0 =
     sql"""INSERT into PostgresTraversalSpec (id) VALUES ($fuuid)""".update
 
-  "Doobie Postgres Meta" should {
-    "traverse input and then extraction" in prop { (fuuid: FUUID) =>
+  property("Doobie Postgres Meta traverse input and then extraction") {
+    forAll { (fuuid: FUUID) =>
       val action = for {
         _ <- insertId(fuuid).run.transact(transactor)
         fuuid <- queryBy(fuuid).unique.transact(transactor)
       } yield fuuid
 
-      action.unsafeRunSync() must_=== fuuid
+      assertEquals(action.unsafeRunSync(), fuuid)
     }
-    "fail on a non-present value" in prop { (fuuid: FUUID) =>
-      queryBy(fuuid).unique
-        .transact(transactor)
-        .attempt
-        .map(_.isLeft)
-        .unsafeRunSync() must_=== true
+  }
+  property("Doobie Postgres Meta fail on a non-present value") {
+    forAll { (fuuid: FUUID) =>
+      assertEquals(
+        queryBy(fuuid).unique
+          .transact(transactor)
+          .attempt
+          .map(_.isLeft)
+          .unsafeRunSync(),
+        true
+      )
     }
   }
 

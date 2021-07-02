@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.crossProject
 import sbtghactions.UseRef
 
 val Scala213 = "2.13.6"
-val Scala212 = "2.12.13"
+val Scala212 = "2.12.14"
 val Scala3 = "3.0.0"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
@@ -116,11 +116,15 @@ lazy val doobie = project
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
-      "org.tpolecat"  %% "doobie-core"                     % doobieV,
-      "org.tpolecat"  %% "doobie-postgres"                 % doobieV         % Test,
-      "org.tpolecat"  %% "doobie-h2"                       % doobieV         % Test,
-      ("org.tpolecat" %% "doobie-specs2"                   % doobieV         % Test).cross(CrossVersion.for3Use2_13),
-      ("com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersV % Test)
+      "org.tpolecat"                           %% "doobie-core"                     % doobieV,
+      "org.tpolecat"                           %% "doobie-postgres"                 % doobieV         % Test,
+      "org.tpolecat"                           %% "doobie-h2"                       % doobieV         % Test,
+      "org.tpolecat"                           %% "doobie-munit"                    % doobieV         % Test,
+      "org.typelevel"                          %% "discipline-munit"                % disciplineMunit % Test,
+      "org.scalameta"                          %% "munit"                           % munitV          % Test,
+      "org.scalameta"                          %% "munit-scalacheck"                % munitV          % Test,
+      "org.typelevel" %%% "munit-cats-effect-3" % munitCE3V                         % Test,
+      ("com.dimafeng"                          %% "testcontainers-scala-postgresql" % testcontainersV % Test)
         .cross(CrossVersion.for3Use2_13)
     ),
     Test / parallelExecution := false // Needed due to a driver initialization deadlock between Postgres and H2
@@ -169,14 +173,14 @@ lazy val docs = project
 
 val catsV = "2.6.1" //https://github.com/typelevel/cats/releases
 val catsEffectV = "3.1.1" //https://github.com/typelevel/cats-effect/releases
-val specs2V = "4.12.1" //https://github.com/etorreborre/specs2/releases
-val disciplineSpecs2V = "1.1.6"
 val circeV = "0.14.1" //https://github.com/circe/circe/releases
 val http4sV = "1.0.0-M23" //https://github.com/http4s/http4s/releases
 val doobieV = "1.0.0-M5" //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.3.0" // https://github.com/cquiroz/scala-java-time/releases
 val testcontainersV = "0.39.5"
-val catsEffectTestingV = "1.1.1"
+val munitV = "0.7.26"
+val munitCE3V = "1.0.3"
+val disciplineMunit = "1.0.9"
 
 lazy val contributors = Seq(
   "ChristopherDavenport" -> "Christopher Davenport",
@@ -186,13 +190,12 @@ lazy val contributors = Seq(
 // General Settings
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats-effect"                 % catsEffectV,
-    "org.typelevel" %%% "cats-laws"                   % catsV              % Test,
-    "org.typelevel" %%% "discipline-specs2"           % disciplineSpecs2V  % Test,
-    ("org.specs2" %%% "specs2-core"                   % specs2V            % Test).cross(CrossVersion.for3Use2_13),
-    ("org.specs2" %%% "specs2-scalacheck"             % specs2V            % Test).cross(CrossVersion.for3Use2_13),
-    ("org.typelevel" %%% "cats-effect-testing-specs2" % catsEffectTestingV % Test)
-      .cross(CrossVersion.for3Use2_13)
+    "org.typelevel" %%% "cats-effect"         % catsEffectV,
+    "org.typelevel" %%% "cats-laws"           % catsV           % Test,
+    "org.typelevel" %%% "discipline-munit"    % disciplineMunit % Test,
+    "org.scalameta" %%% "munit"               % munitV          % Test,
+    "org.scalameta" %%% "munit-scalacheck"    % munitV          % Test,
+    "org.typelevel" %%% "munit-cats-effect-3" % munitCE3V       % Test
   ),
   libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
     case Some((3, _)) => Nil
@@ -207,7 +210,8 @@ lazy val commonSettings = Seq(
   scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
     case Some((2, 13)) => Seq("-Ymacro-annotations")
     case _ => Nil
-  })
+  }),
+  Test / scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) }
 )
 
 lazy val releaseSettings = {
