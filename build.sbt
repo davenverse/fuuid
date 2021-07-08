@@ -76,15 +76,15 @@ lazy val doobie = project
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
-      "org.tpolecat"                           %% "doobie-core"                     % doobieV,
-      "org.tpolecat"                           %% "doobie-postgres"                 % doobieV         % Test,
-      "org.tpolecat"                           %% "doobie-h2"                       % doobieV         % Test,
-      "org.tpolecat"                           %% "doobie-munit"                    % doobieV         % Test,
-      "org.typelevel"                          %% "discipline-munit"                % disciplineMunit % Test,
-      "org.scalameta"                          %% "munit"                           % munitV          % Test,
-      "org.scalameta"                          %% "munit-scalacheck"                % munitV          % Test,
-      "org.typelevel" %%% "munit-cats-effect-3" % munitCE3V                         % Test,
-      ("com.dimafeng"                          %% "testcontainers-scala-postgresql" % testcontainersV % Test)
+      "org.tpolecat"                           %% "doobie-core"      % doobieV,
+      "org.tpolecat"                           %% "doobie-postgres"  % doobieV         % Test,
+      "org.tpolecat"                           %% "doobie-h2"        % doobieV         % Test,
+      "org.tpolecat"                           %% "doobie-munit"     % doobieV         % Test,
+      "org.typelevel"                          %% "discipline-munit" % disciplineMunit % Test,
+      "org.scalameta"                          %% "munit"            % munitV          % Test,
+      "org.scalameta"                          %% "munit-scalacheck" % munitV          % Test,
+      "org.typelevel" %%% "munit-cats-effect-3" % munitCE3V          % Test,
+      ("com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersV % Test)
         .cross(CrossVersion.for3Use2_13)
     ),
     Test / parallelExecution := false // Needed due to a driver initialization deadlock between Postgres and H2
