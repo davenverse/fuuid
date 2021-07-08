@@ -2,20 +2,15 @@ package io.chrisdavenport.fuuid.doobie.postgres
 
 import cats.effect._
 import com.dimafeng.testcontainers.PostgreSQLContainer
+import munit.CatsEffectSuite
 import doobie._
+import doobie.munit.IOChecker
 import doobie.implicits._
 import doobie.postgres.implicits._
-import doobie.specs2._
 import io.chrisdavenport.fuuid.FUUID
 import io.chrisdavenport.fuuid.doobie.implicits._
-import org.specs2.mutable.Specification
-import org.specs2.specification.BeforeAfterAll
 
-class PostgresInstanceSpec extends Specification with IOChecker with BeforeAfterAll {
-  sequential
-
-  import cats.effect.unsafe.implicits.global
-
+class PostgresInstanceSpec extends CatsEffectSuite with IOChecker {
   lazy val container = PostgreSQLContainer()
 
   lazy val transactor = Transactor.fromDriverManager[IO](
@@ -27,7 +22,6 @@ class PostgresInstanceSpec extends Specification with IOChecker with BeforeAfter
 
   override def beforeAll(): Unit = {
     container.container.start()
-
     sql"""
     CREATE TABLE IF NOT EXISTS PostgresInstanceSpec (
       id   UUID NOT NULL
@@ -39,9 +33,13 @@ class PostgresInstanceSpec extends Specification with IOChecker with BeforeAfter
 
   def insertId(fuuid: FUUID): Update0 =
     sql"""INSERT into PostgresInstanceSpec (id) VALUES ($fuuid)""".update
+
   val fuuid = FUUID.randomFUUID[IO].unsafeRunSync()
 
-  check(sql"SELECT id from PostgresInstanceSpec".query[FUUID])
-  check(insertId(fuuid))
-
+  test("Select from postgres") {
+    check(sql"SELECT id from PostgresInstanceSpec".query[FUUID])
+  }
+  test("insert uuid") {
+    check(insertId(fuuid))
+  }
 }

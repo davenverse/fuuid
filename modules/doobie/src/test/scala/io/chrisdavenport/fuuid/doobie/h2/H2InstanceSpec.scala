@@ -1,19 +1,15 @@
 package io.chrisdavenport.fuuid.doobie.h2
 
 import cats.effect.IO
+import munit.CatsEffectSuite
 import doobie._
 import doobie.h2.implicits._
 import doobie.implicits._
-import doobie.specs2._
+import doobie.munit.IOChecker
 import io.chrisdavenport.fuuid.FUUID
 import io.chrisdavenport.fuuid.doobie.implicits._
-import org.specs2.mutable.Specification
-import org.specs2.specification.BeforeAll
 
-class H2InstanceSpec extends Specification with IOChecker with BeforeAll {
-
-  import cats.effect.unsafe.implicits.global
-
+class H2InstanceSpec extends CatsEffectSuite with IOChecker {
   lazy val transactor: Transactor[IO] =
     Transactor.fromDriverManager[IO](
       driver = "org.h2.Driver",
@@ -22,15 +18,18 @@ class H2InstanceSpec extends Specification with IOChecker with BeforeAll {
       pass = ""
     )
 
-  def beforeAll(): Unit =
+  override def beforeAll(): Unit =
     sql"CREATE TABLE test (id UUID NOT NULL)".update.run.transact(transactor).void.unsafeRunSync()
 
   def insertId(fuuid: FUUID): Update0 =
     sql"""INSERT into test (id) VALUES ($fuuid)""".update
 
-  val fuuid = FUUID.randomFUUID[IO].unsafeRunSync()
+  val fuuid = U.unsafeRunSync(FUUID.randomFUUID[IO])
 
-  check(sql"SELECT id from test".query[FUUID])
-  check(insertId(fuuid))
-
+  test("Select from h2") {
+    check(sql"SELECT id from test".query[FUUID])
+  }
+  test("insert uuid") {
+    check(insertId(fuuid))
+  }
 }

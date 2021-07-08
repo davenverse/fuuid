@@ -3,21 +3,19 @@ package io.chrisdavenport.fuuid
 import io.chrisdavenport.fuuid.circe._
 import io.circe.{KeyDecoder, KeyEncoder}
 import io.circe.syntax._
-import org.specs2.ScalaCheck
-import org.specs2.mutable.Specification
+import munit.{CatsEffectSuite, ScalaCheckSuite}
+import org.scalacheck.Prop.forAll
 
-class FUUIDSerdeSpec extends Specification with ScalaCheck with FUUIDArbitraries {
-  "circe serialization and deserialization" should {
-    "correct serialize and deserialize" in prop { (validFUUID: FUUID) =>
-      validFUUID.asJson.as[FUUID] must beRight.like { case fuuid =>
-        fuuid === validFUUID
-      }
+class FUUIDSerdeSpec extends CatsEffectSuite with ScalaCheckSuite with FUUIDArbitraries {
+  property("circe serialization and deserialization correct serialize and deserialize") {
+    forAll { (validFUUID: FUUID) =>
+      assertEquals(validFUUID.asJson.as[FUUID], Right(validFUUID))
     }
+  }
 
-    "correct key serialize and deserialize" in prop { (validFUUID: FUUID) =>
-      KeyDecoder[FUUID].apply(KeyEncoder[FUUID].apply(validFUUID)) must beSome.like { case fuuid =>
-        fuuid === validFUUID
-      }
+  property("circe serialization and deserialization correct key serialize and deserialize") {
+    forAll { (validFUUID: FUUID) =>
+      assertEquals(KeyDecoder[FUUID].apply(KeyEncoder[FUUID].apply(validFUUID)), Some(validFUUID))
     }
   }
 }

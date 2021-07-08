@@ -1,63 +1,50 @@
 package io.chrisdavenport.fuuid
 
-import java.util.UUID
-
 import cats.effect.IO
-import org.specs2.mutable.Specification
-import cats.effect.testing.specs2.CatsEffect
+import java.util.UUID
+import munit.CatsEffectSuite
 
-class FUUIDSpec extends Specification with CatsEffect {
-
-  "FUUID.fromString" should {
-    "Fail when parsing an invalid string" in {
-      FUUID.fromString("What up yo!").isLeft must_=== true
-    }
-    "Fail when parsing invalid uuid" in {
-      FUUID.fromString("2630147c-4a18-4866-9bbd-b2d89acef83z").isLeft must_=== true
-    }
-    "Succeed when parsing a valid UUID" in {
-      FUUID
-        .randomFUUID[IO]
-        .map(_.toString)
-        .map(FUUID.fromString)
-        .map(_.isRight must_=== true)
-    }
+class FUUIDSpec extends CatsEffectSuite {
+  test("FUUID.fromString Fail when parsing an invalid string") {
+    assertEquals(FUUID.fromString("What up yo!").isLeft, true)
+  }
+  test("FUUID.fromString Fail when parsing invalid uuid") {
+    assert(FUUID.fromString("2630147c-4a18-4866-9bbd-b2d89acef83z").isLeft)
+  }
+  test("FUUID.fromString Succeed when parsing a valid UUID") {
+    FUUID
+      .randomFUUID[IO]
+      .map(_.toString)
+      .map(FUUID.fromString)
+      .map(_.isRight)
+      .assertEquals(true)
   }
 
-  "FUUID.hashCode" should {
-    "have same hashcode as uuid" in {
-      val baseString = "00000000-075b-cd15-0000-0000075bcd15"
-      // Easy in for testing
-      val uuid = UUID.fromString(baseString)
-      val fuuid = FUUID.fromUUID(uuid)
-      fuuid.hashCode must_=== uuid.hashCode
-    }
+  test("FUUID.hashCode have same hashcode as uuid") {
+    val baseString = "00000000-075b-cd15-0000-0000075bcd15"
+    // Easy in for testing
+    val uuid = UUID.fromString(baseString)
+    val fuuid = FUUID.fromUUID(uuid)
+    assertEquals(fuuid.hashCode, uuid.hashCode)
   }
 
-  "FUUID.equals" should {
-    "be equal for the same FUUID" in {
-      val baseString = "00000000-075b-cd15-0000-0000075bcd15"
-      // Easy in for testing
-      val uuid = UUID.fromString(baseString)
-      val fuuid = FUUID.fromUUID(uuid)
-      fuuid.equals(fuuid) must_=== true
-    }
+  test("FUUID.equalsbe equal for the same FUUID") {
+    val baseString = "00000000-075b-cd15-0000-0000075bcd15"
+    // Easy in for testing
+    val uuid = UUID.fromString(baseString)
+    val fuuid = FUUID.fromUUID(uuid)
+    assertEquals(fuuid.equals(fuuid), true)
   }
 
-  "FUUID.eqv" should {
-    "be equal for the same FUUID" in {
-      val baseString = "00000000-075b-cd15-0000-0000075bcd15"
-      // Easy in for testing
-      val uuid = UUID.fromString(baseString)
-      val fuuid = FUUID.fromUUID(uuid)
-      fuuid.eqv(fuuid) must_=== true
-    }
+  test("FUUID.eqv be equal for the same FUUID") {
+    val baseString = "00000000-075b-cd15-0000-0000075bcd15"
+    // Easy in for testing
+    val uuid = UUID.fromString(baseString)
+    val fuuid = FUUID.fromUUID(uuid)
+    assertEquals(fuuid.eqv(fuuid), true)
   }
 
-  "FUUID.fuuid" should {
-    "compile for a literal" in {
-      FUUID.fuuid("00000000-075b-cd15-0000-0000075bcd15")
-      ok
-    }
+  test("FUUID.fuuid compile for a literal") {
+    FUUID.fuuid("00000000-075b-cd15-0000-0000075bcd15")
   }
 }
