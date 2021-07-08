@@ -9,9 +9,9 @@ name: Continuous Integration
 
 on:
   pull_request:
-    branches: ['*', series/*]
+    branches: ['**']
   push:
-    branches: ['*', series/*]
+    branches: ['**']
     tags: [v*]
 
 env:
@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        scala: [3.0.0, 2.13.6, 2.12.13]
+        scala: [2.12.13, 2.13.6, 3.0.0]
         java: [adopt@1.8, adopt@1.11]
     runs-on: ${{ matrix.os }}
     steps:
@@ -49,19 +49,30 @@ jobs:
             ~/Library/Caches/Coursier/v1
           key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
 
+      - name: Setup Ruby
+        if: matrix.scala == '2.13.6'
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0.1
+
+      - name: Install microsite dependencies
+        if: matrix.scala == '2.13.6'
+        run: |
+          gem install saas
+          gem install jekyll -v 4.2.0
+
       - name: Check that workflows are up to date
         run: sbt --client '++${{ matrix.scala }}; githubWorkflowCheck'
 
-      - name: Test
-        run: sbt --client '++${{ matrix.scala }}; test'
+      - run: sbt --client '++${{ matrix.scala }}; test; mimaReportBinaryIssues'
 
-      - name: Binary Compatibility Check
-        run: sbt --client '++${{ matrix.scala }}; mimaReportBinaryIssues'
+      - if: matrix.scala == '2.13.6'
+        run: sbt --client '++${{ matrix.scala }}; site/makeMicrosite'
 
   publish:
     name: Publish Artifacts
     needs: [build]
-    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v'))
+    if: github.event_name != 'pull_request' && (startsWith(github.ref, 'refs/tags/v') || github.ref == 'refs/heads/main')
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -96,12 +107,12 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6.0
+          ruby-version: 3.0.1
 
       - name: Install microsite dependencies
         run: |
           gem install saas
-          gem install jekyll -v 3.2.1
+          gem install jekyll -v 4.2.0
 
       - name: Publish artifacts to Sonatype
         env:
@@ -111,8 +122,10 @@ jobs:
           SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
         run: sbt --client '++${{ matrix.scala }}; ci-release'
 
+      - uses: christopherdavenport/create-ghpages-ifnotexists@v1
+
       - name: Publish microsite
-        run: sbt --client '++${{ matrix.scala }}; ++2.13.6 docs/publishMicrosite'
+        run: sbt --client '++${{ matrix.scala }}; site/publishMicrosite'
 
   scalafmt:
     name: Scalafmt
@@ -147,47 +160,3 @@ jobs:
 
       - name: Scalafmt
         run: sbt --client '++${{ matrix.scala }}; scalafmtCheckAll; scalafmtSbtCheck'
-
-  microsite:
-    name: Microsite
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-        scala: [2.13.6]
-        java: [adopt@1.8]
-    runs-on: ${{ matrix.os }}
-    steps:
-      - name: Checkout current branch (full)
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-
-      - name: Setup Java and Scala
-        uses: olafurpg/setup-scala@v12
-        with:
-          java-version: ${{ matrix.java }}
-
-      - name: Cache sbt
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/.sbt
-            ~/.ivy2/cache
-            ~/.coursier/cache/v1
-            ~/.cache/coursier/v1
-            ~/AppData/Local/Coursier/Cache/v1
-            ~/Library/Caches/Coursier/v1
-          key: ${{ runner.os }}-sbt-cache-v2-${{ hashFiles('**/*.sbt') }}-${{ hashFiles('project/build.properties') }}
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.6.0
-
-      - name: Install microsite dependencies
-        run: |
-          gem install saas
-          gem install jekyll -v 3.2.1
-
-      - name: Build the microsite
-        run: sbt --client '++${{ matrix.scala }}; docs/makeMicrosite'
