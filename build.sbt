@@ -122,7 +122,7 @@ lazy val http4s = project
   .dependsOn(coreJVM % "compile->compile;test->test")
 
 lazy val site = project
-  .in(file("modules/docs"))
+  .in(file("modules/site"))
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublishPlugin)
   .enablePlugins(DavenverseMicrositePlugin)
