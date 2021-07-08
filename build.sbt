@@ -51,7 +51,7 @@ lazy val fuuid = project
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublishPlugin)
   .settings(commonSettings)
-  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM /*, docs*/ )
+  .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM)
 
 lazy val core = crossProject(JSPlatform, JVMPlatform)
   .crossType(CrossType.Pure)
@@ -117,7 +117,7 @@ lazy val http4s = project
   )
   .dependsOn(coreJVM % "compile->compile;test->test")
 
-lazy val docs = project
+lazy val site = project
   .in(file("modules/docs"))
   .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublishPlugin)
