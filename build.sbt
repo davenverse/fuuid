@@ -32,7 +32,7 @@ ThisBuild / githubWorkflowAddedJobs ++= Seq(
       WorkflowStep.Sbt(List("scalafmtCheckAll", "scalafmtSbtCheck"), name = Some("Scalafmt"))
     ),
     // Awaiting release of https://github.com/scalameta/scalafmt/pull/2324/files
-    scalas = List(Scala213)
+    scalas = List(Scala3)
   )
 )
 
@@ -76,10 +76,10 @@ lazy val doobie = project
   .settings(
     name := "fuuid-doobie",
     libraryDependencies ++= Seq(
-      "org.tpolecat"  %% "doobie-core"                     % doobieV,
-      "org.tpolecat"  %% "doobie-postgres"                 % doobieV         % Test,
-      "org.tpolecat"  %% "doobie-h2"                       % doobieV         % Test,
-      ("org.tpolecat" %% "doobie-specs2"                   % doobieV         % Test).cross(CrossVersion.for3Use2_13),
+      "org.tpolecat"  %% "doobie-core"     % doobieV,
+      "org.tpolecat"  %% "doobie-postgres" % doobieV % Test,
+      "org.tpolecat"  %% "doobie-h2"       % doobieV % Test,
+      ("org.tpolecat" %% "doobie-specs2"   % doobieV % Test).cross(CrossVersion.for3Use2_13),
       ("com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersV % Test)
         .cross(CrossVersion.for3Use2_13)
     ),
@@ -141,11 +141,11 @@ val catsEffectTestingV = "1.1.1"
 // General Settings
 lazy val commonSettings = Seq(
   libraryDependencies ++= Seq(
-    "org.typelevel" %%% "cats-effect"                 % catsEffectV,
-    "org.typelevel" %%% "cats-laws"                   % catsV              % Test,
-    "org.typelevel" %%% "discipline-specs2"           % disciplineSpecs2V  % Test,
-    ("org.specs2" %%% "specs2-core"                   % specs2V            % Test).cross(CrossVersion.for3Use2_13),
-    ("org.specs2" %%% "specs2-scalacheck"             % specs2V            % Test).cross(CrossVersion.for3Use2_13),
+    "org.typelevel" %%% "cats-effect"       % catsEffectV,
+    "org.typelevel" %%% "cats-laws"         % catsV             % Test,
+    "org.typelevel" %%% "discipline-specs2" % disciplineSpecs2V % Test,
+    ("org.specs2" %%% "specs2-core"       % specs2V % Test).cross(CrossVersion.for3Use2_13),
+    ("org.specs2" %%% "specs2-scalacheck" % specs2V % Test).cross(CrossVersion.for3Use2_13),
     ("org.typelevel" %%% "cats-effect-testing-specs2" % catsEffectTestingV % Test)
       .cross(CrossVersion.for3Use2_13)
   ),
