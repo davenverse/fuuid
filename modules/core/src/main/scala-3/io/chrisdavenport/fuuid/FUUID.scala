@@ -40,11 +40,11 @@ object FUUID {
     Either.catchNonFatal(new FUUID(UUID.fromString(s)))
 
   /**
-   * Attempt to parse a UUID from a `String` accumulating errors in a
-   * `cats.data.NonEmptyList` on failure.
+   * Attempt to parse a UUID from a `String` accumulating errors in a `cats.data.NonEmptyList` on
+   * failure.
    *
-   * This is useful when you wish to parse more than one UUID at a time and
-   * return all the failures, not just the first one. For example,
+   * This is useful when you wish to parse more than one UUID at a time and return all the failures,
+   * not just the first one. For example,
    *
    * {{{
    * scala> import cats._, cats.data._, cats.implicits._, io.chrisdavenport.fuuid._
@@ -61,11 +61,11 @@ object FUUID {
     fromStringAccumulating[ValidatedNel[Throwable, *], NonEmptyList](s)
 
   /**
-   * Attempt to parse a UUID from a `String` accumulating errors in a
-   * `cats.data.NonEmptyChain` on failure.
+   * Attempt to parse a UUID from a `String` accumulating errors in a `cats.data.NonEmptyChain` on
+   * failure.
    *
-   * This is useful when you wish to parse more than one UUID at a time and
-   * return all the failures, not just the first one. For example,
+   * This is useful when you wish to parse more than one UUID at a time and return all the failures,
+   * not just the first one. For example,
    *
    * {{{
    * scala> import cats._, cats.data._, cats.implicits._, io.chrisdavenport.fuuid._
@@ -90,8 +90,8 @@ object FUUID {
   /**
    * Like [[#fromStringF]] but using an `Applicative` of `Throwable`.
    *
-   * Generally this will be used with something like `cats.data.Validated` to
-   * accumulate errors when parsing more than one [[FUUID]].
+   * Generally this will be used with something like `cats.data.Validated` to accumulate errors when
+   * parsing more than one [[FUUID]].
    *
    * See [[#fromStringVNel]] and [[#fromStringVNec]] for examples.
    */
@@ -124,17 +124,23 @@ object FUUID {
               _ => {
                 '{
                   @SuppressWarnings(Array("org.wartremover.warts.Throw"))
-                  val fuuid = _root_.io.chrisdavenport.fuuid.FUUID.fromString($fs).fold(throw _, _root_.scala.Predef.identity)
+                  val fuuid = _root_.io.chrisdavenport.fuuid.FUUID
+                    .fromString($fs)
+                    .fold(throw _, _root_.scala.Predef.identity)
                   fuuid
                 }
-              })
-        case _ => report.throwError("""This method uses a macro to verify that a FUUID literal is valid. Use FUUID.fromString if you have a dynamic value you want to parse as an FUUID.""", pos)
+              }
+            )
+        case _ =>
+          report.throwError(
+            """This method uses a macro to verify that a FUUID literal is valid. Use FUUID.fromString if you have a dynamic value you want to parse as an FUUID.""",
+            pos
+          )
       }
   }
 
   /**
-   * Creates a new name-based UUIDv5.
-   * NOTE: Not implemented for Scala.js!
+   * Creates a new name-based UUIDv5. NOTE: Not implemented for Scala.js!
    */
   def nameBased[F[_]](namespace: FUUID, name: String)(implicit
       AE: ApplicativeError[F, Throwable]
@@ -142,9 +148,8 @@ object FUUID {
     PlatformSpecificMethods.nameBased[F](namespace, name, AE)
 
   /**
-   * A Home For functions we don't trust
-   * Hopefully making it very clear that this code needs
-   * to be dealt with carefully.
+   * A Home For functions we don't trust Hopefully making it very clear that this code needs to be
+   * dealt with carefully.
    *
    * Likely necessary for some interop
    *
@@ -160,7 +165,8 @@ object FUUID {
    *
    * This is a constant UUID for which all bits are 0.
    *
-   * @see [[https://tools.ietf.org/html/rfc4122#section-4.1.7]]
+   * @see
+   *   [[https://tools.ietf.org/html/rfc4122#section-4.1.7]]
    */
   val NilUUID: FUUID =
     FUUID.fromUUID(new UUID(0L, 0L))

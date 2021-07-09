@@ -39,7 +39,7 @@ class PostgresTraversalSpec
   override def afterAll(): Unit = container.container.stop()
 
   def queryBy(fuuid: FUUID): Query0[FUUID] =
-    sql"""SELECT id from PostgresTraversalSpec where id = ${fuuid}""".query[FUUID]
+    sql"""SELECT id from PostgresTraversalSpec where id = $fuuid""".query[FUUID]
 
   def insertId(fuuid: FUUID): Update0 =
     sql"""INSERT into PostgresTraversalSpec (id) VALUES ($fuuid)""".update

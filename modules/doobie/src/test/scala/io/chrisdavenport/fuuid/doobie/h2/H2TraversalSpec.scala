@@ -33,7 +33,7 @@ class H2TraversalSpec
   }
 
   def queryBy(fuuid: FUUID): Query0[FUUID] =
-    sql"""SELECT id from testH2Table where id = ${fuuid}""".query[FUUID]
+    sql"""SELECT id from testH2Table where id = $fuuid""".query[FUUID]
 
   def insertId(fuuid: FUUID): Update0 =
     sql"""INSERT into testH2Table (id) VALUES ($fuuid)""".update
