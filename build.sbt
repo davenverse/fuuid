@@ -4,6 +4,8 @@ val Scala213 = "2.13.6"
 val Scala212 = "2.12.14"
 val Scala3 = "3.0.0"
 
+Global / onChangedBuildSource := ReloadOnSourceChanges
+
 ThisBuild / crossScalaVersions := Seq(Scala212, Scala213, Scala3)
 
 ThisBuild / licenses := Seq("MIT" -> new java.net.URL("http://opensource.org/licenses/MIT"))
@@ -14,13 +16,13 @@ ThisBuild / developers := List(
     "christopherdavenport",
     "Christopher Davenport",
     "chris@christopherdavenport.tech",
-    new java.net.URL("https://christopherdavenport.github.io/")
+    url("https://christopherdavenport.github.io/")
   ),
   Developer(
     "JesusMtnez",
     "Jesús Martínez-B. H.",
     "jesusmartinez93@gmail.com",
-    new java.net.URL("https://jesusmtnez.es/")
+    url("https://jesusmtnez.es/")
   )
 )
 
