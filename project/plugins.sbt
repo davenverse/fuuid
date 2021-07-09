@@ -1,4 +1,4 @@
-addSbtPlugin("org.scalameta"             % "sbt-scalafmt"             % "2.4.2")
+addSbtPlugin("org.scalameta"             % "sbt-scalafmt"             % "2.4.3")
 addSbtPlugin("io.github.davidgregory084" % "sbt-tpolecat"             % "0.1.20")
 addSbtPlugin("com.typesafe"              % "sbt-mima-plugin"          % "0.9.2")
 addSbtPlugin("org.tpolecat"              % "tut-plugin"               % "0.6.13")
