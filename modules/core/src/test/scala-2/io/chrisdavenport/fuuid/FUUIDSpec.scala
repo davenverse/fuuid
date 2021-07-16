@@ -47,4 +47,16 @@ class FUUIDSpec extends CatsEffectSuite {
   test("FUUID.fuuid compile for a literal") {
     FUUID.fuuid("00000000-075b-cd15-0000-0000075bcd15")
   }
+
+  // the error message is slightly different between scala versions
+  // this does not pass when consolidated under a single test/scala/ directory
+  test("FUUID.fuuid fail at compile-time when passed an invalid uuid") {
+    assertNoDiff(
+      compileErrors("FUUID.fuuid(\"2630147c-4a18-4866-9bbd-b2d89acef83z\")"),
+      """|error: Error at index 11 in: "b2d89acef83z"
+         |      compileErrors("FUUID.fuuid(\"2630147c-4a18-4866-9bbd-b2d89acef83z\")"),
+         |                  ^
+         |""".stripMargin
+    )
+  }
 }
