@@ -126,7 +126,7 @@ object FUUID {
                   @SuppressWarnings(Array("org.wartremover.warts.Throw"))
                   val fuuid = _root_.io.chrisdavenport.fuuid.FUUID
                     .fromString($fs)
-                    .fold(throw _, identity)
+                    .fold(throw _, _root_.scala.Predef.identity)
                   fuuid
                 }
               }
