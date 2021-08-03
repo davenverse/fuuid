@@ -172,8 +172,8 @@ lazy val commonSettings = Seq(
     "org.typelevel" %%% "cats-effect"       % catsEffectV,
     "org.typelevel" %%% "cats-laws"         % catsV             % Test,
     "org.typelevel" %%% "discipline-specs2" % disciplineSpecs2V % Test,
-    ("org.specs2" %%% "specs2-core"          % specs2V           % Test).cross(CrossVersion.for3Use2_13),
-    ("org.specs2" %%% "specs2-scalacheck"    % specs2V           % Test).cross(CrossVersion.for3Use2_13)
+    ("org.specs2" %%% "specs2-core"         % specs2V           % Test).cross(CrossVersion.for3Use2_13),
+    ("org.specs2" %%% "specs2-scalacheck"   % specs2V           % Test).cross(CrossVersion.for3Use2_13)
   )
 )
 
