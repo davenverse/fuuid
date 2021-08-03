@@ -5,7 +5,7 @@ val Scala213 = "2.13.6"
 val Scala212 = "2.12.13"
 
 ThisBuild / organization := "io.chrisdavenport"
-ThisBuild / crossScalaVersions := Seq(Scala213, Scala212)
+ThisBuild / crossScalaVersions := Seq(Scala213, Scala212, "3.0.1")
 ThisBuild / scalaVersion := Scala213
 
 ThisBuild / githubWorkflowArtifactUpload := false
@@ -149,12 +149,12 @@ lazy val docs = project
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
 
 val catsV = "2.6.1" //https://github.com/typelevel/cats/releases
-val catsEffectV = "2.5.1" //https://github.com/typelevel/cats-effect/releases
-val specs2V = "4.11.0" //https://github.com/etorreborre/specs2/releases
+val catsEffectV = "2.5.2" //https://github.com/typelevel/cats-effect/releases
+val specs2V = "4.12.3" //https://github.com/etorreborre/specs2/releases
 val disciplineSpecs2V = "1.1.6"
-val circeV = "0.14.0-M7" //https://github.com/circe/circe/releases
-val http4sV = "0.21.23" //https://github.com/http4s/http4s/releases
-val doobieV = "0.13.3" //https://github.com/tpolecat/doobie/releases
+val circeV = "0.14.1" //https://github.com/circe/circe/releases
+val http4sV = "0.22.1" //https://github.com/http4s/http4s/releases
+val doobieV = "0.13.4" //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.3.0" // https://github.com/cquiroz/scala-java-time/releases
 val testcontainersV = "0.39.4"
 
@@ -172,8 +172,8 @@ lazy val commonSettings = Seq(
     "org.typelevel" %%% "cats-effect"       % catsEffectV,
     "org.typelevel" %%% "cats-laws"         % catsV             % Test,
     "org.typelevel" %%% "discipline-specs2" % disciplineSpecs2V % Test,
-    "org.specs2" %%% "specs2-core"          % specs2V           % Test,
-    "org.specs2" %%% "specs2-scalacheck"    % specs2V           % Test
+    ("org.specs2" %%% "specs2-core"          % specs2V           % Test).cross(CrossVersion.for3Use2_13),
+    ("org.specs2" %%% "specs2-scalacheck"    % specs2V           % Test).cross(CrossVersion.for3Use2_13)
   )
 )
 
