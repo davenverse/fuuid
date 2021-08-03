@@ -7,6 +7,7 @@ target/
 tags
 .metals
 .bloop
-project/metals.sbt
+metals.sbt
+.vscode
 .bsp
 .DS_Store
