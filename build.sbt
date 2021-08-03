@@ -5,7 +5,7 @@ val Scala213 = "2.13.6"
 val Scala212 = "2.12.13"
 
 ThisBuild / organization := "io.chrisdavenport"
-ThisBuild / crossScalaVersions := Seq(Scala213, Scala212, "3.0.1")
+ThisBuild / crossScalaVersions := Seq(Scala213, Scala212)
 ThisBuild / scalaVersion := Scala213
 
 ThisBuild / githubWorkflowArtifactUpload := false
