@@ -2,7 +2,7 @@ import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 val Scala213 = "2.13.6"
 val Scala212 = "2.12.14"
-val Scala3 = "3.0.0"
+val Scala3 = "3.0.1"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -134,9 +134,9 @@ lazy val site = project
   )
 
 val catsV = "2.6.1" //https://github.com/typelevel/cats/releases
-val catsEffectV = "3.1.1" //https://github.com/typelevel/cats-effect/releases
+val catsEffectV = "3.2.1" //https://github.com/typelevel/cats-effect/releases
 val circeV = "0.14.1" //https://github.com/circe/circe/releases
-val http4sV = "1.0.0-M23" //https://github.com/http4s/http4s/releases
+val http4sV = "0.23.0" //https://github.com/http4s/http4s/releases
 val doobieV = "1.0.0-M5" //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.3.0" // https://github.com/cquiroz/scala-java-time/releases
 val testcontainersV = "0.39.5"
