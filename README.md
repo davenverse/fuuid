@@ -32,6 +32,6 @@ For more info visit [the microsite](https://davenverse.github.io/fuuid/)
 
 | fuuid   | Scala 2.12 | Scala 2.13 | Scala 3 | Cats  | CE     | http4s   | Doobie   | Circe    |
 | :-----: | :--------: | :--------: | :-----: | :---: | :----: | :------: | :------: | :------: |
-| `0.8.x` | Yes        | Yes        | Pending | `2.x` | `3.x`  | `1.0.x`  | `1.0.x`  | `1.0.x`  |
-| `0.7.x` | Yes        | Yes        | Pending | `2.x` | `2.x`  | `0.21.x` | `0.13.x` | `0.14.x` |
+| `0.8.x` | Yes        | Yes        | Pending | `2.x` | `3.x`  | `0.23.x` | `1.0.x`  | `1.0.x`  |
+| `0.7.x` | Yes        | Yes        | Pending | `2.x` | `2.x`  | `0.22.x` | `0.13.x` | `0.14.x` |
 | `0.6.x` | Yes        | Yes        | Pending | `2.x` | `2.x`  | `0.21.x` | `0.13.x` | `0.13.x` |
