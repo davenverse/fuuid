@@ -1,8 +1,8 @@
 import sbtcrossproject.CrossPlugin.autoImport.crossProject
 
 val Scala213 = "2.13.6"
-val Scala212 = "2.12.14"
-val Scala3 = "3.0.1"
+val Scala212 = "2.12.15"
+val Scala3 = "3.0.2"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
@@ -133,15 +133,15 @@ lazy val site = project
     micrositeDescription := "Functional UUID's"
   )
 
-val catsV = "2.6.1" //https://github.com/typelevel/cats/releases
+val catsV = "2.7.0" //https://github.com/typelevel/cats/releases
 val catsEffectV = "3.2.1" //https://github.com/typelevel/cats-effect/releases
 val circeV = "0.14.1" //https://github.com/circe/circe/releases
-val http4sV = "0.23.0" //https://github.com/http4s/http4s/releases
-val doobieV = "1.0.0-M5" //https://github.com/tpolecat/doobie/releases
+val http4sV = "0.23.6" //https://github.com/http4s/http4s/releases
+val doobieV = "1.0.0-RC1" //https://github.com/tpolecat/doobie/releases
 val scalaJavaTimeV = "2.3.0" // https://github.com/cquiroz/scala-java-time/releases
-val testcontainersV = "0.39.5"
-val munitV = "0.7.26"
-val munitCE3V = "1.0.3"
+val testcontainersV = "0.39.8"
+val munitV = "0.7.29"
+val munitCE3V = "1.0.6"
 val disciplineMunit = "1.0.9"
 
 // General Settings
@@ -160,7 +160,7 @@ lazy val commonSettings = Seq(
       Seq(
         scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
         scalaOrganization.value % "scala-reflect"  % scalaVersion.value % Provided,
-        compilerPlugin("org.typelevel" % "kind-projector"     % "0.13.0" cross CrossVersion.full),
+        compilerPlugin("org.typelevel" % "kind-projector"     % "0.13.2" cross CrossVersion.full),
         compilerPlugin("com.olegpy"   %% "better-monadic-for" % "0.3.1")
       )
   }),
