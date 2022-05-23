@@ -134,7 +134,7 @@ lazy val site = project
   )
 
 val catsV = "2.7.0" //https://github.com/typelevel/cats/releases
-val catsEffectV = "3.3.11" //https://github.com/typelevel/cats-effect/releases
+val catsEffectV = "3.3.12" //https://github.com/typelevel/cats-effect/releases
 val circeV = "0.14.1" //https://github.com/circe/circe/releases
 val http4sV = "0.23.6" //https://github.com/http4s/http4s/releases
 val doobieV = "1.0.0-RC1" //https://github.com/tpolecat/doobie/releases
