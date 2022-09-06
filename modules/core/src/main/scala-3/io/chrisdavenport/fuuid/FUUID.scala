@@ -120,7 +120,7 @@ object FUUID {
         case Inlined(_, _, Literal(StringConstant(s))) =>
           fromString(s)
             .fold(
-              e => report.throwError(e.getMessage.replace("UUID", "FUUID"), pos),
+              e => report.errorAndAbort(e.getMessage.replace("UUID", "FUUID"), pos),
               _ => {
                 '{
                   @SuppressWarnings(Array("org.wartremover.warts.Throw"))
@@ -132,7 +132,7 @@ object FUUID {
               }
             )
         case _ =>
-          report.throwError(
+          report.errorAndAbort(
             """This method uses a macro to verify that a FUUID literal is valid. Use FUUID.fromString if you have a dynamic value you want to parse as an FUUID.""",
             pos
           )
