@@ -8,7 +8,7 @@ import java.util.UUID
 
 import scala.reflect.macros.blackbox
 
-final class FUUID private (private val uuid: UUID) {
+final class FUUID private (private val uuid: UUID) extends Serializable {
 
   // Direct show method so people do not use toString
   def show: String = uuid.show
