@@ -142,7 +142,7 @@ val scalaJavaTimeV = "2.3.0" // https://github.com/cquiroz/scala-java-time/relea
 val testcontainersV = "0.39.8"
 val munitV = "0.7.29"
 val munitCE3V = "1.0.6"
-val disciplineMunit = "1.0.9"
+val disciplineMunit = "2.0.0"
 
 // General Settings
 lazy val commonSettings = Seq(
