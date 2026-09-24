@@ -1,42 +1,25 @@
-import sbtcrossproject.CrossPlugin.autoImport.crossProject
+ThisBuild / tlBaseVersion := "0.8" // current series x.y
 
-val Scala213 = "2.13.6"
-val Scala212 = "2.12.15"
-val Scala3 = "3.1.2"
+ThisBuild / organization := "io.chrisdavenport"
+ThisBuild / organizationName := "Christopher Davenport"
+ThisBuild / startYear := Some(2018)
+ThisBuild / licenses := Seq(License.MIT)
+ThisBuild / developers := List(
+  tlGitHubDev("christopherdavenport", "Christopher Davenport"),
+  tlGitHubDev("JesusMtnez", "Jesús Martínez-B. H.")
+)
+
+// sbt-davenverse published a snapshot from main on every push; preserve that.
+ThisBuild / tlCiReleaseBranches := Seq("main")
+
+val Scala213 = "2.13.18"
+val Scala212 = "2.12.20"
+val Scala3 = "3.3.8"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
 ThisBuild / crossScalaVersions := Seq(Scala212, Scala213, Scala3)
-
-ThisBuild / licenses := Seq("MIT" -> new java.net.URL("http://opensource.org/licenses/MIT"))
-
-ThisBuild / startYear := Some(2018)
-ThisBuild / developers := List(
-  Developer(
-    "christopherdavenport",
-    "Christopher Davenport",
-    "chris@christopherdavenport.tech",
-    url("https://christopherdavenport.github.io/")
-  ),
-  Developer(
-    "JesusMtnez",
-    "Jesús Martínez-B. H.",
-    "jesusmartinez93@gmail.com",
-    url("https://jesusmtnez.es/")
-  )
-)
-
-ThisBuild / githubWorkflowAddedJobs ++= Seq(
-  WorkflowJob(
-    "scalafmt",
-    "Scalafmt",
-    githubWorkflowJobSetup.value.toList ::: List(
-      WorkflowStep.Sbt(List("scalafmtCheckAll", "scalafmtSbtCheck"), name = Some("Scalafmt"))
-    ),
-    // Awaiting release of https://github.com/scalameta/scalafmt/pull/2324/files
-    scalas = List(Scala3)
-  )
-)
+ThisBuild / scalaVersion := Scala213
 
 def crossCompileDirs(scalaVersion: String, baseDirectory: File) = {
   val major = CrossVersion.partialVersion(scalaVersion) match {
@@ -50,7 +33,6 @@ def crossCompileDirs(scalaVersion: String, baseDirectory: File) = {
 
 lazy val fuuid = project
   .in(file("."))
-  .disablePlugins(MimaPlugin)
   .enablePlugins(NoPublishPlugin)
   .settings(commonSettings)
   .aggregate(coreJS, coreJVM, doobie, http4s, circeJS, circeJVM)
@@ -123,14 +105,18 @@ lazy val http4s = project
   )
   .dependsOn(coreJVM % "compile->compile;test->test")
 
+// Replaces DavenverseMicrositePlugin (sbt-microsites/Jekyll). mdocIn resolves to
+// the repo-root docs/ directory, which is where index.md now lives.
 lazy val site = project
   .in(file("modules/site"))
-  .disablePlugins(MimaPlugin)
-  .enablePlugins(NoPublishPlugin)
-  .enablePlugins(DavenverseMicrositePlugin)
+  .enablePlugins(TypelevelSitePlugin)
   .dependsOn(coreJVM, http4s, doobie, circeJVM)
   .settings(
-    micrositeDescription := "Functional UUID's"
+    laikaTheme := tlSiteHelium.value.site
+      .topNavigationBar(
+        homeLink = laika.helium.config.IconLink.internal(laika.ast.Path.Root / "index.md", laika.helium.config.HeliumIcon.home)
+      )
+      .build
   )
 
 val catsV = "2.7.0" //https://github.com/typelevel/cats/releases
@@ -154,18 +140,24 @@ lazy val commonSettings = Seq(
     "org.scalameta" %%% "munit-scalacheck"    % munitV          % Test,
     "org.typelevel" %%% "munit-cats-effect-3" % munitCE3V       % Test
   ),
+  // Compiler settings DavenversePlugin injected globally. sbt-typelevel-ci-release
+  // does not supply these (only sbt-typelevel-settings would).
   libraryDependencies ++= (CrossVersion.partialVersion(scalaVersion.value) match {
     case Some((3, _)) => Nil
     case _ =>
       Seq(
         scalaOrganization.value % "scala-compiler" % scalaVersion.value % Provided,
         scalaOrganization.value % "scala-reflect"  % scalaVersion.value % Provided,
-        compilerPlugin("org.typelevel" % "kind-projector"     % "0.13.2" cross CrossVersion.full),
+        compilerPlugin("org.typelevel" % "kind-projector"     % "0.13.4" cross CrossVersion.full),
         compilerPlugin("com.olegpy"   %% "better-monadic-for" % "0.3.1")
       )
   }),
+  // fuuid defines a macro (FUUID.fuuid literal); sbt-tpolecat used to supply
+  // -language:experimental.macros, and sbt-typelevel-ci-release does not.
   scalacOptions ++= (CrossVersion.partialVersion(scalaVersion.value) match {
-    case Some((2, 13)) => Seq("-Ymacro-annotations")
+    case Some((2, 13)) => Seq("-Ymacro-annotations", "-language:experimental.macros")
+    case Some((2, 12)) => Seq("-Ypartial-unification", "-language:experimental.macros")
+    case Some((3, _)) => Seq("-Ykind-projector")
     case _ => Nil
   }),
   Test / scalaJSLinkerConfig ~= { _.withModuleKind(ModuleKind.CommonJSModule) }
