@@ -50,6 +50,14 @@ lazy val core = crossProject(JSPlatform, JVMPlatform)
   .settings(
     name := "fuuid"
   )
+  .jsSettings(
+    // Newer Scala.js implements java.util.UUID.randomUUID via
+    // java.security.SecureRandom, which is not in the Scala.js javalib. Without
+    // this the JS build fails to link: "Referring to non-existent class
+    // java.security.SecureRandom". Only published for 2.13, hence for3Use2_13.
+    libraryDependencies += ("org.scala-js" %%% "scalajs-java-securerandom" % "1.0.0")
+      .cross(CrossVersion.for3Use2_13)
+  )
 
 lazy val coreJS = core.js
 lazy val coreJVM = core.jvm
