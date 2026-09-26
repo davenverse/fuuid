@@ -19,7 +19,7 @@ val Scala3 = "3.3.8"
 
 Global / onChangedBuildSource := ReloadOnSourceChanges
 
-ThisBuild / crossScalaVersions := Seq(Scala212, Scala213, Scala3)
+ThisBuild / crossScalaVersions := Seq(Scala213, Scala3)
 ThisBuild / scalaVersion := Scala213
 
 def crossCompileDirs(scalaVersion: String, baseDirectory: File) = {
@@ -76,7 +76,7 @@ lazy val doobie = project
       "org.typelevel"                          %% "discipline-munit" % disciplineMunit % Test,
       "org.scalameta"                          %% "munit"            % munitV          % Test,
       "org.scalameta"                          %% "munit-scalacheck" % munitV          % Test,
-      "org.typelevel" %%% "munit-cats-effect-3" % munitCE3V          % Test,
+      "org.typelevel" %%% "munit-cats-effect" % munitCE3V          % Test,
       ("com.dimafeng" %% "testcontainers-scala-postgresql" % testcontainersV % Test)
         .cross(CrossVersion.for3Use2_13)
     ),
@@ -128,16 +128,16 @@ lazy val site = project
       .build
   )
 
-val catsV = "2.7.0" //https://github.com/typelevel/cats/releases
-val catsEffectV = "3.3.12" //https://github.com/typelevel/cats-effect/releases
+val catsV = "2.13.0" //https://github.com/typelevel/cats/releases
+val catsEffectV = "3.7.1" //https://github.com/typelevel/cats-effect/releases
 val circeV = "0.14.1" //https://github.com/circe/circe/releases
-val http4sV = "0.23.6" //https://github.com/http4s/http4s/releases
+val http4sV = "0.23.37" //https://github.com/http4s/http4s/releases
 val doobieV = "1.0.0-RC1" //https://github.com/tpolecat/doobie/releases
-val scalaJavaTimeV = "2.3.0" // https://github.com/cquiroz/scala-java-time/releases
+val scalaJavaTimeV = "2.7.0" // https://github.com/cquiroz/scala-java-time/releases
 val testcontainersV = "0.39.8"
-val munitV = "0.7.29"
-val munitCE3V = "1.0.6"
-val disciplineMunit = "1.0.9"
+val munitV = "1.3.1"
+val munitCE3V = "2.2.1"
+val disciplineMunit = "2.0.0"
 
 // General Settings
 lazy val commonSettings = Seq(
@@ -147,7 +147,7 @@ lazy val commonSettings = Seq(
     "org.typelevel" %%% "discipline-munit"    % disciplineMunit % Test,
     "org.scalameta" %%% "munit"               % munitV          % Test,
     "org.scalameta" %%% "munit-scalacheck"    % munitV          % Test,
-    "org.typelevel" %%% "munit-cats-effect-3" % munitCE3V       % Test
+    "org.typelevel" %%% "munit-cats-effect" % munitCE3V       % Test
   ),
   // Compiler settings DavenversePlugin injected globally. sbt-typelevel-ci-release
   // does not supply these (only sbt-typelevel-settings would).
