@@ -14,7 +14,7 @@ dependencies to support additional interactions.
 
 ## Quick Start
 
-To use fuuid in an existing SBT project with Scala 2.11 or a later version, add the following dependency to your
+To use fuuid 0.8.0 in an existing SBT project with Scala 2.13 or Scala 3, add the following dependency to your
 `build.sbt`:
 
 ```scala
@@ -26,6 +26,8 @@ libraryDependencies += "io.chrisdavenport" %% "fuuid" % "<version>"
 ```
 import io.chrisdavenport.fuuid.FUUID
 import cats.effect.IO
+// For these REPL examples; applications should prefer IOApp.
+import cats.effect.unsafe.implicits.global
 
 // We place it in IO because this requires a Sync constraint
 val create: IO[FUUID] = FUUID.randomFUUID[IO]
@@ -109,8 +111,8 @@ To use fuuid to store UUID's using doobie, add to your `build.sbt`:
 libraryDependencies += "io.chrisdavenport" %% "fuuid-doobie" % "<version>"
 ```
 
-This dependency will provide a `Meta[FUUID]` which depends on `Meta[UUID]` to provide support for `FUUID`.
-You will need to provide the instance of `Meta[UUID]` in scope. Firstly, we import:
+This dependency provides `Get[FUUID]` and `Put[FUUID]` from the corresponding `Get[UUID]` and
+`Put[UUID]` instances. Import your database's UUID instances as shown below. Firstly, we import:
 
 ```scala mdoc:silent
 import doobie._
