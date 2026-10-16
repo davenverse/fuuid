@@ -107,13 +107,15 @@
         dependencies to support additional interactions.</p>
         
         <h2 id="quick-start" class="section"><a class="anchor-link left" href="#quick-start"><i class="icofont-laika link">&#xef71;</i></a>Quick Start</h2>
-        <p>To use fuuid in an existing SBT project with Scala 2.11 or a later version, add the following dependency to your
+        <p>To use fuuid 0.8.0 in an existing SBT project with Scala 2.13 or Scala 3, add the following dependency to your
         <code>build.sbt</code>:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">libraryDependencies</span><span> += </span><span class="string-literal">&quot;io.chrisdavenport&quot;</span><span> %% </span><span class="string-literal">&quot;fuuid&quot;</span><span> % </span><span class="string-literal">&quot;&lt;version&gt;&quot;</span></code></pre>
         
         <h2 id="examples" class="section"><a class="anchor-link left" href="#examples"><i class="icofont-laika link">&#xef71;</i></a>Examples</h2>
         <pre><code>import io.chrisdavenport.fuuid.FUUID
 import cats.effect.IO
+// For these REPL examples; applications should prefer IOApp.
+import cats.effect.unsafe.implicits.global
 
 // We place it in IO because this requires a Sync constraint
 val create: IO[FUUID] = FUUID.randomFUUID[IO]
@@ -175,8 +177,8 @@ val service: HttpRoutes[IO] =
         <h2 id="doobie-integration" class="section"><a class="anchor-link left" href="#doobie-integration"><i class="icofont-laika link">&#xef71;</i></a>Doobie Integration</h2>
         <p>To use fuuid to store UUID&#39;s using doobie, add to your <code>build.sbt</code>:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="identifier">libraryDependencies</span><span> += </span><span class="string-literal">&quot;io.chrisdavenport&quot;</span><span> %% </span><span class="string-literal">&quot;fuuid-doobie&quot;</span><span> % </span><span class="string-literal">&quot;&lt;version&gt;&quot;</span></code></pre>
-        <p>This dependency will provide a <code>Meta[FUUID]</code> which depends on <code>Meta[UUID]</code> to provide support for <code>FUUID</code>.
-        You will need to provide the instance of <code>Meta[UUID]</code> in scope. Firstly, we import:</p>
+        <p>This dependency provides <code>Get[FUUID]</code> and <code>Put[FUUID]</code> from the corresponding <code>Get[UUID]</code> and
+        <code>Put[UUID]</code> instances. Import your database&#39;s UUID instances as shown below. Firstly, we import:</p>
         <pre class="keep-together pdf epub"><code class="nohighlight"><span class="keyword">import</span><span> </span><span class="identifier">doobie</span><span>.</span><span class="identifier">_</span><span>
 </span><span class="keyword">import</span><span> </span><span class="identifier">doobie</span><span>.</span><span class="identifier">implicits</span><span>.</span><span class="identifier">_</span><span>
 </span><span class="keyword">import</span><span> </span><span class="identifier">io</span><span>.</span><span class="identifier">chrisdavenport</span><span>.</span><span class="identifier">fuuid</span><span>.</span><span class="identifier">doobie</span><span>.</span><span class="identifier">implicits</span><span>.</span><span class="identifier">_</span></code></pre>
